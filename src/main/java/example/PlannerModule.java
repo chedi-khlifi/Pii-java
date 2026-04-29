@@ -14,6 +14,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
+import com.mindforge.config.GroqConfig;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -2058,14 +2059,22 @@ public class PlannerModule {
     // ================================================================
     // GROQ AI CHATBOT
     // ================================================================
-    private static final String GROQ_API_KEY = System.getenv("GROQ_API_KEY");
-    private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String GROQ_MODEL = "llama-3.1-8b-instant";
+    private static final GroqConfig groqConfig = GroqConfig.getInstance();
+    private static final String GROQ_API_KEY = groqConfig.getApiKey();
+    private static final String GROQ_URL = groqConfig.getApiUrl();
+    private static final String GROQ_MODEL = groqConfig.getModel();
 
     private void handleGroqChat() {
         String userMsg = chatInput.getText().trim();
         if (userMsg.isEmpty())
             return;
+
+        if (GROQ_API_KEY == null || GROQ_API_KEY.isEmpty()) {
+            chatArea.appendText("\nBot: ❌ Error: GROQ_API_KEY is not configured.\n"
+                    + "Please set your Groq API key in src/main/resources/config.properties\n"
+                    + "(Get your key from https://console.groq.com/keys)");
+            return;
+        }
 
         if (currentChatExam == null) {
             chatArea.appendText("\nBot: Please select an exam first.");

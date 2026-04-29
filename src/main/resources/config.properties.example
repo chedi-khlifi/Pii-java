@@ -1,0 +1,47 @@
+# ============================================
+# Google OAuth Configuration for JavaFX
+# ============================================
+
+# Google OAuth 2.0 Credentials
+google.client.id=12168302642-r3tni2rdkbvf3kfdvsai6i99v2f2it3i.apps.googleusercontent.com
+google.client.secret=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
+
+# OAuth Endpoints
+google.oauth.auth.url=https://accounts.google.com/o/oauth2/v2/auth
+google.oauth.token.url=https://oauth2.googleapis.com/token
+google.oauth.userinfo.url=https://www.googleapis.com/oauth2/v2/userinfo
+google.oauth.revoke.url=https://oauth2.googleapis.com/revoke
+
+# Redirect URI (must match Google Cloud Console configuration)
+google.redirect.uri=http://localhost:8888/Callback
+
+# OAuth Scopes (space-separated for Java, URL-encoded for HTTP)
+google.scopes=openid email profile
+google.scopes.encoded=openid%20email%20profile
+
+# Local Server Settings
+oauth.local.port=8888
+oauth.local.path=/Callback
+oauth.timeout.seconds=120
+
+# ============================================
+# API Backend Configuration
+# ============================================
+
+# Symfony Backend API
+api.base.url=http://localhost:8000
+api.auth.google=/api/auth/google
+api.auth.callback=/api/auth/google/callback
+api.auth.verify=/api/auth/verify-token
+
+# Request timeouts (milliseconds)
+api.timeout.connect=10000
+api.timeout.read=30000
+
+# ============================================
+# AI Chatbot - Groq API Configuration
+# ============================================
+# Get your API key from: https://console.groq.com/keys
+groq.api.key=your-groq-api-key-here
+groq.api.url=https://api.groq.com/openai/v1/chat/completions
+groq.model=llama-3.1-8b-instant

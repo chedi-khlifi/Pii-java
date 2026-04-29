@@ -36,3 +36,7 @@ build/
 
 ### Mac OS ###
 .DS_Store
+
+### Configuration Files with Secrets ###
+src/main/resources/config.properties
+!src/main/resources/config.properties.example
