@@ -6,8 +6,8 @@
 
 <ScrollPane fitToWidth="true"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.mindforge.controller.ProfileController"
-            style="-fx-background-color: #f5f5f5; -fx-border-color: transparent; -fx-background: #f5f5f5;">
+            fx:controller="com.mindforge.architect.controller.ProfileController"
+            style="-fx-background-color: #ececf2; -fx-border-color: transparent; -fx-background: #ececf2;">
 
     <VBox spacing="14" style="-fx-padding: 24 28 32 28;">
 
@@ -17,14 +17,20 @@
                      -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
                      -fx-border-radius: 12; -fx-padding: 18 20;">
 
-            <!-- Avatar: image OR initials circle -->
-            <StackPane prefWidth="76" prefHeight="76">
-                <Circle radius="38" fill="#EEEDFE"/>
+            <!-- Avatar: circular photo OR initials fallback -->
+            <StackPane fx:id="avatarPane" prefWidth="76" prefHeight="76">
+                <!-- Background circle (always visible as border/bg) -->
+                <Circle radius="38"
+                        style="-fx-fill: #EEEDFE; -fx-stroke: #534AB7; -fx-stroke-width: 2;"/>
+
+                <!-- Initials label — shown when no photo -->
                 <Label fx:id="avatarInitials" text="?"
                        style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #3C3489;"/>
+
+                <!-- Photo ImageView — hidden until loaded; clipped to circle in controller -->
                 <ImageView fx:id="avatarImage"
                            fitWidth="76" fitHeight="76"
-                           preserveRatio="true"
+                           preserveRatio="false"
                            visible="false"/>
             </StackPane>
 
@@ -41,6 +47,13 @@
 
             <!-- Header action buttons -->
             <VBox spacing="6" alignment="TOP_RIGHT">
+                <!-- ══ NEW: SOCIAL HUB BUTTON ═══════════════════════════ -->
+                <Button fx:id="btnSocialHub" text="🌐 Social Hub" onAction="#goToSocialHub"
+                        style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32;
+                               -fx-border-radius: 8; -fx-background-radius: 8;
+                               -fx-font-size: 12px; -fx-font-weight: bold;
+                               -fx-cursor: hand; -fx-padding: 6 14;"/>
+                <!-- ════════════════════════════════════════════════════ -->
                 <Button text="Edit profile" onAction="#goToEditProfile"
                         style="-fx-background-color: #534AB7; -fx-text-fill: white;
                                -fx-border-radius: 8; -fx-background-radius: 8;
@@ -55,6 +68,13 @@
                                -fx-font-size: 12px; -fx-text-fill: #888888;
                                -fx-cursor: hand; -fx-padding: 5 14;"/>
             </VBox>
+            <!-- ══ NEW: MENTAL HEALTH CHECK BUTTON ═══════════════ -->
+            <Button fx:id="btnMentalHealth" text="🧠 Check ur mental health" onAction="#goToEmotions"
+                    style="-fx-background-color: #FFF3E0; -fx-text-fill: #E65100;
+                               -fx-border-radius: 8; -fx-background-radius: 8;
+                               -fx-font-size: 12px; -fx-font-weight: bold;
+                               -fx-cursor: hand; -fx-padding: 6 14;"/>
+            <!-- ════════════════════════════════════════════════════ -->
         </HBox>
 
         <!-- ══ STATS ROW ════════════════════════════════════════════════ -->

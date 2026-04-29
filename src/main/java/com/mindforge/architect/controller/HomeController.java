@@ -1,4 +1,4 @@
-package com.mindforge.controller;
+package com.mindforge.architect.controller;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;

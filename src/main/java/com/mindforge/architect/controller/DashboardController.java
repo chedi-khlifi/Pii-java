@@ -1,60 +1,118 @@
-package com.mindforge.controller;
+package com.mindforge.architect.controller;
 
 import com.mindforge.util.UserSession;
+import example.PlannerModule;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.stage.Stage;
-import javafx.scene.control.Alert;
-import com.mindforge.util.UserSession;
+
 import java.io.IOException;
 
 public class DashboardController {
 
     @FXML private VBox friendsContainer;
+    @FXML private VBox centerContent;   // ← new: inject the center VBox
+
+    // Saves the original root so we can restore it later
+    private Parent originalRoot;
 
     @FXML
     public void initialize() {
-        // Load friends when dashboard opens
         loadFriends();
     }
 
+    // ----------------------------------------------------------------
+    // PLANNER — embed App's scene root into centerContent
+    // ----------------------------------------------------------------
+    @FXML
+    private void goToPlanner() {
+        try {
+            Scene scene = centerContent.getScene();
+            if (originalRoot == null) {
+                originalRoot = scene.getRoot();
+            }
+
+            PlannerModule plannerModule = new PlannerModule();
+            Parent plannerRoot = plannerModule.getView();
+
+            // Wrap with a "← Back" button
+            Button backBtn = new Button("← Back to Dashboard");
+            backBtn.setStyle(
+                    "-fx-background-color: #4e64f4; -fx-text-fill: white;" +
+                            "-fx-background-radius: 8; -fx-padding: 8 18; -fx-cursor: hand;" +
+                            "-fx-font-weight: bold; -fx-font-size: 13px;"
+            );
+            backBtn.setOnAction(e -> {
+                if (originalRoot != null) {
+                    scene.setRoot(originalRoot);
+                }
+            });
+
+            HBox topBar = new HBox(backBtn);
+            topBar.setPadding(new Insets(10, 15, 10, 15));
+            topBar.setAlignment(Pos.CENTER_LEFT);
+            topBar.setStyle("-fx-background-color: #f0f2f5;"); // match planner bg
+
+            // Make planner fill the available height
+            VBox.setVgrow(plannerRoot, Priority.ALWAYS);
+
+            // Create a full page wrapper
+            VBox fullPage = new VBox(topBar, plannerRoot);
+            fullPage.setStyle("-fx-background-color: #f0f2f5;");
+
+            // Swap the scene root
+            scene.setRoot(fullPage);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Planner");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not load planner: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    private void restoreOriginalContent() {
+        if (originalRoot != null && centerContent != null && centerContent.getScene() != null) {
+            centerContent.getScene().setRoot(originalRoot);
+        }
+    }
+
+    // ----------------------------------------------------------------
+    // FRIENDS
+    // ----------------------------------------------------------------
     private void loadFriends() {
-        // Clear loading message
         friendsContainer.getChildren().clear();
 
-        // TODO: Load real friends from database
-        // For now, show sample data or empty state
+        addFriendCard("Alice Johnson", 12, 3450, true,  5,  true);
+        addFriendCard("Bob Smith",     8,  2100, false, 12, false);
+        addFriendCard("Charlie Brown", 15, 5200, true,  2,  false);
 
-        // Sample friend data (replace with database query)
-        addFriendCard("Alice Johnson", 12, 3450, true, 5, true);
-        addFriendCard("Bob Smith", 8, 2100, false, 12, false);
-        addFriendCard("Charlie Brown", 15, 5200, true, 2, false);
-
-        // If no friends, show empty state
         if (friendsContainer.getChildren().isEmpty()) {
-            Label emptyLabel = new Label("No friends yet. Add friends from your profile and come back here.");
+            Label emptyLabel = new Label("No friends yet. Add friends from your profile.");
             emptyLabel.setStyle("-fx-text-fill: #6d748a; -fx-font-size: 13px;");
             friendsContainer.getChildren().add(emptyLabel);
         }
     }
 
-    private void addFriendCard(String name, int level, int xp, boolean online, int leaderboardPos, boolean focusMode) {
+    private void addFriendCard(String name, int level, int xp,
+                               boolean online, int leaderboardPos, boolean focusMode) {
         VBox card = new VBox(8);
-        card.setStyle("-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12;");
+        card.setStyle("-fx-background-color: #fbfcff; -fx-border-color: #ebedf7;" +
+                "-fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12;");
         card.setMinWidth(400);
 
-        // Top row: Name/Level and Status
         HBox topRow = new HBox(10);
         topRow.setAlignment(Pos.CENTER_LEFT);
 
@@ -66,40 +124,44 @@ public class DashboardController {
         nameBox.getChildren().addAll(nameLabel, levelLabel);
 
         Region spacer = new Region();
-        spacer.setPrefWidth(Region.USE_COMPUTED_SIZE);
-        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        // Status badge
         Label statusLabel = new Label(online ? "Online" : "Offline");
-        statusLabel.setStyle("-fx-background-radius: 6; -fx-padding: 4 10; -fx-font-size: 11px; -fx-font-weight: 600; -fx-background-color: " +
-                (online ? "rgba(34,197,94,0.2)" : "rgba(148,163,184,0.2)") + "; -fx-text-fill: " +
-                (online ? "#166534" : "#475569") + ";");
+        statusLabel.setStyle(
+                "-fx-background-radius: 6; -fx-padding: 4 10; -fx-font-size: 11px; -fx-font-weight: 600;" +
+                        "-fx-background-color: " + (online ? "rgba(34,197,94,0.2)" : "rgba(148,163,184,0.2)") + ";" +
+                        "-fx-text-fill: " + (online ? "#166534" : "#475569") + ";"
+        );
 
         topRow.getChildren().addAll(nameBox, spacer, statusLabel);
 
-        // Info row
-        Label infoLabel = new Label("Leaderboard: #" + leaderboardPos + " · " + (focusMode ? "In focus mode" : "Available"));
+        Label infoLabel = new Label(
+                "Leaderboard: #" + leaderboardPos + " · " + (focusMode ? "In focus mode" : "Available")
+        );
         infoLabel.setStyle("-fx-text-fill: #6d748a; -fx-font-size: 12px;");
 
-        // Chat button
         Button chatBtn = new Button("Chat from workspace");
-        chatBtn.setStyle("-fx-background-color: #4e64f4; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;");
+        chatBtn.setStyle("-fx-background-color: #4e64f4; -fx-text-fill: white;" +
+                "-fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;");
         chatBtn.setOnAction(e -> openChat(name));
 
         card.getChildren().addAll(topRow, infoLabel, chatBtn);
         friendsContainer.getChildren().add(card);
     }
 
+    // ----------------------------------------------------------------
+    // OTHER ACTIONS
+    // ----------------------------------------------------------------
     @FXML
     private void goToWorkspace() {
-        // Navigate to workspace
         System.out.println("Going to workspace...");
     }
 
     @FXML
     private void openFocusTimer() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mindforge/fxml/focus_timer.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/focus_timer.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("Focus Timer");
@@ -113,7 +175,8 @@ public class DashboardController {
     @FXML
     private void openLeaderboard() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mindforge/fxml/leaderboard.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/leaderboard.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
             stage.setTitle("Leaderboard");
@@ -126,20 +189,19 @@ public class DashboardController {
 
     private void openChat(String friendName) {
         System.out.println("Opening chat with: " + friendName);
-        // TODO: Implement chat functionality
     }
+
     @FXML
     private void goToProfile() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mindforge/fxml/profile.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/profile.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) friendsContainer.getScene().getWindow();
+            Stage stage = (Stage) centerContent.getScene().getWindow();
             stage.setTitle("MindForge - Profile");
-            stage.setScene(new Scene(root, 1200, 800));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
-            System.out.println("Profile page not available yet");
-            // Show alert
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Profile");
             alert.setHeaderText(null);
@@ -152,11 +214,12 @@ public class DashboardController {
     private void logout() {
         UserSession.getInstance().logout();
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/mindforge/fxml/login.fxml"));
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/login.fxml"));
             Parent root = loader.load();
-            Stage stage = (Stage) friendsContainer.getScene().getWindow();
+            Stage stage = (Stage) centerContent.getScene().getWindow();
             stage.setTitle("MindForge - Login");
-            stage.setScene(new Scene(root, 500, 400));
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();

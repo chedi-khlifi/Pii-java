@@ -1,4 +1,4 @@
-package com.mindforge.controller;
+package com.mindforge.architect.controller;
 
 import com.mindforge.util.UserSession;
 import javafx.fxml.FXML;

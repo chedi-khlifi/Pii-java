@@ -4,10 +4,10 @@
 
 <ScrollPane fitToWidth="true"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.mindforge.controller.RoleRequestController"
-            style="-fx-background-color: #f5f5f5; -fx-border-color: transparent; -fx-background: #f5f5f5;">
+            fx:controller="com.mindforge.architect.controller.RoleRequestController"
+            style="-fx-background-color: #ececf2; -fx-border-color: transparent; -fx-background: #ececf2;">
 
-    <VBox spacing="14" style="-fx-padding: 24 28 32 28; -fx-max-width: 580;">
+    <VBox spacing="14" style="-fx-padding: 24 28 32 28;">
 
         <!-- ══ HEADER ═══════════════════════════════════════════════════ -->
         <HBox alignment="CENTER_LEFT" spacing="12" style="-fx-padding: 0 0 6 0;">

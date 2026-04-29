@@ -8,7 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.mindforge.controller.HomeController"
+            fx:controller="com.mindforge.architect.controller.HomeController"
             prefWidth="1280" prefHeight="800"
             styleClass="root-pane">
 

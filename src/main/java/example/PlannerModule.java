@@ -1,35 +1,34 @@
-package org.example;
+package example;
 
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.LinearGradient;
-import javafx.scene.paint.Stop;
-import javafx.scene.paint.CycleMethod;
-import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-import java.time.*;
+import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.URI;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class App extends Application {
+public class PlannerModule {
 
     private static final DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -60,7 +59,7 @@ public class App extends Application {
     private ComboBox<String> filterImportance = new ComboBox<>();
     private Label examMsg = new Label();
     // Exam advanced features
-    private javafx.scene.control.TextArea chatArea = new javafx.scene.control.TextArea();
+    private TextArea chatArea = new TextArea();
     private ComboBox<String> examSelector = new ComboBox<>();
     private TextField chatInput = new TextField();
     private Label lblSuccessRate = new Label("0%");
@@ -92,10 +91,7 @@ public class App extends Application {
     private GridPane calendarGrid = new GridPane();
     private Label calendarMonthLabel = new Label();
 
-    @Override
-    public void start(Stage stage) {
-        stage.setTitle("MindForge - Planner Hub");
-
+    public Parent getView() {
         // Build pages
         hubPage = buildHubPage();
         dashboardPage = buildDashboardPage();
@@ -112,13 +108,11 @@ public class App extends Application {
         root.setCenter(contentArea);
         root.setStyle("-fx-background-color: #f0f2f5;");
 
-        Scene scene = new Scene(root, 1100, 700);
-        stage.setScene(scene);
-        stage.show();
-
         loadTasks();
         loadExams();
         refreshDashboard();
+        
+        return root;
     }
 
     // ================================================================
@@ -317,13 +311,13 @@ public class App extends Application {
         notificationBox.setStyle("-fx-background-color: white;");
         notificationBox.setMaxHeight(110);
 
-        javafx.scene.control.ScrollPane notifScroll = new javafx.scene.control.ScrollPane(notificationBox);
+        ScrollPane notifScroll = new ScrollPane(notificationBox);
         notifScroll.setFitToWidth(true);
         notifScroll.setPrefHeight(115);
         notifScroll.setMaxHeight(115);
         notifScroll.setStyle("-fx-background: white; -fx-border-color: transparent;");
-        notifScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
-        notifScroll.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        notifScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        notifScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         VBox notifSection = new VBox(4, notifTitle, notifScroll);
         notifSection.setPadding(new Insets(8, 12, 8, 12));
@@ -337,14 +331,14 @@ public class App extends Application {
         innerPage.setPadding(new Insets(20));
         innerPage.setStyle("-fx-background-color: #f0f2f5;");
 
-        javafx.scene.control.ScrollPane pageScroll = new javafx.scene.control.ScrollPane(innerPage);
+        ScrollPane pageScroll = new ScrollPane(innerPage);
         pageScroll.setFitToWidth(true);
         pageScroll.setStyle("-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;");
-        pageScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        pageScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         VBox page = new VBox(pageScroll);
         page.setStyle("-fx-background-color: #f0f2f5;");
-        VBox.setVgrow(pageScroll, javafx.scene.layout.Priority.ALWAYS);
+        VBox.setVgrow(pageScroll, Priority.ALWAYS);
         return page;
     }
 
@@ -380,7 +374,7 @@ public class App extends Application {
 
         for (int i = 0; i < 7; i++) {
             // Fixed column width
-            javafx.scene.layout.ColumnConstraints cc = new javafx.scene.layout.ColumnConstraints();
+            ColumnConstraints cc = new ColumnConstraints();
             cc.setPrefWidth(90);
             cc.setMinWidth(90);
             cc.setMaxWidth(90);
@@ -433,7 +427,7 @@ public class App extends Application {
                 } catch (Exception e) {
                     return false;
                 }
-            }).collect(java.util.stream.Collectors.toList());
+            }).collect(Collectors.toList());
 
             // Collect exams on this date
             java.util.List<Exam> examsOnDay = allExams.stream().filter(ex -> {
@@ -444,7 +438,7 @@ public class App extends Application {
                 } catch (Exception e) {
                     return false;
                 }
-            }).collect(java.util.stream.Collectors.toList());
+            }).collect(Collectors.toList());
 
             VBox cell = new VBox(2);
             cell.setPrefSize(90, 60);
@@ -735,7 +729,7 @@ public class App extends Application {
                 String td = n.getDueDate();
                 if (td != null && !td.isEmpty()) {
                     try {
-                        java.time.LocalDateTime ldt = java.time.LocalDateTime.parse(td, DT_FORMAT);
+                        LocalDateTime ldt = LocalDateTime.parse(td, DT_FORMAT);
                         taskDueDatePicker.setValue(ldt.toLocalDate());
                         taskDueHour.setValue(String.format("%02d", ldt.getHour()));
                         taskDueMinute.setValue(String.format("%02d", (ldt.getMinute() / 15) * 15));
@@ -951,7 +945,7 @@ public class App extends Application {
                 String ed = n.getExamDate();
                 if (ed != null && !ed.isEmpty()) {
                     try {
-                        java.time.LocalDateTime ldt = java.time.LocalDateTime.parse(ed, DT_FORMAT);
+                        LocalDateTime ldt = LocalDateTime.parse(ed, DT_FORMAT);
                         examDatePicker.setValue(ldt.toLocalDate());
                         examHour.setValue(String.format("%02d", ldt.getHour()));
                         examMinute.setValue(String.format("%02d", (ldt.getMinute() / 15) * 15));
@@ -1056,13 +1050,13 @@ public class App extends Application {
         programBox.setStyle(
                 "-fx-background-color: #EFF6FF; -fx-border-color: #BFDBFE; -fx-border-radius: 6; -fx-background-radius: 6;");
 
-        javafx.scene.control.ScrollPane progScroll = new javafx.scene.control.ScrollPane(programBox);
+        ScrollPane progScroll = new ScrollPane(programBox);
         progScroll.setFitToWidth(true);
         progScroll.setPrefHeight(200);
         progScroll.setMinHeight(200);
         progScroll.setStyle("-fx-background: #EFF6FF; -fx-border-color: transparent;");
-        progScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
-        progScroll.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        progScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        progScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         VBox programSection = new VBox(8, progTitle, progScroll);
         programSection.setPadding(new Insets(12));
@@ -1128,7 +1122,7 @@ public class App extends Application {
         chatBox.setPrefWidth(460);
         chatBox.setStyle(
                 "-fx-background-color: white; -fx-border-color: #DDD6FE; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-width: 1.5;");
-        HBox.setHgrow(chatBox, javafx.scene.layout.Priority.ALWAYS);
+        HBox.setHgrow(chatBox, Priority.ALWAYS);
 
         HBox contentRow = new HBox(15, programSection, chatBox);
         contentRow.setAlignment(Pos.TOP_LEFT);
@@ -1142,14 +1136,14 @@ public class App extends Application {
         innerPage.setPadding(new Insets(20));
         innerPage.setStyle("-fx-background-color: #f0f2f5;");
 
-        javafx.scene.control.ScrollPane pageScroll = new javafx.scene.control.ScrollPane(innerPage);
+        ScrollPane pageScroll = new ScrollPane(innerPage);
         pageScroll.setFitToWidth(true);
         pageScroll.setStyle("-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;");
-        pageScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        pageScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
 
         VBox page = new VBox(pageScroll);
         page.setStyle("-fx-background-color: #f0f2f5;");
-        VBox.setVgrow(pageScroll, javafx.scene.layout.Priority.ALWAYS);
+        VBox.setVgrow(pageScroll, Priority.ALWAYS);
         return page;
     }
 
@@ -1174,7 +1168,7 @@ public class App extends Application {
 
     private void refreshExamStatsForExam(Exam exam) {
         // Always reload fresh from DB to get latest task titles
-        javafx.collections.ObservableList<Task> freshTasks = TaskController.getTasks();
+        ObservableList<Task> freshTasks = TaskController.getTasks();
         String examName = exam.getTitle().trim().toLowerCase();
 
         // STRICT: only tasks whose current title is EXACTLY the exam name
@@ -1281,7 +1275,7 @@ public class App extends Application {
         // ---- Max 3 tasks per day + max 180 min total per day (same subject/title
         // only) ----
         if (valid && taskDueDatePicker.getValue() != null) {
-            java.time.LocalDate selectedDay = taskDueDatePicker.getValue();
+            LocalDate selectedDay = taskDueDatePicker.getValue();
             String newTitle = taskTitle.getText().trim().toLowerCase();
             Task selTask = taskTable.getSelectionModel().getSelectedItem();
             int editingId2 = (selTask != null) ? selTask.getId() : -1;
@@ -1294,13 +1288,13 @@ public class App extends Application {
                         if (t.getDueDate() == null || t.getDueDate().isEmpty())
                             return false;
                         try {
-                            return java.time.LocalDateTime.parse(t.getDueDate(), DT_FORMAT)
+                            return LocalDateTime.parse(t.getDueDate(), DT_FORMAT)
                                     .toLocalDate().equals(selectedDay);
                         } catch (Exception e) {
                             return false;
                         }
                     })
-                    .collect(java.util.stream.Collectors.toList());
+                    .collect(Collectors.toList());
 
             // Check: max 3 tasks per day for the same subject
             if (sameDaySameSubject.size() >= 3) {
@@ -1394,12 +1388,12 @@ public class App extends Application {
             // Same hour on same day
             if (valid) {
                 try {
-                    java.time.LocalDateTime newDT = java.time.LocalDateTime.parse(newDateTime, DT_FORMAT);
+                    LocalDateTime newDT = LocalDateTime.parse(newDateTime, DT_FORMAT);
                     boolean sameHour = allExams.stream()
                             .filter(ex -> ex.getId() != editingId)
                             .anyMatch(ex -> {
                                 try {
-                                    java.time.LocalDateTime exDT = java.time.LocalDateTime.parse(ex.getExamDate(),
+                                    LocalDateTime exDT = LocalDateTime.parse(ex.getExamDate(),
                                             DT_FORMAT);
                                     return exDT.toLocalDate().equals(newDT.toLocalDate())
                                             && exDT.getHour() == newDT.getHour();
@@ -1575,7 +1569,7 @@ public class App extends Application {
         VBox root = new VBox(0, details, btnRow);
         root.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
 
-        popup.setScene(new javafx.scene.Scene(root));
+        popup.setScene(new Scene(root));
         popup.setResizable(false);
         popup.show();
     }
@@ -1632,7 +1626,7 @@ public class App extends Application {
         VBox root = new VBox(0, details, btnRow);
         root.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
 
-        popup.setScene(new javafx.scene.Scene(root));
+        popup.setScene(new Scene(root));
         popup.setResizable(false);
         popup.show();
     }
@@ -1780,7 +1774,7 @@ public class App extends Application {
         String subjectLower = subject.toLowerCase();
 
         // Compute stats fresh
-        javafx.collections.ObservableList<Task> freshTasks = TaskController.getTasks();
+        ObservableList<Task> freshTasks = TaskController.getTasks();
         long relatedTotal = freshTasks.stream()
                 .filter(t -> t.getTitle().trim().equalsIgnoreCase(subject))
                 .count();
@@ -1790,8 +1784,8 @@ public class App extends Application {
                 .count();
         long daysLeft = -1;
         try {
-            java.time.LocalDate examDay = java.time.LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
-            daysLeft = java.time.LocalDate.now().until(examDay, java.time.temporal.ChronoUnit.DAYS);
+            LocalDate examDay = LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
+            daysLeft = LocalDate.now().until(examDay, java.time.temporal.ChronoUnit.DAYS);
         } catch (Exception e) {
             /* skip */ }
 
@@ -1899,8 +1893,8 @@ public class App extends Application {
             return;
 
         try {
-            java.time.LocalDate examDay = java.time.LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
-            java.time.LocalDate today = java.time.LocalDate.now();
+            LocalDate examDay = LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
+            LocalDate today = LocalDate.now();
             long daysLeft = today.until(examDay, java.time.temporal.ChronoUnit.DAYS);
             long totalDays = 14; // default preparation period
 
@@ -1951,7 +1945,7 @@ public class App extends Application {
 
             long planDays = Math.min(daysLeft, activities.length);
             for (long i = 0; i < planDays; i++) {
-                java.time.LocalDate planDay = today.plusDays(i);
+                LocalDate planDay = today.plusDays(i);
                 String activityLabel = i < activities.length ? activities[(int) i] : "Study and review";
                 String dayLabel;
                 String color;
@@ -2375,7 +2369,5 @@ public class App extends Application {
                 err ? "-fx-text-fill:#E24B4A;-fx-font-size:12px;" : "-fx-text-fill:#1D9E75;-fx-font-size:12px;");
     }
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+
 }

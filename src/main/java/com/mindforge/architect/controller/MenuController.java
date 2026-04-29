@@ -1,4 +1,4 @@
-package com.mindforge.controller;
+package com.mindforge.architect.controller;
 
 import com.mindforge.model.UserModel;
 import javafx.collections.FXCollections;

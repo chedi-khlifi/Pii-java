@@ -1,4 +1,4 @@
-package org.example;
+package example;
 
 public class Exam {
     private int id;

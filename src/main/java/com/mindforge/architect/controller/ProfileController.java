@@ -1,81 +1,116 @@
-package com.mindforge.controller;
+package com.mindforge.architect.controller;
 
 import com.mindforge.util.UserSession;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.*;
+import javafx.scene.layout.FlowPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
-import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+import java.io.File;
 import java.net.URL;
 import java.sql.*;
-import java.util.HashSet;
+import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 public class ProfileController implements Initializable {
 
-    /* ── Header ─────────────────────────────────────────────────────── */
-    @FXML private Label     avatarInitials;
+    // ── Header ────────────────────────────────────────────────────────────────
     @FXML private ImageView avatarImage;
+    @FXML private Label     avatarInitials;
     @FXML private Label     labelFullName;
     @FXML private Label     labelEmail;
     @FXML private Label     labelRole;
+    @FXML private Button    btnSocialHub;
+    @FXML private Button    btnMentalHealth;   // ← NEW
 
-    /* ── Stats ──────────────────────────────────────────────────────── */
-    @FXML private Label labelXP;
-    @FXML private Label labelLevel;
-    @FXML private Label labelTasks;
-    @FXML private Label labelFocus;
-
-    /* ── XP bar ─────────────────────────────────────────────────────── */
+    // ── Stats ─────────────────────────────────────────────────────────────────
+    @FXML private Label       labelXP;
+    @FXML private Label       labelLevel;
+    @FXML private Label       labelTasks;
+    @FXML private Label       labelFocus;
     @FXML private ProgressBar xpBar;
     @FXML private Label       xpBarLabel;
 
-    /* ── Badges ─────────────────────────────────────────────────────── */
+    // ── Other sections ────────────────────────────────────────────────────────
     @FXML private FlowPane badgesPane;
+    @FXML private Label    labelTimezone;
+    @FXML private Label    labelLocale;
+    @FXML private Label    labelSince;
+    @FXML private Label    labelStreak;
+    @FXML private Label    labelBio;
+    @FXML private VBox     roleRequestSection;
+    @FXML private Label    labelRoleRequestStatus;
 
-    /* ── Account info ───────────────────────────────────────────────── */
-    @FXML private Label labelTimezone;
-    @FXML private Label labelLocale;
-    @FXML private Label labelSince;
-    @FXML private Label labelStreak;
-    @FXML private Label labelBio;
+    /**
+     * Same upload directory used by EditProfileController.
+     * Adjust if your project uses a different path.
+     */
+    private static final String UPLOAD_DIR =
+            System.getProperty("user.dir") + "/uploads/avatars/";
 
-    /* ── Role request section ────────────────────────────────────────── */
-    @FXML private VBox  roleRequestSection;
-    @FXML private Label labelRoleRequestStatus;
-
-    /* ════════════════════════════════════════════════════════════════ */
-
+    // ── Lifecycle ─────────────────────────────────────────────────────────────
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        int userId = UserSession.getInstance().getUserId();
-        loadProfile(userId);
-        loadGamification(userId);
-        loadBadges(userId);
-        loadRoleRequestStatus(userId);
+        // Apply circular clip to the ImageView so photos are round
+        Circle clip = new Circle(38, 38, 38);
+        avatarImage.setClip(clip);
+
+        loadProfile();
     }
 
-    /* ── Profile & account info ──────────────────────────────────────── */
-    private void loadProfile(int userId) {
-        String sql =
-                "SELECT u.email, u.roles, u.created_at," +
-                        " p.first_name, p.last_name, p.bio, p.timezone, p.locale, p.avatar" +
-                        " FROM user u" +
-                        " LEFT JOIN profile p ON p.user_id = u.id" +
-                        " WHERE u.id = ?";
+    // ── Navigation handlers ───────────────────────────────────────────────────
+    @FXML
+    private void goToSocialHub() {
+        navigateTo("/com/mindforge/fxml/social_hub.fxml", "MindForge - Social Hub");
+    }
+
+
+
+    @FXML
+    private void goToEmotions() {
+        navigateTo("/com/mindforge/fxml/emotions.fxml", "MindForge - Emotions");
+    }
+
+    // ── Data loading ──────────────────────────────────────────────────────────
+    private void loadProfile() {
+        int    userId = UserSession.getInstance().getUserId();
+        String email  = UserSession.getInstance().getEmail();
+        String roles  = UserSession.getInstance().getRoles();
+
+        labelEmail.setText(email != null ? email : "");
+
+        // Role badge text
+        if (roles != null && roles.contains("ROLE_ADMIN")) {
+            labelRole.setText("Admin");
+            labelRole.setStyle(labelRole.getStyle() +
+                    "-fx-background-color: #FDE8E8; -fx-text-fill: #8B0000;");
+        } else {
+            labelRole.setText("Student");
+        }
+
+        String sql = """
+            SELECT
+                p.first_name, p.last_name, p.bio, p.timezone, p.locale, p.avatar,
+                u.created_at,
+                COALESCE(g.total_xp, 0)        AS total_xp,
+                COALESCE(g.current_level, 1)   AS current_level,
+                COALESCE(g.streak_days, 0)     AS streak_days,
+                COALESCE(g.total_focus_time, 0) AS total_focus_time,
+                COALESCE(g.tasks_completed, 0) AS tasks_completed
+            FROM user u
+            LEFT JOIN profile p          ON p.user_id = u.id
+            LEFT JOIN gamification_stats g ON g.user_id = u.id
+            WHERE u.id = ?
+            """;
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -86,170 +121,125 @@ public class ProfileController implements Initializable {
             if (rs.next()) {
                 String firstName = rs.getString("first_name");
                 String lastName  = rs.getString("last_name");
-                String email     = rs.getString("email");
-                String roles     = rs.getString("roles");
                 String bio       = rs.getString("bio");
                 String timezone  = rs.getString("timezone");
                 String locale    = rs.getString("locale");
                 String avatar    = rs.getString("avatar");
                 Timestamp since  = rs.getTimestamp("created_at");
 
-                labelFullName.setText(buildName(firstName, lastName, email));
-                labelEmail.setText(email);
-                labelRole.setText(formatRole(roles));
-                avatarInitials.setText(initials(firstName, lastName, email));
+                int totalXp       = rs.getInt("total_xp");
+                int level         = rs.getInt("current_level");
+                int streak        = rs.getInt("streak_days");
+                int focusMinutes  = rs.getInt("total_focus_time");
+                int tasksDone     = rs.getInt("tasks_completed");
 
-                // Load avatar from DiceBear if it's an SVG filename
-                loadAvatar(avatar);
+                // Full name / initials
+                String fullName = buildFullName(firstName, lastName, email);
+                labelFullName.setText(fullName);
+                setAvatarDisplay(avatar, firstName, lastName, email);
 
+                // Bio
+                labelBio.setText(bio != null && !bio.isBlank() ? bio : "No bio yet.");
+
+                // Account info
                 labelTimezone.setText(timezone != null ? timezone : "UTC");
-                labelLocale.setText(locale     != null ? locale   : "en");
-                labelSince.setText(since       != null
-                        ? since.toLocalDateTime().toLocalDate().toString() : "-");
-                labelBio.setText(bio != null && !bio.isEmpty() ? bio : "No bio yet.");
+                labelLocale.setText(locale != null ? locale : "en");
+                if (since != null) {
+                    labelSince.setText(since.toLocalDateTime()
+                            .format(DateTimeFormatter.ofPattern("MMM yyyy")));
+                }
+                labelStreak.setText(streak + " day" + (streak == 1 ? "" : "s"));
+
+                // Stats
+                labelXP.setText(String.valueOf(totalXp));
+                labelLevel.setText(String.valueOf(level));
+                labelTasks.setText(String.valueOf(tasksDone));
+                labelFocus.setText(focusMinutes >= 60
+                        ? (focusMinutes / 60) + "h " + (focusMinutes % 60) + "m"
+                        : focusMinutes + " min");
+
+                // XP progress bar (500 XP per level)
+                int xpIntoLevel  = totalXp % 500;
+                int xpNeeded     = 500;
+                xpBar.setProgress((double) xpIntoLevel / xpNeeded);
+                xpBarLabel.setText(xpIntoLevel + " / " + xpNeeded + " XP to next level");
             }
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        loadBadges(userId);
     }
 
-    /* ── Load avatar image ───────────────────────────────────────────── */
-    private void loadAvatar(String avatarFilename) {
-        if (avatarFilename == null || avatarFilename.isEmpty()) {
-            // No avatar — show initials circle
-            avatarImage.setVisible(false);
-            avatarInitials.setVisible(true);
-            return;
+    /**
+     * Decides whether to show the uploaded photo or the initials fallback.
+     */
+    private void setAvatarDisplay(String avatarFilename,
+                                  String firstName, String lastName, String email) {
+        if (avatarFilename != null && !avatarFilename.isBlank()) {
+            // 1 — try the uploads/avatars/ directory (photos uploaded via EditProfile)
+            File uploadedFile = new File(UPLOAD_DIR + avatarFilename);
+            if (uploadedFile.exists()) {
+                loadAvatarFromUrl(uploadedFile.toURI().toString());
+                return;
+            }
+
+            // 2 — try classpath resources (SVG avatars from avatar builder)
+            URL resource = getClass().getResource("/com/mindforge/avatars/" + avatarFilename);
+            if (resource != null) {
+                loadAvatarFromUrl(resource.toExternalForm());
+                return;
+            }
         }
 
+        // 3 — fall back to initials
+        showInitials(firstName, lastName, email);
+    }
+
+    private void loadAvatarFromUrl(String imageUrl) {
         try {
-            // Avatar is stored as a filename like "avatar_xyz.svg"
-            // We reconstruct the DiceBear URL from the seed embedded in the filename
-            // OR load from local uploads directory if it exists
-            String localPath = System.getProperty("user.dir") +
-                    "/public/uploads/avatars/" + avatarFilename;
-            java.io.File localFile = new java.io.File(localPath);
-
-            Image img = null;
-            if (localFile.exists()) {
-                img = new Image(localFile.toURI().toString(), 76, 76, true, true);
-            } else {
-                // Fallback: generate from DiceBear using filename as seed
-                String seed = avatarFilename.replace("avatar_", "").replace(".svg", "");
-                String url  = "https://api.dicebear.com/7.x/avataaars/svg?seed=" + seed
-                        + "&backgroundColor=b6e3f4&radius=50";
-                img = new Image(url, 76, 76, true, true);
-            }
-
-            if (!img.isError()) {
-                avatarImage.setImage(img);
-                // Clip image to circle
-                Circle clip = new Circle(38, 38, 38);
-                avatarImage.setClip(clip);
-                avatarImage.setVisible(true);
-                avatarInitials.setVisible(false);
-            } else {
-                avatarImage.setVisible(false);
-                avatarInitials.setVisible(true);
-            }
-
-        } catch (Exception e) {
-            avatarImage.setVisible(false);
-            avatarInitials.setVisible(true);
-        }
-    }
-
-    /* ── Gamification stats ──────────────────────────────────────────── */
-    private void loadGamification(int userId) {
-        String sql =
-                "SELECT total_xp, current_level, streak_days," +
-                        " total_focus_time, tasks_completed" +
-                        " FROM gamification_stats" +
-                        " WHERE user_id = ?";
-
-        try (Connection conn = getConnection();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
-
-            ps.setInt(1, userId);
-            ResultSet rs = ps.executeQuery();
-
-            if (rs.next()) {
-                int xp     = rs.getInt("total_xp");
-                int level  = rs.getInt("current_level");
-                int streak = rs.getInt("streak_days");
-                int focus  = rs.getInt("total_focus_time");
-                int tasks  = rs.getInt("tasks_completed");
-
-                labelXP.setText(xp + " XP");
-                labelLevel.setText("Level " + level);
-                labelTasks.setText(tasks + " tasks");
-                labelFocus.setText(focus + " min");
-                labelStreak.setText(streak + " days");
-
-                double needed   = level * 500.0;
-                double progress = Math.min(xp / needed, 1.0);
-                xpBar.setProgress(progress);
-                xpBarLabel.setText(xp + " / " + (int) needed + " XP  —  to next level");
-
-            } else {
-                labelXP.setText("0 XP");
-                labelLevel.setText("Level 1");
-                labelTasks.setText("0 tasks");
-                labelFocus.setText("0 min");
-                labelStreak.setText("0 days");
-                xpBar.setProgress(0);
-                xpBarLabel.setText("0 / 500 XP");
-            }
-
+            Image img = new Image(imageUrl, 76, 76, false, true);
+            avatarImage.setImage(img);
+            avatarImage.setVisible(true);
+            avatarInitials.setVisible(false);
         } catch (Exception e) {
             e.printStackTrace();
+            showInitials(null, null, null);
         }
     }
 
-    /* ── Badges ──────────────────────────────────────────────────────── */
+    private void showInitials(String firstName, String lastName, String email) {
+        avatarImage.setVisible(false);
+        avatarInitials.setVisible(true);
+
+        String initials = "?";
+        if (firstName != null && !firstName.isBlank()) {
+            initials = String.valueOf(firstName.charAt(0)).toUpperCase();
+            if (lastName != null && !lastName.isBlank())
+                initials += String.valueOf(lastName.charAt(0)).toUpperCase();
+        } else if (email != null && !email.isBlank()) {
+            initials = String.valueOf(email.charAt(0)).toUpperCase();
+        }
+        avatarInitials.setText(initials);
+    }
+
+    private String buildFullName(String first, String last, String email) {
+        if (first != null && last != null && !first.isBlank() && !last.isBlank())
+            return first + " " + last;
+        if (first != null && !first.isBlank()) return first;
+        if (last  != null && !last.isBlank())  return last;
+        return email != null ? email.split("@")[0] : "User";
+    }
+
     private void loadBadges(int userId) {
-        String earnedSql =
-                "SELECT b.name FROM user_badge ub" +
-                        " JOIN badge b ON b.id = ub.badge_id" +
-                        " WHERE ub.user_id = ?";
-        String allSql =
-                "SELECT name, description, icon, rarity FROM badge ORDER BY id";
-
-        try (Connection conn = getConnection()) {
-
-            Set<String> earned = new HashSet<String>();
-            try (PreparedStatement ps = conn.prepareStatement(earnedSql)) {
-                ps.setInt(1, userId);
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) earned.add(rs.getString("name"));
-            }
-
-            try (PreparedStatement ps = conn.prepareStatement(allSql)) {
-                ResultSet rs = ps.executeQuery();
-                while (rs.next()) {
-                    badgesPane.getChildren().add(buildBadgeCard(
-                            rs.getString("name"),
-                            rs.getString("description"),
-                            rs.getString("icon"),
-                            rs.getString("rarity"),
-                            earned.contains(rs.getString("name"))
-                    ));
-                }
-            }
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    /* ── Role request status ─────────────────────────────────────────── */
-    private void loadRoleRequestStatus(int userId) {
-        String sql =
-                "SELECT status, admin_notes, requested_at" +
-                        " FROM role_request" +
-                        " WHERE user_id = ?" +
-                        " ORDER BY requested_at DESC LIMIT 1";
+        String sql = """
+            SELECT b.name, b.icon, b.rarity
+            FROM user_badge ub
+            JOIN badge b ON b.id = ub.badge_id
+            WHERE ub.user_id = ?
+            ORDER BY ub.earned_at DESC
+            """;
 
         try (Connection conn = getConnection();
              PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -257,39 +247,39 @@ public class ProfileController implements Initializable {
             ps.setInt(1, userId);
             ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                String status     = rs.getString("status");
-                String adminNotes = rs.getString("admin_notes");
+            boolean hasBadge = false;
+            while (rs.next()) {
+                hasBadge = true;
+                String name   = rs.getString("name");
+                String rarity = rs.getString("rarity");
 
-                String displayText;
-                String color;
-
-                if ("approved".equals(status)) {
-                    displayText = "Role request: Approved";
-                    color = "#3B6D11";
-                } else if ("rejected".equals(status)) {
-                    displayText = "Role request: Rejected"
-                            + (adminNotes != null ? " — " + adminNotes : "");
-                    color = "#A32D2D";
-                } else {
-                    displayText = "Role request: Pending review";
-                    color = "#854F0B";
-                }
-
-                labelRoleRequestStatus.setText(displayText);
-                labelRoleRequestStatus.setStyle(
-                        "-fx-text-fill: " + color + "; -fx-font-size: 12px;"
+                Label badge = new Label(name);
+                String bg = switch (rarity != null ? rarity : "common") {
+                    case "epic"      -> "#F3E8FF";
+                    case "legendary" -> "#FFF3CD";
+                    case "rare"      -> "#E8F4FD";
+                    default          -> "#F0F0F0";
+                };
+                String fg = switch (rarity != null ? rarity : "common") {
+                    case "epic"      -> "#6B21A8";
+                    case "legendary" -> "#92400E";
+                    case "rare"      -> "#1D4ED8";
+                    default          -> "#555555";
+                };
+                badge.setStyle(
+                        "-fx-background-color: " + bg + ";" +
+                                "-fx-text-fill: " + fg + ";" +
+                                "-fx-background-radius: 20;" +
+                                "-fx-padding: 4 12;" +
+                                "-fx-font-size: 12px;"
                 );
-                roleRequestSection.setVisible(true);
-                roleRequestSection.setManaged(true);
-            } else {
-                // No request yet — show "Request role upgrade" button
-                roleRequestSection.setVisible(true);
-                roleRequestSection.setManaged(true);
-                labelRoleRequestStatus.setText("No role request submitted yet.");
-                labelRoleRequestStatus.setStyle(
-                        "-fx-text-fill: #888888; -fx-font-size: 12px;"
-                );
+                badgesPane.getChildren().add(badge);
+            }
+
+            if (!hasBadge) {
+                Label none = new Label("No badges earned yet.");
+                none.setStyle("-fx-font-size: 12px; -fx-text-fill: #aaaaaa;");
+                badgesPane.getChildren().add(none);
             }
 
         } catch (Exception e) {
@@ -297,204 +287,47 @@ public class ProfileController implements Initializable {
         }
     }
 
-    /* ── Navigate to Edit Profile ────────────────────────────────────── */
+    // ── Navigation ────────────────────────────────────────────────────────────
     @FXML
     private void goToEditProfile() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/mindforge/fxml/edit_profile.fxml")
-            );
-            Parent root  = loader.load();
-            Scene  scene = new Scene(root, 800, 640);
-            scene.getStylesheets().add(
-                    Objects.requireNonNull(
-                            getClass().getResource("/com/mindforge/css/style.css")
-                    ).toExternalForm()
-            );
-            Stage stage = (Stage) labelEmail.getScene().getWindow();
-            stage.setTitle("MindForge - Edit Profile");
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        navigateTo("/com/mindforge/fxml/edit_profile.fxml", "MindForge - Edit Profile");
     }
 
-    /* ── Navigate to Avatar Builder ──────────────────────────────────── */
     @FXML
     private void goToAvatarBuilder() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/mindforge/fxml/avatar_builder.fxml")
-            );
-            Parent root  = loader.load();
-            Scene  scene = new Scene(root, 800, 640);
-            scene.getStylesheets().add(
-                    Objects.requireNonNull(
-                            getClass().getResource("/com/mindforge/css/style.css")
-                    ).toExternalForm()
-            );
-            Stage stage = (Stage) labelEmail.getScene().getWindow();
-            stage.setTitle("MindForge - Avatar Builder");
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        navigateTo("/com/mindforge/fxml/avatar_builder.fxml", "MindForge - Avatar Builder");
     }
 
-    /* ── Navigate to Role Request ────────────────────────────────────── */
     @FXML
     private void goToRoleRequest() {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/mindforge/fxml/role_request.fxml")
-            );
-            Parent root  = loader.load();
-            Scene  scene = new Scene(root, 600, 480);
-            scene.getStylesheets().add(
-                    Objects.requireNonNull(
-                            getClass().getResource("/com/mindforge/css/style.css")
-                    ).toExternalForm()
-            );
-            Stage stage = (Stage) labelEmail.getScene().getWindow();
-            stage.setTitle("MindForge - Role Request");
-            stage.setScene(scene);
-            stage.show();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        navigateTo("/com/mindforge/fxml/role_request.fxml", "MindForge - Role Request");
     }
 
-    /* ── Logout ──────────────────────────────────────────────────────── */
     @FXML
     private void handleLogout() {
         UserSession.getInstance().logout();
+        navigateTo("/com/mindforge/fxml/login.fxml", "MindForge - Login");
+    }
+
+    private void navigateTo(String fxmlPath, String title) {
         try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/com/mindforge/fxml/login.fxml")
-            );
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
             Parent root  = loader.load();
-            Scene  scene = new Scene(root, 500, 400);
-            scene.getStylesheets().add(
-                    Objects.requireNonNull(
-                            getClass().getResource("/com/mindforge/css/style.css")
-                    ).toExternalForm()
-            );
-            Stage stage = (Stage) labelEmail.getScene().getWindow();
-            stage.setTitle("MindForge - Login");
-            stage.setScene(scene);
+            URL css = getClass().getResource("/com/mindforge/css/style.css");
+            Stage stage = (Stage) labelFullName.getScene().getWindow();
+            stage.setTitle(title);
+            if (css != null && stage.getScene() != null) stage.getScene().getStylesheets().add(css.toExternalForm());
+            stage.setTitle(title);
+            stage.getScene().setRoot(root);
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    /* ── Badge card builder ──────────────────────────────────────────── */
-    private VBox buildBadgeCard(String name, String desc,
-                                String icon, String rarity, boolean earned) {
-        VBox card = new VBox(6);
-        card.setPadding(new Insets(12));
-        card.setPrefWidth(158);
-        card.setAlignment(Pos.TOP_LEFT);
-        card.setStyle(
-                "-fx-background-color: white;" +
-                        "-fx-border-color: #e0e0e0;" +
-                        "-fx-border-width: 0.5;" +
-                        "-fx-border-radius: 10;" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-opacity: " + (earned ? "1.0" : "0.38") + ";"
-        );
-
-        Label iconLbl = new Label(iconChar(icon));
-        iconLbl.setStyle(
-                "-fx-font-size: 18px;" +
-                        "-fx-background-color: " + rarityBg(rarity) + ";" +
-                        "-fx-background-radius: 50;" +
-                        "-fx-padding: 7 9 7 9;"
-        );
-
-        Label nameLbl = new Label(name);
-        nameLbl.setFont(Font.font(null, FontWeight.BOLD, 12));
-        nameLbl.setWrapText(true);
-        nameLbl.setStyle("-fx-text-fill: #222222;");
-
-        Label descLbl = new Label(desc != null ? desc : "");
-        descLbl.setWrapText(true);
-        descLbl.setStyle("-fx-font-size: 11px; -fx-text-fill: #888888;");
-
-        Label rarityLbl = new Label(rarity);
-        rarityLbl.setStyle(
-                "-fx-font-size: 10px;" +
-                        "-fx-background-color: " + rarityBg(rarity) + ";" +
-                        "-fx-text-fill: " + rarityFg(rarity) + ";" +
-                        "-fx-background-radius: 10;" +
-                        "-fx-padding: 2 8 2 8;"
-        );
-
-        card.getChildren().addAll(iconLbl, nameLbl, descLbl, rarityLbl);
-
-        if (!earned) {
-            Label lockedLbl = new Label("Locked");
-            lockedLbl.setStyle("-fx-font-size: 10px; -fx-text-fill: #bbbbbb;");
-            card.getChildren().add(lockedLbl);
-        }
-
-        return card;
-    }
-
-    /* ── Small helpers ───────────────────────────────────────────────── */
-    private String buildName(String fn, String ln, String email) {
-        if (fn != null && ln != null) return fn + " " + ln;
-        if (fn != null)               return fn;
-        return email.split("@")[0];
-    }
-
-    private String initials(String fn, String ln, String email) {
-        if (fn != null && ln != null)
-            return ("" + fn.charAt(0) + ln.charAt(0)).toUpperCase();
-        if (fn != null)
-            return String.valueOf(fn.charAt(0)).toUpperCase();
-        return String.valueOf(email.charAt(0)).toUpperCase();
-    }
-
-    private String formatRole(String roles) {
-        if (roles == null)                  return "User";
-        if (roles.contains("ROLE_ADMIN"))   return "Admin";
-        if (roles.contains("ROLE_COMPANY")) return "Company";
-        return "Student";
-    }
-
-    private String iconChar(String fa) {
-        if (fa == null)               return "\u2605";
-        if (fa.contains("shoe"))      return "\uD83D\uDC5F";
-        if (fa.contains("check"))     return "\u2714";
-        if (fa.contains("star"))      return "\u2605";
-        if (fa.contains("trophy"))    return "\uD83C\uDFC6";
-        if (fa.contains("hourglass")) return "\u23F3";
-        if (fa.contains("fire"))      return "\uD83D\uDD25";
-        return "\u2605";
-    }
-
-    private String rarityBg(String r) {
-        if (r == null) return "#EAF3DE";
-        if (r.equals("legendary")) return "#FAEEDA";
-        if (r.equals("epic"))      return "#EEEDFE";
-        if (r.equals("rare"))      return "#E6F1FB";
-        return "#EAF3DE";
-    }
-
-    private String rarityFg(String r) {
-        if (r == null) return "#3B6D11";
-        if (r.equals("legendary")) return "#633806";
-        if (r.equals("epic"))      return "#3C3489";
-        if (r.equals("rare"))      return "#0C447C";
-        return "#3B6D11";
-    }
-
+    // ── DB ─────────────────────────────────────────────────────────────────────
     private Connection getConnection() throws SQLException {
         return DriverManager.getConnection(
-                "jdbc:mysql://localhost:3306/mindforge_db", "root", ""
-        );
+                "jdbc:mysql://localhost:3306/mindforge_db", "root", "");
     }
 }

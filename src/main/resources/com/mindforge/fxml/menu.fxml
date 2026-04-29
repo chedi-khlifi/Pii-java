@@ -2,40 +2,65 @@
 
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.geometry.*?>
 
-<VBox xmlns="http://javafx.com/javafx"
-      xmlns:fx="http://javafx.com/fxml"
-      fx:controller="com.mindforge.controller.MenuController"
-      spacing="15"
-      style="-fx-background-color: #1e1e2e; -fx-padding: 30;">
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mindforge.architect.controller.MenuController"
+            style="-fx-background-color: #ececf2;">
 
-    <Label text="👥 All Users"
-           style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+    <!-- ══ TOP HEADER ══════════════════════════════════════════════ -->
+    <top>
+        <HBox style="-fx-background-color: #1e1e2e; -fx-border-color: transparent transparent #333 transparent; -fx-border-width: 0 0 1 0;"
+              alignment="CENTER_LEFT" spacing="10">
+            <padding>
+                <Insets top="12" right="20" bottom="12" left="20"/>
+            </padding>
+            <Label text="🔥 MindForge" style="-fx-font-size: 20px; -fx-font-weight: 700; -fx-text-fill: white;"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Logout" onAction="#handleLogout"
+                    style="-fx-background-color: #dc2626; -fx-text-fill: white;
+                           -fx-background-radius: 8; -fx-padding: 8 18;
+                           -fx-cursor: hand; -fx-font-weight: 600;"/>
+        </HBox>
+    </top>
 
-    <TableView fx:id="usersTable"
-               VBox.vgrow="ALWAYS"
-               style="-fx-background-color: #2e2e3e;">
-        <columns>
-            <TableColumn fx:id="idColumn"
-                         text="ID"
-                         prefWidth="60"/>
-            <TableColumn fx:id="emailColumn"
-                         text="Email"
-                         prefWidth="300"/>
-            <TableColumn fx:id="verifiedColumn"
-                         text="Verified"
-                         prefWidth="100"/>
-            <TableColumn fx:id="createdColumn"
-                         text="Created At"
-                         prefWidth="200"/>
-        </columns>
-    </TableView>
+    <!-- ══ CENTER CONTENT ══════════════════════════════════════════ -->
+    <center>
+        <VBox spacing="16" style="-fx-padding: 24 28 28 28;">
 
-    <Button text="🚪 Logout"
-            onAction="#handleLogout"
-            style="-fx-background-color: #e53e3e; -fx-text-fill: white;
-                   -fx-font-size: 14px; -fx-font-weight: bold;
-                   -fx-background-radius: 8; -fx-padding: 8 30 8 30;
-                   -fx-cursor: hand;"/>
+            <!-- Header card -->
+            <VBox style="-fx-background-color: linear-gradient(to right, #4f46e5, #7c3aed);
+                         -fx-background-radius: 12; -fx-padding: 16 20;"
+                  spacing="4">
+                <Label text="👥 All Users"
+                       style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label text="View and manage all registered users."
+                       style="-fx-text-fill: white; -fx-opacity: 0.88; -fx-font-size: 13px;"/>
+            </VBox>
 
-</VBox>
+            <!-- Table card -->
+            <VBox VBox.vgrow="ALWAYS"
+                  style="-fx-background-color: white; -fx-background-radius: 14;
+                         -fx-border-color: rgba(15,23,42,0.08); -fx-border-radius: 14; -fx-border-width: 1;
+                         -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 30, 0, 0, 10);">
+                <TableView fx:id="usersTable"
+                           VBox.vgrow="ALWAYS"
+                           style="-fx-background-color: transparent; -fx-background-radius: 14;">
+                    <columns>
+                        <TableColumn fx:id="idColumn"      text="ID"         prefWidth="70"  style="-fx-alignment: CENTER;"/>
+                        <TableColumn fx:id="emailColumn"   text="Email"      prefWidth="320"/>
+                        <TableColumn fx:id="verifiedColumn" text="Verified"  prefWidth="110" style="-fx-alignment: CENTER;"/>
+                        <TableColumn fx:id="createdColumn" text="Created At" prefWidth="200"/>
+                    </columns>
+                    <placeholder>
+                        <Label text="No users found"
+                               style="-fx-text-fill: #94a3b8; -fx-padding: 40;"/>
+                    </placeholder>
+                </TableView>
+            </VBox>
+
+        </VBox>
+    </center>
+
+</BorderPane>
