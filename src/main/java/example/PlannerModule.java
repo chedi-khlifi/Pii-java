@@ -2058,7 +2058,7 @@ public class PlannerModule {
     // ================================================================
     // GROQ AI CHATBOT
     // ================================================================
-    private static final String GROQ_API_KEY = "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";
+    private static final String GROQ_API_KEY = System.getenv("GROQ_API_KEY");
     private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
     private static final String GROQ_MODEL = "llama-3.1-8b-instant";
 
