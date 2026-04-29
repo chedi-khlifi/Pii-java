@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.mindforge.controller.LoginController"
+           style="-fx-background-color: linear-gradient(to right, #1e1e2e, #2b2b45);">
+
+    <HBox alignment="CENTER" spacing="0">
+
+        <!-- LEFT SIDE -->
+        <VBox alignment="CENTER"
+              spacing="15"
+              HBox.hgrow="ALWAYS"
+              style="-fx-padding: 60;">
+
+            <Label text="MindForge"
+                   style="-fx-text-fill: white; -fx-font-size: 42px; -fx-font-weight: bold;"/>
+
+            <Label text="Build. Secure. Dominate."
+                   style="-fx-text-fill: #aaaaaa; -fx-font-size: 16px;"/>
+
+        </VBox>
+
+        <!-- RIGHT SIDE -->
+        <StackPane HBox.hgrow="ALWAYS" alignment="CENTER">
+
+            <VBox spacing="18"
+                  alignment="CENTER"
+                  maxWidth="360"
+                  style="-fx-background-color: rgba(46,46,62,0.92);
+                         -fx-background-radius: 16;
+                         -fx-padding: 30;
+                         -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 10);">
+
+                <Label text="Login"
+                       style="-fx-text-fill: white;
+                              -fx-font-size: 26px;
+                              -fx-font-weight: bold;"/>
+
+                <TextField fx:id="emailField"
+                           promptText="Email"
+                           maxWidth="Infinity"
+                           style="-fx-background-color: #2e2e3e;
+                                  -fx-text-fill: white;
+                                  -fx-prompt-text-fill: #777;
+                                  -fx-background-radius: 8;
+                                  -fx-padding: 12;"/>
+
+                <PasswordField fx:id="passwordField"
+                               promptText="Password"
+                               maxWidth="Infinity"
+                               style="-fx-background-color: #2e2e3e;
+                                      -fx-text-fill: white;
+                                      -fx-prompt-text-fill: #777;
+                                      -fx-background-radius: 8;
+                                      -fx-padding: 12;"/>
+
+                <!-- Forgot Password Link -->
+                <HBox alignment="CENTER_RIGHT">
+                    <Hyperlink text="Forgot Password?" onAction="#showForgotPasswordDialog"
+                               style="-fx-text-fill: #7c3aed; -fx-font-size: 12px;"/>
+                </HBox>
+
+                <Label fx:id="messageLabel"
+                       style="-fx-text-fill: #ff6b6b;
+                              -fx-font-size: 13px;"/>
+
+                <Button text="Login"
+                        onAction="#handleLogin"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: #7c3aed;
+                               -fx-text-fill: white;
+                               -fx-font-size: 15px;
+                               -fx-font-weight: bold;
+                               -fx-background-radius: 10;
+                               -fx-padding: 12;"/>
+
+                <Button text="Create account"
+                        onAction="#goToRegister"
+                        maxWidth="Infinity"
+                        style="-fx-background-color: transparent;
+                               -fx-text-fill: #7c3aed;
+                               -fx-border-color: #7c3aed;
+                               -fx-border-radius: 10;
+                               -fx-background-radius: 10;
+                               -fx-padding: 10;"/>
+
+            </VBox>
+
+        </StackPane>
+
+    </HBox>
+
+</StackPane>

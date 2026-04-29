@@ -1,0 +1,178 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mindforge.controller.ProfileController"
+            style="-fx-background-color: #f5f5f5; -fx-border-color: transparent; -fx-background: #f5f5f5;">
+
+    <VBox spacing="14" style="-fx-padding: 24 28 32 28;">
+
+        <!-- ══ HEADER CARD ══════════════════════════════════════════════ -->
+        <HBox spacing="16" alignment="CENTER_LEFT"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 18 20;">
+
+            <!-- Avatar: image OR initials circle -->
+            <StackPane prefWidth="76" prefHeight="76">
+                <Circle radius="38" fill="#EEEDFE"/>
+                <Label fx:id="avatarInitials" text="?"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #3C3489;"/>
+                <ImageView fx:id="avatarImage"
+                           fitWidth="76" fitHeight="76"
+                           preserveRatio="true"
+                           visible="false"/>
+            </StackPane>
+
+            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                <Label fx:id="labelFullName" text="Loading..."
+                       style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Label fx:id="labelEmail" text=""
+                       style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
+                <Label fx:id="labelRole" text=""
+                       style="-fx-font-size: 11px; -fx-background-color: #E6F1FB;
+                              -fx-text-fill: #0C447C; -fx-background-radius: 10;
+                              -fx-padding: 2 10 2 10;"/>
+            </VBox>
+
+            <!-- Header action buttons -->
+            <VBox spacing="6" alignment="TOP_RIGHT">
+                <Button text="Edit profile" onAction="#goToEditProfile"
+                        style="-fx-background-color: #534AB7; -fx-text-fill: white;
+                               -fx-border-radius: 8; -fx-background-radius: 8;
+                               -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                <Button text="Change avatar" onAction="#goToAvatarBuilder"
+                        style="-fx-background-color: transparent; -fx-border-color: #cccccc;
+                               -fx-border-radius: 8; -fx-border-width: 0.5;
+                               -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 5 14;"/>
+                <Button text="Logout" onAction="#handleLogout"
+                        style="-fx-background-color: transparent; -fx-border-color: #e0e0e0;
+                               -fx-border-radius: 8; -fx-border-width: 0.5;
+                               -fx-font-size: 12px; -fx-text-fill: #888888;
+                               -fx-cursor: hand; -fx-padding: 5 14;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ══ STATS ROW ════════════════════════════════════════════════ -->
+        <HBox spacing="10">
+            <VBox alignment="CENTER"
+                  style="-fx-background-color: #f8f8f8; -fx-background-radius: 10; -fx-padding: 14 10;"
+                  HBox.hgrow="ALWAYS">
+                <Label fx:id="labelXP" text="—"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Label text="Total XP" style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+            </VBox>
+            <VBox alignment="CENTER"
+                  style="-fx-background-color: #f8f8f8; -fx-background-radius: 10; -fx-padding: 14 10;"
+                  HBox.hgrow="ALWAYS">
+                <Label fx:id="labelLevel" text="—"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Label text="Level" style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+            </VBox>
+            <VBox alignment="CENTER"
+                  style="-fx-background-color: #f8f8f8; -fx-background-radius: 10; -fx-padding: 14 10;"
+                  HBox.hgrow="ALWAYS">
+                <Label fx:id="labelTasks" text="—"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Label text="Tasks done" style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+            </VBox>
+            <VBox alignment="CENTER"
+                  style="-fx-background-color: #f8f8f8; -fx-background-radius: 10; -fx-padding: 14 10;"
+                  HBox.hgrow="ALWAYS">
+                <Label fx:id="labelFocus" text="—"
+                       style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+                <Label text="Focus time" style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+            </VBox>
+        </HBox>
+
+        <!-- ══ XP PROGRESS ═════════════════════════════════════════════ -->
+        <VBox spacing="8"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 16 18;">
+            <Label text="XP PROGRESS"
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold;"/>
+            <ProgressBar fx:id="xpBar" progress="0" maxWidth="Infinity"
+                         style="-fx-accent: #534AB7; -fx-pref-height: 12px;"/>
+            <Label fx:id="xpBarLabel" text="0 / 500 XP"
+                   style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+        </VBox>
+
+        <!-- ══ BADGES ═══════════════════════════════════════════════════ -->
+        <VBox spacing="12"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 16 18;">
+            <Label text="BADGES"
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold;"/>
+            <FlowPane fx:id="badgesPane" hgap="10" vgap="10"/>
+        </VBox>
+
+        <!-- ══ ACCOUNT INFO ═════════════════════════════════════════════ -->
+        <VBox spacing="0"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 16 18;">
+            <Label text="ACCOUNT INFO"
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold; -fx-padding: 0 0 10 0;"/>
+
+            <HBox style="-fx-border-color: transparent transparent #f0f0f0 transparent; -fx-padding: 8 0;">
+                <Label text="Timezone"
+                       style="-fx-font-size: 13px; -fx-text-fill: #888888;" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="labelTimezone" text="—"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            </HBox>
+            <HBox style="-fx-border-color: transparent transparent #f0f0f0 transparent; -fx-padding: 8 0;">
+                <Label text="Locale"
+                       style="-fx-font-size: 13px; -fx-text-fill: #888888;" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="labelLocale" text="—"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            </HBox>
+            <HBox style="-fx-border-color: transparent transparent #f0f0f0 transparent; -fx-padding: 8 0;">
+                <Label text="Member since"
+                       style="-fx-font-size: 13px; -fx-text-fill: #888888;" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="labelSince" text="—"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            </HBox>
+            <HBox style="-fx-padding: 8 0;">
+                <Label text="Streak"
+                       style="-fx-font-size: 13px; -fx-text-fill: #888888;" HBox.hgrow="ALWAYS"/>
+                <Label fx:id="labelStreak" text="—"
+                       style="-fx-font-size: 13px; -fx-font-weight: bold;"/>
+            </HBox>
+        </VBox>
+
+        <!-- ══ BIO ══════════════════════════════════════════════════════ -->
+        <VBox spacing="8"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 16 18;">
+            <Label text="BIO"
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold;"/>
+            <Label fx:id="labelBio" text="No bio yet."
+                   wrapText="true"
+                   style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-line-spacing: 3;"/>
+        </VBox>
+
+        <!-- ══ ROLE REQUEST ══════════════════════════════════════════════ -->
+        <VBox fx:id="roleRequestSection" spacing="10" visible="false" managed="false"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 16 18;">
+            <Label text="ROLE REQUEST"
+                   style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold;"/>
+            <Label fx:id="labelRoleRequestStatus" text=""
+                   style="-fx-font-size: 12px;" wrapText="true"/>
+            <Button text="Manage role request" onAction="#goToRoleRequest"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7;
+                           -fx-border-width: 0.5; -fx-border-radius: 8;
+                           -fx-text-fill: #534AB7; -fx-font-size: 12px;
+                           -fx-cursor: hand; -fx-padding: 6 14;"/>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

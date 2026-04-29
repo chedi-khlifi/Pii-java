@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mindforge.controller.MenuController"
+      spacing="15"
+      style="-fx-background-color: #1e1e2e; -fx-padding: 30;">
+
+    <Label text="👥 All Users"
+           style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+    <TableView fx:id="usersTable"
+               VBox.vgrow="ALWAYS"
+               style="-fx-background-color: #2e2e3e;">
+        <columns>
+            <TableColumn fx:id="idColumn"
+                         text="ID"
+                         prefWidth="60"/>
+            <TableColumn fx:id="emailColumn"
+                         text="Email"
+                         prefWidth="300"/>
+            <TableColumn fx:id="verifiedColumn"
+                         text="Verified"
+                         prefWidth="100"/>
+            <TableColumn fx:id="createdColumn"
+                         text="Created At"
+                         prefWidth="200"/>
+        </columns>
+    </TableView>
+
+    <Button text="🚪 Logout"
+            onAction="#handleLogout"
+            style="-fx-background-color: #e53e3e; -fx-text-fill: white;
+                   -fx-font-size: 14px; -fx-font-weight: bold;
+                   -fx-background-radius: 8; -fx-padding: 8 30 8 30;
+                   -fx-cursor: hand;"/>
+
+</VBox>

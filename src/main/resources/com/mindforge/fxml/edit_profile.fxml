@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane fitToWidth="true"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mindforge.controller.EditProfileController"
+            style="-fx-background-color: #f5f5f5; -fx-border-color: transparent; -fx-background: #f5f5f5;">
+
+    <VBox spacing="14" style="-fx-padding: 24 28 32 28; -fx-max-width: 600;">
+
+        <!-- ══ HEADER ═══════════════════════════════════════════════════ -->
+        <HBox alignment="CENTER_LEFT" spacing="12"
+              style="-fx-padding: 0 0 6 0;">
+            <Button text="← Back" onAction="#goBack"
+                    style="-fx-background-color: transparent; -fx-border-color: #cccccc;
+                           -fx-border-radius: 8; -fx-border-width: 0.5;
+                           -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 5 12;"/>
+            <Label text="Edit Profile"
+                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+        </HBox>
+
+        <!-- ══ FORM CARD ════════════════════════════════════════════════ -->
+        <VBox spacing="14"
+              style="-fx-background-color: white; -fx-background-radius: 12;
+                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
+                     -fx-border-radius: 12; -fx-padding: 20 22;">
+
+            <!-- First Name -->
+            <VBox spacing="4">
+                <Label text="First name"
+                       style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+                <TextField fx:id="fieldFirstName"
+                           promptText="Enter first name"
+                           style="-fx-font-size: 14px; -fx-padding: 8 10;
+                                  -fx-background-radius: 8; -fx-border-radius: 8;
+                                  -fx-border-color: #e0e0e0; -fx-border-width: 0.5;"/>
+            </VBox>
+
+            <!-- Last Name -->
+            <VBox spacing="4">
+                <Label text="Last name"
+                       style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+                <TextField fx:id="fieldLastName"
+                           promptText="Enter last name"
+                           style="-fx-font-size: 14px; -fx-padding: 8 10;
+                                  -fx-background-radius: 8; -fx-border-radius: 8;
+                                  -fx-border-color: #e0e0e0; -fx-border-width: 0.5;"/>
+            </VBox>
+
+            <!-- Bio -->
+            <VBox spacing="4">
+                <Label text="Bio"
+                       style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+                <TextArea fx:id="fieldBio"
+                          promptText="Tell others a bit about yourself..."
+                          prefRowCount="4"
+                          wrapText="true"
+                          style="-fx-font-size: 13px; -fx-padding: 8 10;
+                                 -fx-background-radius: 8; -fx-border-radius: 8;
+                                 -fx-border-color: #e0e0e0; -fx-border-width: 0.5;"/>
+            </VBox>
+
+            <!-- Timezone -->
+            <VBox spacing="4">
+                <Label text="Timezone"
+                       style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+                <ComboBox fx:id="comboTimezone" maxWidth="Infinity"
+                          style="-fx-font-size: 13px;"/>
+            </VBox>
+
+            <!-- Locale -->
+            <VBox spacing="4">
+                <Label text="Locale"
+                       style="-fx-font-size: 12px; -fx-text-fill: #888888;"/>
+                <ComboBox fx:id="comboLocale" maxWidth="Infinity"
+                          style="-fx-font-size: 13px;"/>
+            </VBox>
+
+            <!-- Message -->
+            <Label fx:id="labelMessage" text=""
+                   style="-fx-font-size: 13px;" wrapText="true"/>
+
+            <!-- Actions -->
+            <HBox spacing="10">
+                <Button text="Save changes" onAction="#handleSave"
+                        style="-fx-background-color: #534AB7; -fx-text-fill: white;
+                               -fx-background-radius: 8; -fx-font-size: 13px;
+                               -fx-cursor: hand; -fx-padding: 8 20;"/>
+                <Button text="Change avatar" onAction="#goToAvatarBuilder"
+                        style="-fx-background-color: transparent; -fx-border-color: #534AB7;
+                               -fx-border-width: 0.5; -fx-border-radius: 8;
+                               -fx-text-fill: #534AB7; -fx-font-size: 13px;
+                               -fx-cursor: hand; -fx-padding: 7 20;"/>
+            </HBox>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

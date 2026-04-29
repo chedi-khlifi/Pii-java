@@ -1,0 +1,331 @@
+/* ═══════════════════════════════════════════════════════════
+   MindForge - JavaFX Stylesheet
+═══════════════════════════════════════════════════════════ */
+
+/* ── Root / Global ─────────────────────────────────────── */
+.root-pane {
+    -fx-background-color: #f5f6fa;
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.main-scroll {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.main-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ── Navbar ─────────────────────────────────────────────── */
+.navbar {
+    -fx-background-color: #161c2d;
+    -fx-padding: 10 20 10 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 2);
+}
+
+.navbar-brand {
+    -fx-cursor: hand;
+}
+
+.navbar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+}
+
+.nav-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cdd3e0;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+}
+
+.nav-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: white;
+}
+
+.nav-menu-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #cdd3e0;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-padding: 6 12 6 12;
+    -fx-background-radius: 6;
+}
+
+.nav-menu-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: white;
+}
+
+.nav-btn-outline {
+    -fx-border-color: #e94560;
+    -fx-border-radius: 6;
+    -fx-text-fill: #e94560;
+}
+
+.nav-btn-outline:hover {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+}
+
+/* ── Hero Section ───────────────────────────────────────── */
+.hero-section {
+    -fx-background-color: #161c2d;
+}
+
+.hero-bg {
+    -fx-opacity: 0.35;
+}
+
+.hero-overlay {
+    -fx-padding: 0 0 0 80;
+}
+
+.hero-title {
+    -fx-text-fill: white;
+    -fx-font-size: 52px;
+    -fx-font-weight: bold;
+}
+
+.hero-subtitle {
+    -fx-text-fill: #cdd3e0;
+    -fx-font-size: 20px;
+}
+
+.hero-btn {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 28 12 28;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.hero-btn:hover {
+    -fx-background-color: #c73652;
+}
+
+.hero-btn-secondary {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 11 27 11 27;
+    -fx-background-radius: 8;
+    -fx-border-color: white;
+    -fx-border-radius: 8;
+    -fx-cursor: hand;
+}
+
+.hero-btn-secondary:hover {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+/* ── Section shared ─────────────────────────────────────── */
+.section {
+    -fx-background-color: white;
+}
+
+.section-alt {
+    -fx-background-color: #f5f6fa;
+}
+
+.section-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #161c2d;
+}
+
+.section-lead {
+    -fx-font-size: 15px;
+    -fx-text-fill: #6c757d;
+}
+
+/* ── About Section ──────────────────────────────────────── */
+.about-img {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.12), 16, 0, 0, 4);
+}
+
+/* ── Feature items ──────────────────────────────────────── */
+.feature-icon {
+    -fx-font-size: 28px;
+    -fx-min-width: 40px;
+}
+
+.feature-title {
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #161c2d;
+}
+
+.feature-body {
+    -fx-font-size: 13px;
+    -fx-text-fill: #6c757d;
+    -fx-wrap-text: true;
+    -fx-max-width: 320;
+}
+
+/* ── Course Cards ───────────────────────────────────────── */
+.courses-grid {
+    -fx-padding: 0;
+}
+
+.course-card {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-padding: 0 0 12 0;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 10, 0, 0, 3);
+    -fx-spacing: 8;
+}
+
+.course-title {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #161c2d;
+    -fx-wrap-text: true;
+    -fx-max-width: 240;
+    -fx-padding: 8 12 0 12;
+}
+
+.tag-category {
+    -fx-background-color: #eef0f5;
+    -fx-text-fill: #555;
+    -fx-font-size: 11px;
+    -fx-padding: 3 8 3 8;
+    -fx-background-radius: 4;
+    -fx-label-padding: 0;
+}
+
+.tag-free {
+    -fx-background-color: #d4edda;
+    -fx-text-fill: #155724;
+    -fx-font-size: 11px;
+    -fx-padding: 3 8 3 8;
+    -fx-background-radius: 4;
+}
+
+.tag-premium {
+    -fx-background-color: #fff3cd;
+    -fx-text-fill: #856404;
+    -fx-font-size: 11px;
+    -fx-padding: 3 8 3 8;
+    -fx-background-radius: 4;
+}
+
+.course-btn {
+    -fx-background-color: #161c2d;
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-padding: 7 16 7 16;
+    -fx-background-radius: 6;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+    -fx-margin: 4 12 0 12;
+}
+
+.course-btn:hover {
+    -fx-background-color: #e94560;
+}
+
+.main-btn {
+    -fx-background-color: #e94560;
+    -fx-text-fill: white;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-padding: 12 32 12 32;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.main-btn:hover {
+    -fx-background-color: #c73652;
+}
+
+/* ── CTA Sections ───────────────────────────────────────── */
+.cta-section {
+    -fx-background-color: #161c2d;
+}
+
+.cta-bg {
+    -fx-opacity: 0.3;
+}
+
+.cta-overlay {
+    -fx-padding: 0 80 0 80;
+    -fx-alignment: center-left;
+}
+
+.cta-title {
+    -fx-font-size: 34px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.cta-subtitle {
+    -fx-font-size: 16px;
+    -fx-text-fill: #cdd3e0;
+    -fx-wrap-text: true;
+}
+
+/* ── Why Us Section ─────────────────────────────────────── */
+.why-card {
+    -fx-background-color: #f5f6fa;
+    -fx-background-radius: 10;
+    -fx-padding: 24;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);
+}
+
+.why-icon {
+    -fx-font-size: 32px;
+}
+
+/* ── Footer ─────────────────────────────────────────────── */
+.footer {
+    -fx-background-color: #161c2d;
+    -fx-padding: 40 80 40 80;
+}
+
+.footer-link {
+    -fx-background-color: transparent;
+    -fx-text-fill: #9aa0b0;
+    -fx-font-size: 13px;
+    -fx-cursor: hand;
+    -fx-padding: 4 8 4 8;
+    -fx-border-color: transparent;
+}
+
+.footer-link:hover {
+    -fx-text-fill: white;
+}
+
+.social-btn {
+    -fx-background-color: rgba(255,255,255,0.08);
+    -fx-text-fill: white;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-max-width: 36;
+    -fx-max-height: 36;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.social-btn:hover {
+    -fx-background-color: #e94560;
+}
+
+.footer-copy {
+    -fx-text-fill: #6c757d;
+    -fx-font-size: 12px;
+}

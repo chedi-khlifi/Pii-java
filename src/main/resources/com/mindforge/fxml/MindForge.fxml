@@ -1,0 +1,352 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mindforge.controller.HomeController"
+            prefWidth="1280" prefHeight="800"
+            styleClass="root-pane">
+
+    <!-- ═══════════════════════════════════════════════════════════
+         TOP NAVIGATION BAR
+    ═══════════════════════════════════════════════════════════ -->
+    <top>
+        <HBox styleClass="navbar" alignment="CENTER_LEFT" spacing="16">
+            <padding><Insets top="10" right="20" bottom="10" left="20"/></padding>
+
+            <!-- Logo -->
+            <HBox alignment="CENTER_LEFT" spacing="8" styleClass="navbar-brand">
+                <ImageView fx:id="logoImg" fitWidth="32" fitHeight="32" preserveRatio="true"/>
+                <Label text="MindForge" styleClass="navbar-title"/>
+            </HBox>
+
+            <!-- Spacer -->
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <!-- Nav Links -->
+            <Button fx:id="btnHome"        text="Home"          styleClass="nav-btn" onAction="#onHome"/>
+            <Button fx:id="btnAbout"       text="About"         styleClass="nav-btn" onAction="#onAbout"/>
+            <Button fx:id="btnWorkspace"   text="Workspace"     styleClass="nav-btn" onAction="#onWorkspace"/>
+            <Button fx:id="btnLeaderboard" text="Leader Board"  styleClass="nav-btn" onAction="#onLeaderboard"/>
+            <Button fx:id="btnQuotes"      text="Quotes"        styleClass="nav-btn" onAction="#onQuotes"/>
+
+            <!-- Community Menu -->
+            <MenuButton text="Community" styleClass="nav-btn nav-menu-btn">
+                <items>
+                    <MenuItem fx:id="menuCommunityHub"       text="Community Hub"       onAction="#onCommunityHub"/>
+                    <MenuItem fx:id="menuChallengeInbox"     text="Received Challenges" onAction="#onChallengeInbox"/>
+                    <MenuItem fx:id="menuChallengeOutbox"    text="Sent Challenges"     onAction="#onChallengeOutbox"/>
+                    <MenuItem fx:id="menuCommunityTasks"     text="Tasks"               onAction="#onCommunityTasks"/>
+                    <MenuItem fx:id="menuMyTickets"          text="My Tickets"          onAction="#onMyTickets"/>
+                    <MenuItem fx:id="menuContactSupport"     text="Contact Support"     onAction="#onContactSupport"/>
+                    <MenuItem fx:id="menuFriends"            text="Friends"             onAction="#onFriends"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="menuManageTickets"      text="Manage Tickets (Admin)" onAction="#onManageTickets"/>
+                </items>
+            </MenuButton>
+
+            <!-- Careers Center Menu -->
+            <MenuButton text="Careers Center" styleClass="nav-btn nav-menu-btn">
+                <items>
+                    <MenuItem fx:id="menuBrowseOpportunities"  text="Browse Opportunities"  onAction="#onBrowseOpportunities"/>
+                    <MenuItem fx:id="menuCompanies"            text="Companies"              onAction="#onCompanies"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="menuMyApplications"       text="My Applications"        onAction="#onMyApplications"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="menuPostOpportunity"      text="Post New Opportunity"   onAction="#onPostOpportunity"/>
+                    <MenuItem fx:id="menuMyPostings"           text="My Job Postings"        onAction="#onMyPostings"/>
+                    <MenuItem fx:id="menuApplicationsReceived" text="Applications Received"  onAction="#onApplicationsReceived"/>
+                </items>
+            </MenuButton>
+
+            <!-- Profile Menu -->
+            <MenuButton fx:id="menuProfile" text="Profile" styleClass="nav-btn nav-menu-btn">
+                <items>
+                    <MenuItem fx:id="menuViewProfile"     text="View Profile"       onAction="#onViewProfile"/>
+                    <MenuItem fx:id="menuEditProfile"     text="Edit Profile"       onAction="#onEditProfile"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="menuMyRequests"      text="My Requests"        onAction="#onMyRequests"/>
+                    <MenuItem fx:id="menuStudentPlus"     text="Request Student+"   onAction="#onStudentPlus"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="menuLogout"          text="Logout"             onAction="#onLogout"/>
+                </items>
+            </MenuButton>
+
+            <!-- Login button (shown when user is not logged in) -->
+            <Button fx:id="btnLogin" text="Login" styleClass="nav-btn nav-btn-outline" onAction="#onLogin"/>
+
+        </HBox>
+    </top>
+
+    <!-- ═══════════════════════════════════════════════════════════
+         MAIN CONTENT — ScrollPane wrapping all sections
+    ═══════════════════════════════════════════════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll">
+            <VBox spacing="0">
+
+                <!-- ─────────────────────────────────────────────
+                     HERO SECTION
+                ───────────────────────────────────────────── -->
+                <StackPane fx:id="heroSection" styleClass="hero-section" prefHeight="520">
+                    <!-- Background image layer -->
+                    <ImageView fx:id="heroBg" fitWidth="1280" fitHeight="520"
+                               preserveRatio="false" styleClass="hero-bg"/>
+
+                    <!-- Overlay + content -->
+                    <VBox alignment="CENTER_LEFT" spacing="20" styleClass="hero-overlay">
+                        <padding><Insets top="0" right="0" bottom="0" left="80"/></padding>
+                        <Label text="MindForge"         styleClass="hero-title"/>
+                        <Label text="From chaos to focus." styleClass="hero-subtitle"/>
+                        <HBox spacing="12">
+                            <Button fx:id="btnGetStarted"  text="Get Started"  styleClass="hero-btn"       onAction="#onGetStarted"/>
+                            <Button fx:id="btnAdminPanel"  text="Admin Panel"  styleClass="hero-btn-secondary" onAction="#onAdminPanel"/>
+                        </HBox>
+                    </VBox>
+                </StackPane>
+
+                <!-- ─────────────────────────────────────────────
+                     ABOUT SECTION
+                ───────────────────────────────────────────── -->
+                <HBox fx:id="aboutSection" styleClass="section" spacing="60" alignment="CENTER">
+                    <padding><Insets top="60" right="80" bottom="60" left="80"/></padding>
+
+                    <!-- Left: text + features -->
+                    <VBox spacing="24" HBox.hgrow="ALWAYS">
+                        <Label text="Welcome to MindForge"              styleClass="section-title"/>
+                        <Label text="Turn focus into progress with guided learning spaces."
+                               styleClass="section-lead" wrapText="true"/>
+
+                        <!-- Feature 1 -->
+                        <HBox spacing="16" alignment="TOP_LEFT">
+                            <Label text="🧪" styleClass="feature-icon"/>
+                            <VBox spacing="4">
+                                <Label text="Focus Rooms" styleClass="feature-title"/>
+                                <Label text="Join quiet, goal-driven rooms designed to help you work deeply and finish what matters."
+                                       styleClass="feature-body" wrapText="true"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Feature 2 -->
+                        <HBox spacing="16" alignment="TOP_LEFT">
+                            <Label text="👥" styleClass="feature-icon"/>
+                            <VBox spacing="4">
+                                <Label text="Shared Accountability" styleClass="feature-title"/>
+                                <Label text="Set weekly targets, track wins, and stay consistent with people who keep each other moving."
+                                       styleClass="feature-body" wrapText="true"/>
+                            </VBox>
+                        </HBox>
+
+                        <!-- Feature 3 -->
+                        <HBox spacing="16" alignment="TOP_LEFT">
+                            <Label text="💬" styleClass="feature-icon"/>
+                            <VBox spacing="4">
+                                <Label text="Helpful Community" styleClass="feature-title"/>
+                                <Label text="Exchange resources, ask better questions, and solve blockers faster through active discussions."
+                                       styleClass="feature-body" wrapText="true"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+
+                    <!-- Right: about image -->
+                    <ImageView fx:id="aboutImg" fitWidth="420" fitHeight="320"
+                               preserveRatio="true" styleClass="about-img"/>
+                </HBox>
+
+                <!-- ─────────────────────────────────────────────
+                     COURSES SECTION
+                ───────────────────────────────────────────── -->
+                <VBox fx:id="coursesSection" styleClass="section section-alt" spacing="32">
+                    <padding><Insets top="60" right="80" bottom="60" left="80"/></padding>
+
+                    <VBox alignment="CENTER" spacing="8">
+                        <Label text="Explore Courses" styleClass="section-title"/>
+                        <Label text="Discover top courses across every domain." styleClass="section-lead"/>
+                    </VBox>
+
+                    <!-- Course cards grid (2 rows × 4 cols) -->
+                    <GridPane hgap="20" vgap="20" styleClass="courses-grid">
+                        <!-- Row 0 -->
+                        <VBox styleClass="course-card" GridPane.columnIndex="0" GridPane.rowIndex="0">
+                            <ImageView fx:id="course1Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="Beginner to Pro in Excel: Financial Modeling" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Business" styleClass="tag-category"/><Label text="Free" styleClass="tag-free"/></HBox>
+                            <Button fx:id="btnCourse1" text="View Course" styleClass="course-btn" onAction="#onCourse1"/>
+                        </VBox>
+
+                        <VBox styleClass="course-card" GridPane.columnIndex="1" GridPane.rowIndex="0">
+                            <ImageView fx:id="course2Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="Introduction to CSS" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Web Design" styleClass="tag-category"/><Label text="Premium" styleClass="tag-premium"/></HBox>
+                            <Button fx:id="btnCourse2" text="View Course" styleClass="course-btn" onAction="#onCourse2"/>
+                        </VBox>
+
+                        <VBox styleClass="course-card" GridPane.columnIndex="2" GridPane.rowIndex="0">
+                            <ImageView fx:id="course3Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="The Ultimate Drawing Course | Beginner To Advanced" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Drawing" styleClass="tag-category"/><Label text="Premium" styleClass="tag-premium"/></HBox>
+                            <Button fx:id="btnCourse3" text="View Course" styleClass="course-btn" onAction="#onCourse3"/>
+                        </VBox>
+
+                        <VBox styleClass="course-card" GridPane.columnIndex="3" GridPane.rowIndex="0">
+                            <ImageView fx:id="course4Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="The Complete Web Development Course" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Web Development" styleClass="tag-category"/><Label text="Free" styleClass="tag-free"/></HBox>
+                            <Button fx:id="btnCourse4" text="View Course" styleClass="course-btn" onAction="#onCourse4"/>
+                        </VBox>
+
+                        <!-- Row 1 -->
+                        <VBox styleClass="course-card" GridPane.columnIndex="0" GridPane.rowIndex="1">
+                            <ImageView fx:id="course5Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="PHP Tips, Tricks, and Techniques" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Web Development" styleClass="tag-category"/><Label text="Free" styleClass="tag-free"/></HBox>
+                            <Button fx:id="btnCourse5" text="View Course" styleClass="course-btn" onAction="#onCourse5"/>
+                        </VBox>
+
+                        <VBox styleClass="course-card" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                            <ImageView fx:id="course6Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="All You Need To Know About Web Design" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Web Design" styleClass="tag-category"/><Label text="Free" styleClass="tag-free"/></HBox>
+                            <Button fx:id="btnCourse6" text="View Course" styleClass="course-btn" onAction="#onCourse6"/>
+                        </VBox>
+
+                        <VBox styleClass="course-card" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                            <ImageView fx:id="course7Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="How to Get Started in Photography" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Photography" styleClass="tag-category"/><Label text="Free" styleClass="tag-free"/></HBox>
+                            <Button fx:id="btnCourse7" text="View Course" styleClass="course-btn" onAction="#onCourse7"/>
+                        </VBox>
+
+                        <VBox styleClass="course-card" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                            <ImageView fx:id="course8Img" fitWidth="260" fitHeight="160" preserveRatio="false"/>
+                            <Label text="Typography From A to Z" styleClass="course-title" wrapText="true"/>
+                            <HBox spacing="8"><Label text="Typography" styleClass="tag-category"/><Label text="Free" styleClass="tag-free"/></HBox>
+                            <Button fx:id="btnCourse8" text="View Course" styleClass="course-btn" onAction="#onCourse8"/>
+                        </VBox>
+                    </GridPane>
+
+                    <HBox alignment="CENTER">
+                        <Button fx:id="btnMoreCourses" text="More Courses" styleClass="main-btn" onAction="#onMoreCourses"/>
+                    </HBox>
+                </VBox>
+
+                <!-- ─────────────────────────────────────────────
+                     CALL TO ACTION #1
+                ───────────────────────────────────────────── -->
+                <StackPane fx:id="ctaSection" styleClass="cta-section" prefHeight="300">
+                    <ImageView fx:id="ctaBg" fitWidth="1280" fitHeight="300"
+                               preserveRatio="false" styleClass="cta-bg"/>
+                    <VBox alignment="CENTER_LEFT" spacing="16" styleClass="cta-overlay">
+                        <padding><Insets top="0" right="0" bottom="0" left="80"/></padding>
+                        <Label text="Build momentum with MindForge."        styleClass="cta-title"/>
+                        <Label text="Join focused rooms, share resources, and grow with your community."
+                               styleClass="cta-subtitle" wrapText="true"/>
+                        <Button fx:id="btnCtaGetStarted" text="Get Started" styleClass="hero-btn" onAction="#onCommunityHub"/>
+                    </VBox>
+                </StackPane>
+
+                <!-- ─────────────────────────────────────────────
+                     WHY US SECTION
+                ───────────────────────────────────────────── -->
+                <VBox fx:id="whyUsSection" styleClass="section" spacing="32">
+                    <padding><Insets top="60" right="80" bottom="60" left="80"/></padding>
+
+                    <VBox alignment="CENTER" spacing="8">
+                        <Label text="Why MindForge"                                   styleClass="section-title"/>
+                        <Label text="A calmer space to learn, collaborate, and stay on track." styleClass="section-lead"/>
+                    </VBox>
+
+                    <HBox spacing="40" alignment="TOP_CENTER">
+                        <!-- Why card 1 -->
+                        <VBox styleClass="why-card" spacing="12" HBox.hgrow="ALWAYS">
+                            <Label text="🧪" styleClass="why-icon"/>
+                            <Label text="Focus Rooms"  styleClass="feature-title"/>
+                            <Label text="Enter distraction-free rooms to work on a single goal with a clear daily routine."
+                                   styleClass="feature-body" wrapText="true"/>
+                        </VBox>
+                        <!-- Why card 2 -->
+                        <VBox styleClass="why-card" spacing="12" HBox.hgrow="ALWAYS">
+                            <Label text="👥" styleClass="why-icon"/>
+                            <Label text="Accountability" styleClass="feature-title"/>
+                            <Label text="Track progress with peers, share milestones, and keep momentum through consistent check-ins."
+                                   styleClass="feature-body" wrapText="true"/>
+                        </VBox>
+                        <!-- Why card 3 -->
+                        <VBox styleClass="why-card" spacing="12" HBox.hgrow="ALWAYS">
+                            <Label text="💬" styleClass="why-icon"/>
+                            <Label text="Community Support" styleClass="feature-title"/>
+                            <Label text="Ask questions, exchange resources, and get help quickly from people solving similar challenges."
+                                   styleClass="feature-body" wrapText="true"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <!-- ─────────────────────────────────────────────
+                     CONTACT CTA SECTION
+                ───────────────────────────────────────────── -->
+                <StackPane fx:id="contactCtaSection" styleClass="cta-section" prefHeight="280">
+                    <ImageView fx:id="cta2Bg" fitWidth="1280" fitHeight="280"
+                               preserveRatio="false" styleClass="cta-bg"/>
+                    <VBox alignment="CENTER" spacing="16" styleClass="cta-overlay">
+                        <Label text="Contact Us"  styleClass="cta-title"/>
+                        <Label text="Need help with your workspace or community tasks? We are here to support you."
+                               styleClass="cta-subtitle" wrapText="true" maxWidth="600" textAlignment="CENTER"/>
+                        <Button fx:id="btnContactSupport" text="Contact Support" styleClass="hero-btn" onAction="#onContactSupport"/>
+                    </VBox>
+                </StackPane>
+
+                <!-- ─────────────────────────────────────────────
+                     FOOTER
+                ───────────────────────────────────────────── -->
+                <VBox fx:id="footer" styleClass="footer" spacing="24">
+                    <padding><Insets top="40" right="80" bottom="40" left="80"/></padding>
+
+                    <!-- Top row: logo + nav links -->
+                    <HBox spacing="40" alignment="CENTER_LEFT">
+                        <ImageView fx:id="footerLogo" fitWidth="40" fitHeight="40" preserveRatio="true"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <HBox spacing="20">
+                            <Button fx:id="footerHome"        text="Home"          styleClass="footer-link" onAction="#onHome"/>
+                            <Button fx:id="footerAbout"       text="About"         styleClass="footer-link" onAction="#onAbout"/>
+                            <Button fx:id="footerGuardian"    text="Guardian"      styleClass="footer-link" onAction="#onGuardian"/>
+                            <Button fx:id="footerRooms"       text="Virtual Rooms" styleClass="footer-link" onAction="#onVirtualRooms"/>
+                            <Button fx:id="footerTimer"       text="Focus Timer"   styleClass="footer-link" onAction="#onFocusTimer"/>
+                            <Button fx:id="footerCommunity"   text="Community"     styleClass="footer-link" onAction="#onCommunityHub"/>
+                            <Button fx:id="footerCareers"     text="Careers"       styleClass="footer-link" onAction="#onBrowseOpportunities"/>
+                            <Button fx:id="footerLeaderboard" text="Leader Board"  styleClass="footer-link" onAction="#onLeaderboard"/>
+                        </HBox>
+                    </HBox>
+
+                    <Separator/>
+
+                    <!-- Bottom row: social icons + copyright -->
+                    <HBox alignment="CENTER_LEFT" spacing="16">
+                        <!-- Social buttons -->
+                        <HBox spacing="12">
+                            <Button fx:id="btnFacebook"   text="f"  styleClass="social-btn" onAction="#onFacebook"/>
+                            <Button fx:id="btnTwitter"    text="t"  styleClass="social-btn" onAction="#onTwitter"/>
+                            <Button fx:id="btnInstagram"  text="ig" styleClass="social-btn" onAction="#onInstagram"/>
+                            <Button fx:id="btnYoutube"    text="yt" styleClass="social-btn" onAction="#onYoutube"/>
+                            <Button fx:id="btnLinkedin"   text="in" styleClass="social-btn" onAction="#onLinkedin"/>
+                        </HBox>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Label fx:id="footerCopyright"
+                               text="© Copyright 2025. All Rights Reserved. | Made by SiL0p"
+                               styleClass="footer-copy"/>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </ScrollPane>
+    </center>
+
+</BorderPane>
