@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:controller="tn.esprit.GuardianController" styleClass="guardian-root" stylesheets="@guardian-cards.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <left>
+        <VBox spacing="12" styleClass="guardian-sidebar">
+            <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
+            <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
+            <Button text="▣ Planner" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
+            <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="◔ Analyst" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Label text="QUICK LINKS" styleClass="guardian-side-group-title" />
+            <Button text="Contact Support" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
+            <Button text="Friends" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
+            <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
+            <Region VBox.vgrow="ALWAYS" />
+        </VBox>
+    </left>
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="guardian-main-scroll">
+            <content>
+                <VBox spacing="14" styleClass="guardian-page-wrap">
+                    <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+
+                    <VBox spacing="5" styleClass="guardian-hero,guardian-hero-focus">
+                        <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                        <Label text="Focus Timer" styleClass="guardian-hero-title" />
+                        <Label text="Run deep work sessions with automatic user context." styleClass="guardian-hero-subtitle" />
+                    </VBox>
+
+                    <HBox spacing="8">
+                        <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-tab-button,guardian-tab-selected" />
+                        <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-tab-button" />
+                        <Button text="Resource Library" onAction="#onGoLibrary" styleClass="guardian-tab-button" />
+                    </HBox>
+
+                    <Label fx:id="moduleSnapshotLabel" text="Loading snapshot..." styleClass="guardian-snapshot" />
+
+                    <VBox spacing="10" styleClass="guardian-panel">
+                        <Label text="Task Focus Sessions" styleClass="guardian-section-title" />
+                        <HBox spacing="10">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Session ID (auto)" styleClass="guardian-input-label" /><TextField fx:id="focusIdField" editable="false" /></VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Duration (minutes)" styleClass="guardian-input-label" /><TextField fx:id="focusDurationField" /></VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Task ID (optional)" styleClass="guardian-input-label" /><TextField fx:id="focusTaskIdField" /></VBox>
+                        </HBox>
+                        <Label text="Session type and user are automatic (integration-ready)." styleClass="guardian-hint" />
+                        <HBox spacing="8">
+                            <Button text="Save Session" onAction="#onFocusCreate" styleClass="guardian-action-primary" />
+                            <Button text="Update" onAction="#onFocusUpdate" styleClass="guardian-action-secondary" />
+                            <Button text="Delete" onAction="#onFocusDelete" styleClass="guardian-action-danger" />
+                            <Button text="Refresh" onAction="#onFocusRefresh" styleClass="guardian-action-ghost" />
+                            <Button text="Start" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-success" />
+                            <Button text="Pause" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-warning" />
+                            <Button text="Reset" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-ghost" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="10" styleClass="guardian-panel">
+                        <Label text="Focused Tasks and Recent Sessions" styleClass="guardian-section-title" />
+                        <FlowPane fx:id="focusUserStatsCards" hgap="10" vgap="10" prefWrapLength="950" styleClass="guardian-cards-flow" />
+                    </VBox>
+
+                    <VBox spacing="10" styleClass="guardian-panel">
+                        <Label text="AI Focus Tips / Daily Plan / Weekly Review" styleClass="guardian-section-title" />
+                        <HBox spacing="8">
+                            <Button text="AI Focus Tips" onAction="#onAiFocusTips" styleClass="guardian-action-secondary" />
+                            <Button text="Daily Plan" onAction="#onDailyPlan" styleClass="guardian-action-secondary" />
+                            <Button text="Weekly Review" onAction="#onWeeklyReview" styleClass="guardian-action-secondary" />
+                            <Button text="Email Weekly Digest" onAction="#onSendWeeklyDigest" styleClass="guardian-action-ghost" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox spacing="10" styleClass="guardian-panel">
+                        <Label text="Calendar Scheduling &amp; Notifications" styleClass="guardian-section-title" />
+                        <HBox spacing="8">
+                            <Button text="Schedule to GCal" onAction="#onScheduleGoogleCalendar" styleClass="guardian-action-primary" />
+                            <Button text="Find Free Time (Google)" onAction="#onFindFreeTimeGoogle" styleClass="guardian-action-ghost" />
+                            <Button text="Schedule to Outlook" onAction="#onScheduleOutlook" styleClass="guardian-action-secondary" />
+                            <Button text="Check Teams Availability" onAction="#onCheckTeamsAvailability" styleClass="guardian-action-ghost" />
+                        </HBox>
+                        <HBox spacing="8">
+                            <Button text="Send Mobile Reminder" onAction="#onSendFocusReminder" styleClass="guardian-action-warning" />
+                            <Button text="Email Session Report" onAction="#onSendSessionReport" styleClass="guardian-action-success" />
+                        </HBox>
+                    </VBox>
+
+                    <VBox fx:id="focusMessageContainer" spacing="5" />
+                    <Label fx:id="focusMessageLabel" text="" wrapText="true" styleClass="guardian-message,guardian-message-muted" />
+                    <ScrollPane fitToWidth="true" prefViewportHeight="360" styleClass="guardian-card-scroll">
+                        <content>
+                            <FlowPane fx:id="focusCards" hgap="12" vgap="12" prefWrapLength="980" styleClass="guardian-cards-flow" />
+                        </content>
+                    </ScrollPane>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+    <right>
+        <VBox spacing="12" styleClass="guardian-rightbar">
+            <padding><Insets top="16" right="14" bottom="16" left="14" /></padding>
+            <VBox spacing="8" styleClass="guardian-side-card">
+                <Label text="Network" styleClass="guardian-side-title" />
+                <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+                <Button text="Workspace Home" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+                <Button text="Friends Directory" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+            </VBox>
+            <VBox spacing="8" styleClass="guardian-side-card">
+                <Label text="Shortcuts" styleClass="guardian-side-title" />
+                <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-side-link" />
+                <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-side-link" />
+                <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+            </VBox>
+        </VBox>
+    </right>
+</BorderPane>

@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane fx:controller="tn.esprit.GuardianController" styleClass="guardian-root" stylesheets="@guardian-cards.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <left>
+        <VBox spacing="12" styleClass="guardian-sidebar">
+            <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
+            <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
+            <Button text="▣ Planner" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
+            <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="◔ Analyst" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Label text="QUICK LINKS" styleClass="guardian-side-group-title" />
+            <Button text="Contact Support" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
+            <Button text="Friends" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
+            <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
+            <Region VBox.vgrow="ALWAYS" />
+        </VBox>
+    </left>
+    <center>
+        <VBox spacing="14" styleClass="guardian-page-wrap">
+            <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+
+            <VBox spacing="5" styleClass="guardian-hero,guardian-hero-rooms">
+                <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
+                <HBox alignment="CENTER_LEFT" spacing="15">
+                    <Button text="← Back to Rooms" onAction="#onGoRooms" styleClass="guardian-action-secondary" />
+                    <Label fx:id="chatRoomTitle" text="Room Chat" styleClass="guardian-hero-title" />
+                </HBox>
+            </VBox>
+
+            <VBox spacing="10" styleClass="guardian-panel" VBox.vgrow="ALWAYS">
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Communication Tools:" styleClass="guardian-section-title" />
+                    <Button text="Start Daily.co Call" onAction="#onStartDailyCoCall" styleClass="guardian-action-success" />
+                    <Button text="Start Twilio Video" onAction="#onStartTwilioVideo" styleClass="guardian-action-secondary" />
+                    <Button text="Start Agora Voice" onAction="#onStartAgoraVoice" styleClass="guardian-action-warning" />
+                </HBox>
+                <Label text="Discussion" styleClass="guardian-section-title" />
+                <ListView fx:id="roomChatList" VBox.vgrow="ALWAYS" />
+                <HBox spacing="8">
+                    <TextField fx:id="chatInputField" promptText="Type a message..." HBox.hgrow="ALWAYS" />
+                    <Button text="Send" onAction="#onSendChatMessage" styleClass="guardian-action-primary" />
+                </HBox>
+                
+                <Label text="Admin Resource Sharing" styleClass="guardian-hint" />
+                <HBox spacing="8">
+                    <ComboBox fx:id="chatResourceSelector" prefWidth="300" promptText="Select a resource..." />
+                    <Button text="Share to Chat" onAction="#onShareResource" styleClass="guardian-action-success" />
+                </HBox>
+            </VBox>
+        </VBox>
+    </center>
+    <right>
+        <VBox spacing="12" styleClass="guardian-rightbar">
+            <padding><Insets top="16" right="14" bottom="16" left="14" /></padding>
+            <VBox spacing="8" styleClass="guardian-side-card">
+                <Label text="Network" styleClass="guardian-side-title" />
+                <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+                <Button text="Workspace Home" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+                <Button text="Friends Directory" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+            </VBox>
+            <VBox spacing="8" styleClass="guardian-side-card">
+                <Label text="Shortcuts" styleClass="guardian-side-title" />
+                <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-side-link" />
+                <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-side-link" />
+                <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+            </VBox>
+        </VBox>
+    </right>
+</BorderPane>
