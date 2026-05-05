@@ -29,6 +29,23 @@ public class VirtualRoomService {
         return rooms;
     }
 
+    public List<VirtualRoom> findByCreator(int creatorId) throws SQLException {
+        String sql = "SELECT id, name, description, is_active, max_participants, created_at, creator_id, subject_id FROM virtual_room WHERE creator_id = ?";
+        List<VirtualRoom> rooms = new ArrayList<>();
+
+        try (var connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, creatorId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    rooms.add(mapRow(rs));
+                }
+            }
+        }
+
+        return rooms;
+    }
+
     public VirtualRoom findById(int id) throws SQLException {
         String sql = "SELECT id, name, description, is_active, max_participants, created_at, creator_id, subject_id FROM virtual_room WHERE id = ?";
 

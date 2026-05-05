@@ -29,6 +29,23 @@ public class ResourceService {
         return resources;
     }
 
+    public List<Resource> findByUploader(int uploaderId) throws SQLException {
+        String sql = "SELECT id, title, description, file_path, type, download_count, rating, created_at, updated_at, subject_id, uploader_id FROM resource WHERE uploader_id = ?";
+        List<Resource> resources = new ArrayList<>();
+
+        try (var connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(sql)) {
+            ps.setInt(1, uploaderId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    resources.add(mapRow(rs));
+                }
+            }
+        }
+
+        return resources;
+    }
+
     public Resource findById(int id) throws SQLException {
         String sql = "SELECT id, title, description, file_path, type, download_count, rating, created_at, updated_at, subject_id, uploader_id FROM resource WHERE id = ?";
 
@@ -58,7 +75,7 @@ public class ResourceService {
             ps.setInt(6, resource.rating());
             ps.setTimestamp(7, Timestamp.valueOf(resource.createdAt()));
             ps.setTimestamp(8, Timestamp.valueOf(resource.updatedAt()));
-            ps.setInt(9, resource.subjectId());
+            setNullableInt(ps, 9, resource.subjectId());
             ps.setInt(10, resource.uploaderId());
 
             ps.executeUpdate();
@@ -90,7 +107,7 @@ public class ResourceService {
             ps.setInt(6, resource.rating());
             ps.setTimestamp(7, Timestamp.valueOf(resource.createdAt()));
             ps.setTimestamp(8, Timestamp.valueOf(resource.updatedAt()));
-            ps.setInt(9, resource.subjectId());
+            setNullableInt(ps, 9, resource.subjectId());
             ps.setInt(10, resource.uploaderId());
             ps.setInt(11, resource.id());
 
@@ -126,5 +143,13 @@ public class ResourceService {
 
     private static LocalDateTime toLocalDateTime(Timestamp timestamp) {
         return timestamp == null ? null : timestamp.toLocalDateTime();
+    }
+
+    private static void setNullableInt(PreparedStatement ps, int index, Integer value) throws SQLException {
+        if (value == null) {
+            ps.setNull(index, java.sql.Types.INTEGER);
+        } else {
+            ps.setInt(index, value);
+        }
     }
 }

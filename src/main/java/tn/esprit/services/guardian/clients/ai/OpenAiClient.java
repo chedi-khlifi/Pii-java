@@ -2,10 +2,8 @@ package tn.esprit.services.guardian.clients.ai;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ArrayNode;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.fasterxml.jackson.databind.JsonNode;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.URI;
 import java.net.http.HttpClient;
@@ -24,13 +22,11 @@ public class OpenAiClient {
     private static final Logger logger = LoggerFactory.getLogger(OpenAiClient.class);
     private final String apiKey = System.getenv("OPENAI_API_KEY");
     private final HttpClient httpClient;
-    private final ObjectMapper mapper;
 
     public OpenAiClient() {
         this.httpClient = HttpClient.newBuilder()
                 .connectTimeout(Duration.ofSeconds(10))
                 .build();
-        this.mapper = new ObjectMapper();
     }
 
     private String callOpenAi(String systemPrompt, String userPrompt) {
@@ -39,20 +35,19 @@ public class OpenAiClient {
         }
 
         try {
-            ObjectNode root = mapper.createObjectNode();
+            JSONObject root = new JSONObject();
             root.put("model", "gpt-3.5-turbo");
-            
-            ArrayNode messages = root.putArray("messages");
-            
-            ObjectNode systemMessage = messages.addObject();
-            systemMessage.put("role", "system");
-            systemMessage.put("content", systemPrompt);
-            
-            ObjectNode userMessage = messages.addObject();
-            userMessage.put("role", "user");
-            userMessage.put("content", userPrompt);
 
-            String requestBody = mapper.writeValueAsString(root);
+            JSONArray messages = new JSONArray();
+            messages.put(new JSONObject()
+                .put("role", "system")
+                .put("content", systemPrompt));
+            messages.put(new JSONObject()
+                .put("role", "user")
+                .put("content", userPrompt));
+            root.put("messages", messages);
+
+            String requestBody = root.toString();
 
             HttpRequest request = HttpRequest.newBuilder()
                     .uri(URI.create("https://api.openai.com/v1/chat/completions"))
@@ -64,8 +59,15 @@ public class OpenAiClient {
             HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                JsonNode responseNode = mapper.readTree(response.body());
-                return responseNode.path("choices").get(0).path("message").path("content").asText();
+                JSONObject responseNode = new JSONObject(response.body());
+                JSONArray choices = responseNode.optJSONArray("choices");
+                if (choices != null && choices.length() > 0) {
+                    JSONObject message = choices.getJSONObject(0).optJSONObject("message");
+                    if (message != null) {
+                        return message.optString("content", "");
+                    }
+                }
+                return "";
             } else {
                 logger.error("OpenAI API returned status {}: {}", response.statusCode(), response.body());
                 return "Error from AI Service: " + response.statusCode();

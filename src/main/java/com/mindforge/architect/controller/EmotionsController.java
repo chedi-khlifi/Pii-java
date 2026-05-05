@@ -13,7 +13,6 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
-import nu.pattern.OpenCV;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.opencv.core.*;
@@ -83,7 +82,13 @@ public class EmotionsController implements Initializable {
     private double lastConfidence  = 0;
     private final List<Map<String, String>> emotionHistory = new ArrayList<>();
 
-    static { OpenCV.loadLocally(); }
+    static {
+        try {
+            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+        } catch (UnsatisfiedLinkError e) {
+            throw new ExceptionInInitializerError("OpenCV native library not found: " + e.getMessage());
+        }
+    }
 
     // ═════════════════════════════════════════════════════════════════════════
     //  Lifecycle

@@ -17,7 +17,7 @@
         <VBox spacing="12" styleClass="guardian-sidebar">
             <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
             <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
-            <Button text="▣ Planner" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="▣ Planner" onAction="#onOpenPlanner" styleClass="guardian-global-nav-button" />
             <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
             <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
             <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
@@ -59,10 +59,6 @@
                         <HBox spacing="10">
                             <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="File path" styleClass="guardian-input-label" /><TextField fx:id="libraryFilePathField" /></VBox>
                             <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Type" styleClass="guardian-input-label" /><ComboBox fx:id="libraryTypeField" maxWidth="Infinity" /></VBox>
-                        </HBox>
-                        <HBox spacing="10">
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Subject ID" styleClass="guardian-input-label" /><TextField fx:id="librarySubjectIdField" /></VBox>
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Uploader ID" styleClass="guardian-input-label" /><TextField fx:id="libraryUploaderIdField" /></VBox>
                         </HBox>
                         <HBox spacing="8">
                             <Button text="Add resource" onAction="#onLibraryCreate" styleClass="guardian-action-primary" />

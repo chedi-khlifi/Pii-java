@@ -174,8 +174,8 @@ public final class GuardianInputValidator {
     }
 
     private static void validateAllowedType(String type) {
-        if (!("PDF".equals(type) || "VIDEO".equals(type) || "LINK".equals(type) || "DOC".equals(type) || "QUIZ".equals(type) || "SLIDES".equals(type) || "NOTE".equals(type))) {
-            throw new IllegalArgumentException("Type must be one of: PDF, VIDEO, LINK, DOC, QUIZ, SLIDES, NOTE.");
+        if (!("PDF".equals(type) || "SUMMARY".equals(type) || "CHEAT_SHEET".equals(type) || "EXERCISE".equals(type))) {
+            throw new IllegalArgumentException("Type must be one of: PDF, SUMMARY, CHEAT_SHEET, EXERCISE.");
         }
     }
 

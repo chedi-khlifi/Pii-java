@@ -173,6 +173,45 @@ public class DashboardController {
     }
 
     @FXML
+    private void openGuardian() {
+        try {
+            Scene scene = centerContent.getScene();
+            if (originalRoot == null) {
+                originalRoot = scene.getRoot();
+            }
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/tn/esprit/view/guardian-hub.fxml"));
+            Parent guardianRoot = loader.load();
+
+            Button backBtn = new Button("← Back to Dashboard");
+            backBtn.setStyle(
+                    "-fx-background-color: #4e64f4; -fx-text-fill: white;" +
+                            "-fx-background-radius: 8; -fx-padding: 8 18; -fx-cursor: hand;" +
+                            "-fx-font-weight: bold; -fx-font-size: 13px;"
+            );
+            backBtn.setOnAction(e -> restoreOriginalContent());
+
+            HBox topBar = new HBox(backBtn);
+            topBar.setPadding(new Insets(10, 15, 10, 15));
+            topBar.setAlignment(Pos.CENTER_LEFT);
+            topBar.setStyle("-fx-background-color: #f0f2f5;");
+
+            VBox.setVgrow(guardianRoot, Priority.ALWAYS);
+            VBox fullPage = new VBox(topBar, guardianRoot);
+            fullPage.setStyle("-fx-background-color: #f0f2f5;");
+
+            scene.setRoot(fullPage);
+        } catch (IOException e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Guardian");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not load Guardian: " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
+    @FXML
     private void openLeaderboard() {
         try {
             FXMLLoader loader = new FXMLLoader(

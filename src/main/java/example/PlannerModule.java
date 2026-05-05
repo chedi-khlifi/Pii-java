@@ -26,6 +26,7 @@ import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
@@ -596,7 +597,7 @@ public class PlannerModule {
         c8.setCellValueFactory(new PropertyValueFactory<>("estimatedMinutes"));
         c8.setPrefWidth(110);
 
-        taskTable.getColumns().addAll(c1, c2, c3, c4, c5, c6, c7, c8);
+        taskTable.getColumns().setAll(Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8));
         taskTable.setPrefHeight(240);
         taskTable.setStyle("-fx-background-color: white;");
 
@@ -830,7 +831,7 @@ public class PlannerModule {
         c8.setCellValueFactory(new PropertyValueFactory<>("ownerId"));
         c8.setPrefWidth(75);
 
-        examTable.getColumns().addAll(c1, c2, c3, c4, c5, c6, c7, c8);
+        examTable.getColumns().setAll(Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8));
         examTable.setPrefHeight(240);
         examTable.setStyle("-fx-background-color: white;");
 

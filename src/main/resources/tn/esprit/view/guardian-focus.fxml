@@ -5,6 +5,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.HBox?>
@@ -16,7 +17,7 @@
         <VBox spacing="12" styleClass="guardian-sidebar">
             <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
             <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
-            <Button text="▣ Planner" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
+            <Button text="▣ Planner" onAction="#onOpenPlanner" styleClass="guardian-global-nav-button" />
             <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
             <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
             <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
@@ -53,7 +54,7 @@
                         <HBox spacing="10">
                             <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Session ID (auto)" styleClass="guardian-input-label" /><TextField fx:id="focusIdField" editable="false" /></VBox>
                             <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Duration (minutes)" styleClass="guardian-input-label" /><TextField fx:id="focusDurationField" /></VBox>
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Task ID (optional)" styleClass="guardian-input-label" /><TextField fx:id="focusTaskIdField" /></VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Task" styleClass="guardian-input-label" /><ComboBox fx:id="focusTaskField" maxWidth="Infinity" /></VBox>
                         </HBox>
                         <Label text="Session type and user are automatic (integration-ready)." styleClass="guardian-hint" />
                         <HBox spacing="8">

@@ -2,6 +2,7 @@ package example;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import com.mindforge.util.UserSession;
 
 import java.sql.*;
 
@@ -36,6 +37,34 @@ public class TaskController {
         return list;
     }
 
+    public static ObservableList<Task> getTasksByOwner(int ownerId) {
+        ObservableList<Task> list = FXCollections.observableArrayList();
+        String sql = "SELECT id, title, description, status, priority, due_date, owner_id, estimated_minutes FROM task WHERE owner_id = ?";
+
+        try (Connection con = DBConnection.getConnection();
+             PreparedStatement ps = con.prepareStatement(sql)) {
+            ps.setInt(1, ownerId);
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    list.add(new Task(
+                            rs.getInt("id"),
+                            rs.getString("title"),
+                            rs.getString("description") != null ? rs.getString("description") : "",
+                            rs.getString("status"),
+                            rs.getInt("priority"),
+                            rs.getString("due_date") != null ? rs.getString("due_date") : "",
+                            rs.getInt("owner_id"),
+                            rs.getInt("estimated_minutes")
+                    ));
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return list;
+    }
+
     public static void insertTask(String title, String description, String status, int priority, String dueDate, int estimatedMinutes) {
         String sql = "INSERT INTO task(title, description, status, priority, due_date, estimated_minutes, created_at, owner_id) VALUES (?, ?, ?, ?, ?, ?, NOW(), ?)";
 
@@ -49,12 +78,20 @@ public class TaskController {
             if (dueDate == null || dueDate.isEmpty()) ps.setNull(5, Types.TIMESTAMP);
             else ps.setString(5, dueDate);
             ps.setInt(6, estimatedMinutes);
-            ps.setInt(7, OWNER_ID);
+            ps.setInt(7, resolveOwnerId());
             ps.executeUpdate();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    private static int resolveOwnerId() {
+        UserSession session = UserSession.getInstance();
+        if (session != null && session.isLoggedIn()) {
+            return session.getUserId();
+        }
+        return OWNER_ID;
     }
 
     public static void updateTask(int id, String title, String description, String status, int priority, String dueDate, int estimatedMinutes) {

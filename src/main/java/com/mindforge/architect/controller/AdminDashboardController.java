@@ -18,9 +18,16 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import tn.esprit.Entity.Guardian.AiInsight;
+import tn.esprit.Entity.Guardian.Resource;
+import tn.esprit.Entity.Guardian.VirtualRoom;
+import tn.esprit.services.guardian.AiInsightService;
+import tn.esprit.services.guardian.ResourceService;
+import tn.esprit.services.guardian.VirtualRoomService;
 
 import java.io.IOException;
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
@@ -81,10 +88,51 @@ public class AdminDashboardController {
     @FXML private TableColumn<RoleRequest, Void>      colReqActions;
     @FXML private Label                               pendingCountLabel;
 
+    // ── Guardian AI Insights tab ───────────────────────────────────────────
+    @FXML private ComboBox<String> aiInsightTypeFilter;
+    @FXML private ComboBox<String> aiInsightSourceFilter;
+    @FXML private TableView<AiInsight> guardianAiInsightsTable;
+    @FXML private TableColumn<AiInsight, String> colAiInsightDate;
+    @FXML private TableColumn<AiInsight, String> colAiInsightUser;
+    @FXML private TableColumn<AiInsight, String> colAiInsightTask;
+    @FXML private TableColumn<AiInsight, String> colAiInsightType;
+    @FXML private TableColumn<AiInsight, String> colAiInsightSource;
+    @FXML private TableColumn<AiInsight, String> colAiInsightHelpful;
+    @FXML private TableColumn<AiInsight, String> colAiInsightPayload;
+
+    // ── Guardian Resources tab ─────────────────────────────────────────────
+    @FXML private TableView<Resource> guardianResourcesTable;
+    @FXML private TableColumn<Resource, String> colResId;
+    @FXML private TableColumn<Resource, String> colResTitle;
+    @FXML private TableColumn<Resource, String> colResType;
+    @FXML private TableColumn<Resource, String> colResUploader;
+    @FXML private TableColumn<Resource, String> colResDownloads;
+    @FXML private TableColumn<Resource, String> colResRating;
+    @FXML private TableColumn<Resource, String> colResCreated;
+    @FXML private TableColumn<Resource, Void>   colResActions;
+
+    // ── Guardian Rooms tab ────────────────────────────────────────────────
+    @FXML private TableView<VirtualRoom> guardianRoomsTable;
+    @FXML private TableColumn<VirtualRoom, String> colRoomId;
+    @FXML private TableColumn<VirtualRoom, String> colRoomName;
+    @FXML private TableColumn<VirtualRoom, String> colRoomCreator;
+    @FXML private TableColumn<VirtualRoom, String> colRoomSubject;
+    @FXML private TableColumn<VirtualRoom, String> colRoomMax;
+    @FXML private TableColumn<VirtualRoom, String> colRoomActive;
+    @FXML private TableColumn<VirtualRoom, String> colRoomCreated;
+    @FXML private TableColumn<VirtualRoom, Void>   colRoomActions;
+
     // ── Data ──────────────────────────────────────────────────────────────────
     private final ObservableList<UserRow>    usersList    = FXCollections.observableArrayList();
     private final ObservableList<RoleRequest> requestList = FXCollections.observableArrayList();
     private FilteredList<UserRow> filteredUsers;
+    private final ObservableList<AiInsight>  guardianAiInsightsList = FXCollections.observableArrayList();
+    private final ObservableList<Resource>   guardianResourcesList = FXCollections.observableArrayList();
+    private final ObservableList<VirtualRoom> guardianRoomsList    = FXCollections.observableArrayList();
+
+    private final AiInsightService aiInsightService = new AiInsightService();
+    private final ResourceService resourceService = new ResourceService();
+    private final VirtualRoomService virtualRoomService = new VirtualRoomService();
 
     // ═════════════════════════════════════════════════════════════════════════
     //  Inner model
@@ -126,10 +174,16 @@ public class AdminDashboardController {
         setupUsersTable();
         setupRequestsTable();
         setupSearch();
+        setupGuardianAiInsightsTable();
+        setupGuardianResourcesTable();
+        setupGuardianRoomsTable();
 
         loadUsers();
         loadRequests();
         updateStats();
+        loadGuardianAiInsights();
+        loadGuardianResources();
+        loadGuardianRooms();
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -541,6 +595,365 @@ public class AdminDashboardController {
     }
 
     // ═════════════════════════════════════════════════════════════════════════
+    //  Guardian AI Insights tab
+    // ═════════════════════════════════════════════════════════════════════════
+    private void setupGuardianAiInsightsTable() {
+        if (guardianAiInsightsTable == null) {
+            return;
+        }
+
+        if (aiInsightTypeFilter != null) {
+            aiInsightTypeFilter.setItems(FXCollections.observableArrayList(
+                    "All Types",
+                    "recommended_duration",
+                    "focus_tips",
+                    "daily_plan",
+                    "weekly_review"
+            ));
+            aiInsightTypeFilter.getSelectionModel().selectFirst();
+            aiInsightTypeFilter.valueProperty().addListener((obs, o, n) -> loadGuardianAiInsights());
+        }
+
+        if (aiInsightSourceFilter != null) {
+            aiInsightSourceFilter.setItems(FXCollections.observableArrayList(
+                    "All Sources",
+                    "ai",
+                    "rule"
+            ));
+            aiInsightSourceFilter.getSelectionModel().selectFirst();
+            aiInsightSourceFilter.valueProperty().addListener((obs, o, n) -> loadGuardianAiInsights());
+        }
+
+        colAiInsightDate.setCellValueFactory(c -> new SimpleStringProperty(formatDateTime(c.getValue().createdAt())));
+        colAiInsightUser.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().userId())));
+        colAiInsightTask.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().taskId())));
+        colAiInsightType.setCellValueFactory(c -> new SimpleStringProperty(formatAiInsightType(c.getValue().type())));
+        colAiInsightSource.setCellValueFactory(c -> new SimpleStringProperty(formatAiInsightSource(c.getValue().source())));
+        colAiInsightHelpful.setCellValueFactory(c -> new SimpleStringProperty(formatAiInsightFeedback(c.getValue())));
+        colAiInsightPayload.setCellValueFactory(c -> new SimpleStringProperty(nullSafe(c.getValue().payload())));
+
+        colAiInsightPayload.setCellFactory(col -> new TableCell<>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setText(null);
+                    setTooltip(null);
+                    return;
+                }
+                AiInsight insight = getTableView().getItems().get(getIndex());
+                String payload = insight == null ? "" : nullSafe(insight.payload());
+                String preview = truncate(payload, 160);
+                setText(preview);
+                if (!payload.isEmpty()) {
+                    setTooltip(new Tooltip(payload));
+                } else {
+                    setTooltip(null);
+                }
+            }
+        });
+
+        guardianAiInsightsTable.setItems(guardianAiInsightsList);
+    }
+
+    @FXML
+    private void refreshGuardianAiInsights() {
+        loadGuardianAiInsights();
+    }
+
+    private void loadGuardianAiInsights() {
+        if (guardianAiInsightsTable == null) {
+            return;
+        }
+        guardianAiInsightsList.clear();
+
+        String typeFilter = normalizeFilterValue(aiInsightTypeFilter, "All Types");
+        String sourceFilter = normalizeFilterValue(aiInsightSourceFilter, "All Sources");
+
+        try {
+            if (typeFilter == null && sourceFilter == null) {
+                guardianAiInsightsList.setAll(aiInsightService.findAll());
+            } else {
+                guardianAiInsightsList.setAll(aiInsightService.findFiltered(typeFilter, sourceFilter));
+            }
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load AI insights: " + e.getMessage());
+        }
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    //  Guardian Resources tab
+    // ═════════════════════════════════════════════════════════════════════════
+    private void setupGuardianResourcesTable() {
+        if (guardianResourcesTable == null) {
+            return;
+        }
+
+        colResId.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().id())));
+        colResTitle.setCellValueFactory(c -> new SimpleStringProperty(nullSafe(c.getValue().title())));
+        colResType.setCellValueFactory(c -> new SimpleStringProperty(nullSafe(c.getValue().type())));
+        colResUploader.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().uploaderId())));
+        colResDownloads.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().downloadCount())));
+        colResRating.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().rating())));
+        colResCreated.setCellValueFactory(c -> new SimpleStringProperty(formatDateTime(c.getValue().createdAt())));
+
+        colResActions.setCellFactory(col -> new TableCell<>() {
+            private final Button editBtn = new Button("Edit");
+            private final Button deleteBtn = new Button("Delete");
+            private final HBox box = new HBox(6, editBtn, deleteBtn);
+
+            {
+                box.setAlignment(Pos.CENTER);
+                editBtn.setStyle(
+                        "-fx-background-color: #0ea5e9; -fx-text-fill: white;" +
+                                "-fx-background-radius: 6; -fx-padding: 4 10;" +
+                                "-fx-cursor: hand; -fx-font-size: 11px; -fx-font-weight: 600;");
+                deleteBtn.setStyle(
+                        "-fx-background-color: #dc2626; -fx-text-fill: white;" +
+                                "-fx-background-radius: 6; -fx-padding: 4 10;" +
+                                "-fx-cursor: hand; -fx-font-size: 11px; -fx-font-weight: 600;");
+
+                editBtn.setOnAction(e -> editResource(getTableView().getItems().get(getIndex())));
+                deleteBtn.setOnAction(e -> deleteResource(getTableView().getItems().get(getIndex())));
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                setGraphic(empty ? null : box);
+            }
+        });
+
+        guardianResourcesTable.setItems(guardianResourcesList);
+    }
+
+    @FXML
+    private void refreshGuardianResources() {
+        loadGuardianResources();
+    }
+
+    private void loadGuardianResources() {
+        if (guardianResourcesTable == null) {
+            return;
+        }
+        guardianResourcesList.clear();
+        try {
+            guardianResourcesList.setAll(resourceService.findAll());
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load resources: " + e.getMessage());
+        }
+    }
+
+    private void editResource(Resource resource) {
+        if (resource == null) {
+            return;
+        }
+
+        Dialog<Resource> dialog = new Dialog<>();
+        dialog.setTitle("Edit Resource");
+        dialog.setHeaderText("Resource #" + resource.id());
+
+        TextField titleField = new TextField(nullSafe(resource.title()));
+        TextField descriptionField = new TextField(nullSafe(resource.description()));
+        TextField filePathField = new TextField(nullSafe(resource.filePath()));
+        ComboBox<String> typeBox = new ComboBox<>(FXCollections.observableArrayList(
+            "pdf", "summary", "cheat_sheet", "exercise"));
+        typeBox.setValue(resource.type() == null ? "summary" : resource.type());
+
+        int ratingValue = resource.rating() == null ? 0 : resource.rating();
+        Spinner<Integer> ratingSpinner = new Spinner<>(0, 5, Math.max(0, Math.min(5, ratingValue)));
+        ratingSpinner.setEditable(true);
+
+        VBox content = new VBox(10,
+                new Label("Title:"), titleField,
+                new Label("Description:"), descriptionField,
+                new Label("File path:"), filePathField,
+                new Label("Type:"), typeBox,
+                new Label("Rating (0-5):"), ratingSpinner
+        );
+        content.setPadding(new Insets(20));
+
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+
+        dialog.setResultConverter(btn -> {
+            if (btn == ButtonType.OK) {
+                return new Resource(
+                        resource.id(),
+                        titleField.getText().trim(),
+                        descriptionField.getText().trim(),
+                        filePathField.getText().trim(),
+                        typeBox.getValue(),
+                        resource.downloadCount(),
+                        ratingSpinner.getValue(),
+                        resource.createdAt(),
+                        LocalDateTime.now(),
+                        resource.subjectId(),
+                        resource.uploaderId()
+                );
+            }
+            return null;
+        });
+
+        dialog.showAndWait().ifPresent(updated -> {
+            if (updated.title() == null || updated.title().isBlank()) {
+                showAlert(Alert.AlertType.WARNING, "Validation", "Title is required.");
+                return;
+            }
+            try {
+                resourceService.update(updated);
+                loadGuardianResources();
+                showAlert(Alert.AlertType.INFORMATION, "Success", "Resource updated successfully!");
+            } catch (SQLException e) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to update resource: " + e.getMessage());
+            }
+        });
+    }
+
+    private void deleteResource(Resource resource) {
+        if (resource == null) {
+            return;
+        }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete Resource #" + resource.id());
+        confirm.setContentText("Are you sure you want to delete '" + nullSafe(resource.title()) + "'?");
+
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                try {
+                    resourceService.delete(resource.id());
+                    loadGuardianResources();
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Resource deleted successfully!");
+                } catch (SQLException e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete resource: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    //  Guardian Rooms tab
+    // ═════════════════════════════════════════════════════════════════════════
+    private void setupGuardianRoomsTable() {
+        if (guardianRoomsTable == null) {
+            return;
+        }
+
+        colRoomId.setCellValueFactory(c -> new SimpleStringProperty(String.valueOf(c.getValue().id())));
+        colRoomName.setCellValueFactory(c -> new SimpleStringProperty(nullSafe(c.getValue().name())));
+        colRoomCreator.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().creatorId())));
+        colRoomSubject.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().subjectId())));
+        colRoomMax.setCellValueFactory(c -> new SimpleStringProperty(nullSafeNumber(c.getValue().maxParticipants())));
+        colRoomActive.setCellValueFactory(c -> new SimpleStringProperty(Boolean.TRUE.equals(c.getValue().isActive()) ? "Yes" : "No"));
+        colRoomCreated.setCellValueFactory(c -> new SimpleStringProperty(formatDateTime(c.getValue().createdAt())));
+
+        colRoomActions.setCellFactory(col -> new TableCell<>() {
+            private final Button toggleBtn = new Button();
+            private final Button deleteBtn = new Button("Delete");
+            private final HBox box = new HBox(6, toggleBtn, deleteBtn);
+
+            {
+                box.setAlignment(Pos.CENTER);
+                deleteBtn.setStyle(
+                        "-fx-background-color: #dc2626; -fx-text-fill: white;" +
+                                "-fx-background-radius: 6; -fx-padding: 4 10;" +
+                                "-fx-cursor: hand; -fx-font-size: 11px; -fx-font-weight: 600;");
+
+                toggleBtn.setOnAction(e -> toggleRoomActive(getTableView().getItems().get(getIndex())));
+                deleteBtn.setOnAction(e -> deleteRoom(getTableView().getItems().get(getIndex())));
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                    return;
+                }
+                VirtualRoom room = getTableView().getItems().get(getIndex());
+                boolean active = room != null && Boolean.TRUE.equals(room.isActive());
+                toggleBtn.setText(active ? "Close" : "Open");
+                toggleBtn.setStyle(
+                        active
+                                ? "-fx-background-color: #f59e0b; -fx-text-fill: white;" +
+                                "-fx-background-radius: 6; -fx-padding: 4 10;" +
+                                "-fx-cursor: hand; -fx-font-size: 11px; -fx-font-weight: 600;"
+                                : "-fx-background-color: #0ea5e9; -fx-text-fill: white;" +
+                                "-fx-background-radius: 6; -fx-padding: 4 10;" +
+                                "-fx-cursor: hand; -fx-font-size: 11px; -fx-font-weight: 600;"
+                );
+                setGraphic(box);
+            }
+        });
+
+        guardianRoomsTable.setItems(guardianRoomsList);
+    }
+
+    @FXML
+    private void refreshGuardianRooms() {
+        loadGuardianRooms();
+    }
+
+    private void loadGuardianRooms() {
+        if (guardianRoomsTable == null) {
+            return;
+        }
+        guardianRoomsList.clear();
+        try {
+            guardianRoomsList.setAll(virtualRoomService.findAll());
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to load rooms: " + e.getMessage());
+        }
+    }
+
+    private void toggleRoomActive(VirtualRoom room) {
+        if (room == null || room.id() == null) {
+            return;
+        }
+        boolean nextState = !Boolean.TRUE.equals(room.isActive());
+        VirtualRoom updated = new VirtualRoom(
+                room.id(),
+                room.name(),
+                room.description(),
+                nextState,
+                room.maxParticipants(),
+                room.createdAt(),
+                room.creatorId(),
+                room.subjectId()
+        );
+
+        try {
+            virtualRoomService.update(updated);
+            loadGuardianRooms();
+        } catch (SQLException e) {
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to update room: " + e.getMessage());
+        }
+    }
+
+    private void deleteRoom(VirtualRoom room) {
+        if (room == null || room.id() == null) {
+            return;
+        }
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirm Delete");
+        confirm.setHeaderText("Delete Room #" + room.id());
+        confirm.setContentText("Are you sure you want to delete '" + nullSafe(room.name()) + "'?");
+
+        confirm.showAndWait().ifPresent(btn -> {
+            if (btn == ButtonType.OK) {
+                try {
+                    virtualRoomService.delete(room.id());
+                    loadGuardianRooms();
+                    showAlert(Alert.AlertType.INFORMATION, "Success", "Room deleted successfully!");
+                } catch (SQLException e) {
+                    showAlert(Alert.AlertType.ERROR, "Error", "Failed to delete room: " + e.getMessage());
+                }
+            }
+        });
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
     //  AI Report
     // ═════════════════════════════════════════════════════════════════════════
     @FXML
@@ -651,6 +1064,60 @@ public class AdminDashboardController {
         if (ts == null) return "";
         return ts.toLocalDateTime()
                 .format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    private String formatDateTime(LocalDateTime dateTime) {
+        if (dateTime == null) return "";
+        return dateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
+    }
+
+    private String nullSafe(String value) {
+        return value == null ? "" : value;
+    }
+
+    private String nullSafeNumber(Integer value) {
+        return value == null ? "" : String.valueOf(value);
+    }
+
+    private String normalizeFilterValue(ComboBox<String> comboBox, String allLabel) {
+        if (comboBox == null) {
+            return null;
+        }
+        String value = comboBox.getValue();
+        if (value == null || value.equals(allLabel)) {
+            return null;
+        }
+        return value.trim();
+    }
+
+    private String formatAiInsightType(String type) {
+        if (type == null || type.isBlank()) return "";
+        return switch (type) {
+            case "recommended_duration" -> "Recommended Duration";
+            case "focus_tips" -> "Focus Tips";
+            case "daily_plan" -> "Daily Plan";
+            case "weekly_review" -> "Weekly Review";
+            default -> type;
+        };
+    }
+
+    private String formatAiInsightSource(String source) {
+        if (source == null || source.isBlank()) return "";
+        return source.toUpperCase();
+    }
+
+    private String formatAiInsightFeedback(AiInsight insight) {
+        if (insight == null) return "";
+        int helpful = insight.helpfulVotes() == null ? 0 : insight.helpfulVotes();
+        int unhelpful = insight.unhelpfulVotes() == null ? 0 : insight.unhelpfulVotes();
+        return helpful + " / " + unhelpful;
+    }
+
+    private String truncate(String value, int maxLen) {
+        if (value == null) return "";
+        String trimmed = value.trim();
+        if (trimmed.length() <= maxLen) return trimmed;
+        return trimmed.substring(0, Math.max(0, maxLen - 1)) + "…";
     }
 
     private Connection getConnection() throws SQLException {

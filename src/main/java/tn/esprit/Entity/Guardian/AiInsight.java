@@ -1,5 +1,16 @@
 package tn.esprit.Entity.Guardian;
 
-// Placeholder: no ai_insight table was found in the current database schema.
-public class AiInsight {
+import java.time.LocalDateTime;
+
+public record AiInsight(
+	Integer id,
+	Integer userId,
+	Integer taskId,
+	String type,
+	String source,
+	String payload,
+	Integer helpfulVotes,
+	Integer unhelpfulVotes,
+	LocalDateTime createdAt
+) {
 }
