@@ -11,8 +11,22 @@ import java.util.logging.Logger;
 public class TwilioClient {
 
     private static final Logger logger = Logger.getLogger(TwilioClient.class.getName());
-    private final String accountSid = System.getenv("TWILIO_ACCOUNT_SID");
-    private final String authToken = "AIzaSyD09mMWjb7EqPAgKDmtbR5vS5ndvwMNrC8";
+    private static String getEnvOrFile(String key) {
+        String val = System.getenv(key);
+        if (val != null && !val.trim().isEmpty()) return val;
+        try {
+            java.nio.file.Path envPath = java.nio.file.Paths.get(".env");
+            if (java.nio.file.Files.exists(envPath)) {
+                for (String line : java.nio.file.Files.readAllLines(envPath)) {
+                    if (line.trim().startsWith(key + "=")) return line.substring(line.indexOf('=') + 1).trim();
+                }
+            }
+        } catch (Exception e) {}
+        return null;
+    }
+
+    private final String accountSid = getEnvOrFile("TWILIO_ACCOUNT_SID");
+    private final String authToken = getEnvOrFile("TWILIO_AUTH_TOKEN");
 
     public String createRoom(String roomName) {
         logger.info("Creating Twilio room: " + roomName);
@@ -25,8 +39,8 @@ public class TwilioClient {
 
     public String generateParticipantToken(String roomSid, String userName) {
         logger.info("Generating token for " + userName + " to join " + roomSid);
-        if (accountSid == null) {
-            return "Set TWILIO_ACCOUNT_SID environment variable.";
+        if (accountSid == null || authToken == null) {
+            return "Set TWILIO_ACCOUNT_SID and TWILIO_AUTH_TOKEN environment variables.";
         }
         // TODO: Implement actual token generation
         return "twilio_token_xyz";

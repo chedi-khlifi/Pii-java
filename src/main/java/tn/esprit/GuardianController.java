@@ -5,7 +5,6 @@ import example.PlannerModule;
 import example.Task;
 import example.TaskController;
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -26,15 +25,21 @@ import javafx.scene.layout.VBox;
 import tn.esprit.Entity.Guardian.FocusSession;
 import tn.esprit.Entity.Guardian.AiInsight;
 import tn.esprit.Entity.Guardian.Resource;
+import tn.esprit.Entity.Guardian.RoomMessage;
 import tn.esprit.Entity.Guardian.VirtualRoom;
 import tn.esprit.services.guardian.AiInsightService;
 import tn.esprit.services.guardian.FocusSessionService;
 import tn.esprit.services.guardian.ResourceService;
+import tn.esprit.services.guardian.RoomMessageService;
 import tn.esprit.services.guardian.VirtualRoomService;
 import tn.esprit.services.guardian.clients.ai.OpenAiClient;
+import tn.esprit.services.guardian.clients.video.DailyCoClient;
+import tn.esprit.services.guardian.clients.video.TwilioClient;
+import tn.esprit.services.guardian.clients.video.AgoraClient;
 
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -48,12 +53,16 @@ public class GuardianController {
     private final VirtualRoomService virtualRoomService = new VirtualRoomService();
     private final ResourceService resourceService = new ResourceService();
     private final OpenAiClient openAiClient = new OpenAiClient();
+    private final DailyCoClient dailyCoClient = new DailyCoClient();
+    private final TwilioClient twilioClient = new TwilioClient();
+    private final AgoraClient agoraClient = new AgoraClient();
     private final AiInsightService aiInsightService = new AiInsightService();
+    private final RoomMessageService roomMessageService = new RoomMessageService();
 
     private static Integer selectedRoomId;
     private static String selectedRoomName;
-    private static final Map<Integer, ObservableList<String>> ROOM_CHAT_STORE = new HashMap<>();
     private List<Resource> libraryAllResources = List.of();
+    private static final DateTimeFormatter ROOM_CHAT_TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
 
     @FXML private Label snapshotLabel;
     @FXML private Label moduleSnapshotLabel;
@@ -122,6 +131,11 @@ public class GuardianController {
     @FXML
     private void onGoFocus(ActionEvent event) {
         loadView("guardian-focus.fxml", event);
+    }
+
+    @FXML
+    private void onGoFocusStats(ActionEvent event) {
+        loadView("guardian-focus-stats.fxml", event);
     }
 
     @FXML
@@ -267,7 +281,7 @@ public class GuardianController {
     private void onAiFocusTips(ActionEvent event) {
         String context = buildFocusContext();
         String response = openAiClient.generateFocusTips(context);
-        setMessage(focusMessageLabel, response, response.startsWith("Error"));
+        setAiMessage("AI Focus Tips", response, response.startsWith("Error"));
         logAiInsight("focus_tips", response, getSelectedTaskId());
     }
 
@@ -275,7 +289,7 @@ public class GuardianController {
     private void onDailyPlan(ActionEvent event) {
         String context = buildFocusContext();
         String response = openAiClient.generateDailyPlan(context);
-        setMessage(focusMessageLabel, response, response.startsWith("Error"));
+        setAiMessage("Your Daily Plan", response, response.startsWith("Error"));
         logAiInsight("daily_plan", response, getSelectedTaskId());
     }
 
@@ -283,7 +297,7 @@ public class GuardianController {
     private void onWeeklyReview(ActionEvent event) {
         String context = buildFocusContext();
         String response = openAiClient.generateWeeklyReview(context);
-        setMessage(focusMessageLabel, response, response.startsWith("Error"));
+        setAiMessage("Weekly Review Insight", response, response.startsWith("Error"));
         logAiInsight("weekly_review", response, getSelectedTaskId());
     }
 
@@ -838,9 +852,6 @@ public class GuardianController {
             return;
         }
 
-        ObservableList<String> messages = ROOM_CHAT_STORE.computeIfAbsent(roomId, id -> FXCollections.observableArrayList());
-        roomChatList.setItems(messages);
-
         try {
             VirtualRoom room = virtualRoomService.findById(roomId);
             if (chatRoomTitle != null) {
@@ -855,6 +866,26 @@ public class GuardianController {
 
         if (chatResourceSelector != null) {
             loadChatResources();
+        }
+        refreshRoomChat();
+    }
+
+    private void refreshRoomChat() {
+        if (roomChatList == null) {
+            return;
+        }
+        Integer roomId = selectedRoomId;
+        if (roomId == null) {
+            roomChatList.setItems(FXCollections.observableArrayList());
+            return;
+        }
+        try {
+            List<String> formatted = roomMessageService.findByRoomId(roomId).stream()
+                    .map(this::formatRoomMessage)
+                    .toList();
+            roomChatList.setItems(FXCollections.observableArrayList(formatted));
+        } catch (Exception e) {
+            roomChatList.setItems(FXCollections.observableArrayList("System: Failed to load messages."));
         }
     }
 
@@ -880,10 +911,26 @@ public class GuardianController {
         if (text.isEmpty()) {
             return;
         }
-        String sender = UserSession.getInstance().getEmail();
-        String label = sender == null || sender.isBlank() ? "Me" : sender;
-        roomChatList.getItems().add(label + ": " + text);
-        chatInputField.clear();
+        Integer roomId = selectedRoomId;
+        if (roomId == null) {
+            return;
+        }
+        RoomMessage message = new RoomMessage(
+                null,
+                text,
+                false,
+                LocalDateTime.now(),
+                null,
+                resolveSenderId(),
+                roomId
+        );
+        try {
+            roomMessageService.insert(message);
+            chatInputField.clear();
+            refreshRoomChat();
+        } catch (Exception e) {
+            addRoomSystemMessage("Failed to send message.");
+        }
     }
 
     @FXML
@@ -895,29 +942,103 @@ public class GuardianController {
         if (selected == null) {
             return;
         }
-        roomChatList.getItems().add("Shared resource: " + selected);
+        Integer roomId = selectedRoomId;
+        if (roomId == null) {
+            return;
+        }
+        RoomMessage message = new RoomMessage(
+                null,
+                "Shared resource: " + selected,
+                false,
+                LocalDateTime.now(),
+                null,
+                resolveSenderId(),
+                roomId
+        );
+        try {
+            roomMessageService.insert(message);
+            refreshRoomChat();
+        } catch (Exception e) {
+            addRoomSystemMessage("Failed to share resource.");
+        }
     }
 
     @FXML
     private void onStartDailyCoCall(ActionEvent event) {
-        addRoomSystemMessage("Daily.co call integration is not configured.");
+        if (selectedRoomName == null) {
+            addRoomSystemMessage("Select a room first to start a call.");
+            return;
+        }
+        String link = dailyCoClient.createRoomSession(selectedRoomName, 10);
+        addRoomSystemMessage("Daily.co Video Link: " + link);
     }
 
     @FXML
     private void onStartTwilioVideo(ActionEvent event) {
-        addRoomSystemMessage("Twilio video integration is not configured.");
+        if (selectedRoomName == null) {
+            addRoomSystemMessage("Select a room first to start a call.");
+            return;
+        }
+        String roomSid = twilioClient.createRoom(selectedRoomName);
+        String token = twilioClient.generateParticipantToken(roomSid, resolveSenderLabel());
+        addRoomSystemMessage("Twilio Room SID: " + roomSid + " | Token: " + token);
     }
 
     @FXML
     private void onStartAgoraVoice(ActionEvent event) {
-        addRoomSystemMessage("Agora voice integration is not configured.");
+        if (selectedRoomName == null) {
+            addRoomSystemMessage("Select a room first to start a call.");
+            return;
+        }
+        String token = agoraClient.generateAccessToken(selectedRoomName, resolveSenderLabel());
+        String presence = agoraClient.trackUserPresence(selectedRoomName);
+        addRoomSystemMessage("Agora Token: " + token + " | Status: " + presence);
     }
 
     private void addRoomSystemMessage(String message) {
         if (roomChatList == null) {
             return;
         }
-        roomChatList.getItems().add("System: " + message);
+        Integer roomId = selectedRoomId;
+        if (roomId == null) {
+            return;
+        }
+        RoomMessage systemMessage = new RoomMessage(
+                null,
+                message,
+                false,
+                LocalDateTime.now(),
+                null,
+                null,
+                roomId
+        );
+        try {
+            roomMessageService.insert(systemMessage);
+            refreshRoomChat();
+        } catch (Exception e) {
+            roomChatList.getItems().add("System: " + message);
+        }
+    }
+
+    private String formatRoomMessage(RoomMessage message) {
+        String timestamp = message.createdAt() == null ? "" : message.createdAt().format(ROOM_CHAT_TIME_FORMAT);
+        String prefix = timestamp.isEmpty() ? "" : "[" + timestamp + "] ";
+        Integer currentUserId = resolveSenderId();
+        String sender = message.senderId() == null
+                ? "System"
+                : (currentUserId != null && currentUserId.equals(message.senderId()) ? "Me" : "User " + message.senderId());
+        String body = message.content() == null ? "" : message.content();
+        return prefix + sender + ": " + body;
+    }
+
+    private Integer resolveSenderId() {
+        UserSession session = UserSession.getInstance();
+        return session.isLoggedIn() ? session.getUserId() : null;
+    }
+
+    private String resolveSenderLabel() {
+        String email = UserSession.getInstance().getEmail();
+        return email == null || email.isBlank() ? "Me" : email;
     }
 
     private void loadTaskOptions() {
@@ -1033,9 +1154,45 @@ public class GuardianController {
             return;
         }
         label.setText(message);
+        label.setVisible(true);
+        label.setManaged(true);
+        if (focusMessageContainer != null && label == focusMessageLabel) {
+            focusMessageContainer.getChildren().clear();
+        }
         label.setStyle(error
                 ? "-fx-text-fill: #b91c1c; -fx-font-size: 12px;"
                 : "-fx-text-fill: #15803d; -fx-font-size: 12px;");
+    }
+
+    private void setAiMessage(String title, String message, boolean error) {
+        if (focusMessageContainer == null) return;
+        
+        focusMessageContainer.getChildren().clear();
+        
+        VBox aiBox = new VBox(8);
+        aiBox.getStyleClass().add("guardian-ai-box");
+        if (error) {
+            aiBox.setStyle("-fx-border-color: #f2b2b2; -fx-background-color: #fffafb;");
+        }
+        
+        Label titleLabel = new Label(error ? "⚠️ AI Error" : "✨ " + title);
+        titleLabel.getStyleClass().add("guardian-ai-title");
+        if (error) {
+            titleLabel.setStyle("-fx-text-fill: #d45353;");
+        }
+        
+        Label contentLabel = new Label(message);
+        contentLabel.getStyleClass().add("guardian-ai-content");
+        contentLabel.setWrapText(true);
+        
+        aiBox.getChildren().addAll(titleLabel, contentLabel);
+        focusMessageContainer.getChildren().add(aiBox);
+        
+        if (focusMessageLabel != null) {
+            focusMessageLabel.setText("");
+            focusMessageLabel.setVisible(false);
+            focusMessageLabel.setManaged(false);
+        }
     }
 
     private VBox buildCard(String title, String line1, String line2) {

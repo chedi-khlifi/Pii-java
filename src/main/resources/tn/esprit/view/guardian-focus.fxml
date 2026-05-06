@@ -43,6 +43,7 @@
 
                     <HBox spacing="8">
                         <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-tab-button,guardian-tab-selected" />
+                        <Button text="Focus Stats" onAction="#onGoFocusStats" styleClass="guardian-tab-button" />
                         <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-tab-button" />
                         <Button text="Resource Library" onAction="#onGoLibrary" styleClass="guardian-tab-button" />
                     </HBox>
