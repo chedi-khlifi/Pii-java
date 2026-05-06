@@ -49,6 +49,24 @@
 
                     <Label fx:id="moduleSnapshotLabel" text="Loading snapshot..." styleClass="guardian-snapshot" />
 
+                    <HBox spacing="10" styleClass="guardian-panel">
+                        <VBox spacing="4" HBox.hgrow="ALWAYS">
+                            <Label text="Search" styleClass="guardian-input-label" />
+                            <TextField fx:id="librarySearchField" promptText="Search title or description..." />
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Type" styleClass="guardian-input-label" />
+                            <ComboBox fx:id="libraryFilterTypeField" prefWidth="160" />
+                        </VBox>
+                        <VBox spacing="4" alignment="BOTTOM_RIGHT">
+                            <Label text="" />
+                            <HBox spacing="8">
+                                <Button text="Apply" onAction="#onLibraryApplyFilters" styleClass="guardian-action-primary" />
+                                <Button text="Clear" onAction="#onLibraryClearFilters" styleClass="guardian-action-ghost" />
+                            </HBox>
+                        </VBox>
+                    </HBox>
+
                     <VBox spacing="10" styleClass="guardian-panel">
                         <Label text="Add / Update Resource" styleClass="guardian-section-title" />
                         <HBox spacing="10">

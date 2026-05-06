@@ -18,8 +18,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.HBox;
@@ -30,28 +28,18 @@ import tn.esprit.Entity.Guardian.AiInsight;
 import tn.esprit.Entity.Guardian.Resource;
 import tn.esprit.Entity.Guardian.VirtualRoom;
 import tn.esprit.services.guardian.AiInsightService;
-import tn.esprit.services.guardian.ExternalLearningResourceService;
-import tn.esprit.services.guardian.ExternalSuggestion;
 import tn.esprit.services.guardian.FocusSessionService;
 import tn.esprit.services.guardian.ResourceService;
 import tn.esprit.services.guardian.VirtualRoomService;
 import tn.esprit.services.guardian.clients.ai.OpenAiClient;
-import tn.esprit.services.guardian.clients.video.AgoraClient;
-import tn.esprit.services.guardian.clients.video.DailyCoClient;
-import tn.esprit.services.guardian.clients.video.TwilioClient;
 
 import java.io.IOException;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 public class GuardianController {
@@ -61,15 +49,11 @@ public class GuardianController {
     private final ResourceService resourceService = new ResourceService();
     private final OpenAiClient openAiClient = new OpenAiClient();
     private final AiInsightService aiInsightService = new AiInsightService();
-    private final ExternalLearningResourceService externalLearningResourceService = new ExternalLearningResourceService();
-    private final DailyCoClient dailyCoClient = new DailyCoClient();
-    private final TwilioClient twilioClient = new TwilioClient();
-    private final AgoraClient agoraClient = new AgoraClient();
 
-    private static final Map<Integer, ObservableList<String>> ROOM_MESSAGES = new HashMap<>();
-    private static final Set<Integer> JOINED_ROOM_IDS = new HashSet<>();
     private static Integer selectedRoomId;
     private static String selectedRoomName;
+    private static final Map<Integer, ObservableList<String>> ROOM_CHAT_STORE = new HashMap<>();
+    private List<Resource> libraryAllResources = List.of();
 
     @FXML private Label snapshotLabel;
     @FXML private Label moduleSnapshotLabel;
@@ -86,7 +70,6 @@ public class GuardianController {
     @FXML private TextField roomsNameField;
     @FXML private TextField roomsDescriptionField;
     @FXML private TextField roomsMaxParticipantsField;
-    @FXML private TextField roomsSubjectIdField;
     @FXML private Label roomsMessageLabel;
     @FXML private FlowPane roomsCards;
 
@@ -94,13 +77,9 @@ public class GuardianController {
     @FXML private TextField libraryTitleField;
     @FXML private TextField libraryDescriptionField;
     @FXML private TextField libraryFilePathField;
-    @FXML private TextField librarySubjectIdField;
     @FXML private ComboBox<String> libraryTypeField;
-    @FXML private TextField librarySubjectFilterField;
-    @FXML private ComboBox<String> libraryTypeFilterField;
     @FXML private TextField librarySearchField;
-    @FXML private Label libraryExternalQueryLabel;
-    @FXML private ListView<String> libraryExternalSuggestions;
+    @FXML private ComboBox<String> libraryFilterTypeField;
     @FXML private VBox libraryMessageContainer;
     @FXML private Label libraryMessageLabel;
     @FXML private FlowPane libraryCards;
@@ -109,14 +88,6 @@ public class GuardianController {
     @FXML private ListView<String> roomChatList;
     @FXML private TextField chatInputField;
     @FXML private ComboBox<ResourceOption> chatResourceSelector;
-    @FXML private Label chatStatusLabel;
-
-    @FXML private Label statsTodaySessionsLabel;
-    @FXML private Label statsWeekMinutesLabel;
-    @FXML private Label statsTotalMinutesLabel;
-    @FXML private TableView<TaskTotal> statsTaskTable;
-    @FXML private TableColumn<TaskTotal, String> colStatsTask;
-    @FXML private TableColumn<TaskTotal, String> colStatsMinutes;
 
     @FXML
     private void initialize() {
@@ -132,19 +103,15 @@ public class GuardianController {
                 libraryTypeField.getSelectionModel().selectFirst();
             }
         }
-        if (libraryTypeFilterField != null) {
-            libraryTypeFilterField.getItems().setAll("All types", "pdf", "summary", "cheat_sheet", "exercise");
-            if (!libraryTypeFilterField.getItems().isEmpty()) {
-                libraryTypeFilterField.getSelectionModel().selectFirst();
-            }
+        if (libraryFilterTypeField != null) {
+            libraryFilterTypeField.getItems().setAll("All", "pdf", "summary", "cheat_sheet", "exercise");
+            libraryFilterTypeField.getSelectionModel().selectFirst();
         }
         loadTaskOptions();
         loadFocusSessions();
         loadRooms();
         loadResources();
-        loadFocusStats();
-        loadExternalSuggestions();
-        loadRoomChatView();
+        initRoomChat();
     }
 
     @FXML
@@ -165,11 +132,6 @@ public class GuardianController {
     @FXML
     private void onGoLibrary(ActionEvent event) {
         loadView("guardian-library.fxml", event);
-    }
-
-    @FXML
-    private void onGoStats(ActionEvent event) {
-        loadView("guardian-stats.fxml", event);
     }
 
     @FXML
@@ -460,39 +422,19 @@ public class GuardianController {
     }
 
     @FXML
-    private void onRoomsFilter(ActionEvent event) {
-        if (!validateOptionalInt(roomsSubjectIdField, roomsMessageLabel, "Subject ID must be a number.")) {
-            return;
-        }
-        loadRooms();
-    }
-
-    @FXML
-    private void onJoinRoom(ActionEvent event) {
-        Integer roomId = parseOptionalInt(roomsIdField);
-        if (roomId == null) {
-            setMessage(roomsMessageLabel, "Select a room first.", true);
-            return;
-        }
-        JOINED_ROOM_IDS.add(roomId);
-        setMessage(roomsMessageLabel, "You joined this room.", false);
+    private void onSendRoomInvite(ActionEvent event) {
+        setMessage(roomsMessageLabel, "Room invite queued for future integration.", false);
     }
 
     @FXML
     private void onOpenRoomChat(ActionEvent event) {
-        Integer roomId = parseOptionalInt(roomsIdField);
-        if (roomId == null) {
-            setMessage(roomsMessageLabel, "Select a room first.", true);
+        Integer id = parseRequiredInt(roomsIdField, roomsMessageLabel, "Select a room first.");
+        if (id == null) {
             return;
         }
-        selectedRoomId = roomId;
+        selectedRoomId = id;
         selectedRoomName = safeText(roomsNameField);
         loadView("guardian-room-chat.fxml", event);
-    }
-
-    @FXML
-    private void onSendRoomInvite(ActionEvent event) {
-        setMessage(roomsMessageLabel, "Room invite queued for future integration.", false);
     }
 
     @FXML
@@ -601,30 +543,19 @@ public class GuardianController {
     }
 
     @FXML
-    private void onLibraryFilterApply(ActionEvent event) {
-        if (!validateOptionalInt(librarySubjectFilterField, libraryMessageLabel, "Subject ID must be a number.")) {
-            return;
-        }
-        loadResources();
+    private void onLibraryApplyFilters(ActionEvent event) {
+        applyLibraryFilters();
     }
 
     @FXML
-    private void onLibraryFilterClear(ActionEvent event) {
-        if (librarySubjectFilterField != null) {
-            librarySubjectFilterField.clear();
-        }
-        if (libraryTypeFilterField != null) {
-            libraryTypeFilterField.getSelectionModel().selectFirst();
-        }
+    private void onLibraryClearFilters(ActionEvent event) {
         if (librarySearchField != null) {
             librarySearchField.clear();
         }
-        loadResources();
-    }
-
-    @FXML
-    private void onLoadExternalSuggestions(ActionEvent event) {
-        loadExternalSuggestions();
+        if (libraryFilterTypeField != null) {
+            libraryFilterTypeField.getSelectionModel().selectFirst();
+        }
+        applyLibraryFilters();
     }
 
     @FXML
@@ -684,13 +615,23 @@ public class GuardianController {
                     ).reversed())
                     .toList();
 
+                Map<Integer, String> taskTitles = TaskController.getTasksByOwner(userId).stream()
+                    .collect(Collectors.toMap(Task::getId, Task::getTitle, (a, b) -> a));
+
             if (focusCards != null) {
                 focusCards.getChildren().clear();
                 for (FocusSession session : sessions) {
+                    String taskLabel = "-";
+                    if (session.taskId() != null) {
+                    String title = taskTitles.get(session.taskId());
+                    taskLabel = title == null || title.isBlank()
+                        ? "#" + session.taskId()
+                        : title + " (#" + session.taskId() + ")";
+                    }
                     VBox card = buildCard(
                             "Session #" + session.id(),
                             "Duration: " + session.duration() + " min",
-                            "Task ID: " + (session.taskId() == null ? "-" : session.taskId())
+                        "Task: " + taskLabel
                     );
                     card.setOnMouseClicked(e -> {
                         if (focusIdField != null) {
@@ -713,6 +654,26 @@ public class GuardianController {
                 VBox totalCard = buildStatCard("Total Focus Minutes", String.valueOf(totalMinutes));
                 VBox countCard = buildStatCard("Sessions", String.valueOf(sessions.size()));
                 focusUserStatsCards.getChildren().addAll(totalCard, countCard);
+
+                Map<Integer, Integer> perTaskTotals = new HashMap<>();
+                for (FocusSession session : sessions) {
+                    if (session.taskId() == null) {
+                        continue;
+                    }
+                    perTaskTotals.merge(session.taskId(), session.duration(), Integer::sum);
+                }
+
+                perTaskTotals.entrySet().stream()
+                        .sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()))
+                        .limit(3)
+                        .forEach(entry -> {
+                            String title = taskTitles.get(entry.getKey());
+                            String label = title == null || title.isBlank()
+                                    ? "Task #" + entry.getKey()
+                                    : title;
+                            VBox card = buildStatCard(label, entry.getValue() + " min");
+                            focusUserStatsCards.getChildren().add(card);
+                        });
             }
 
             if (moduleSnapshotLabel != null) {
@@ -775,34 +736,62 @@ public class GuardianController {
                             Comparator.nullsLast(Comparator.naturalOrder())
                     ).reversed())
                     .toList();
-            libraryCards.getChildren().clear();
-            for (Resource resource : resources) {
-                VBox card = buildCard(
-                        "Resource #" + resource.id() + " • " + resource.title(),
-                        resource.description() == null ? "" : resource.description(),
-                        "Type: " + resource.type()
-                );
-                card.setOnMouseClicked(e -> {
-                    if (libraryIdField != null) {
-                        libraryIdField.setText(String.valueOf(resource.id()));
-                    }
-                    if (libraryTitleField != null) {
-                        libraryTitleField.setText(resource.title());
-                    }
-                    if (libraryDescriptionField != null) {
-                        libraryDescriptionField.setText(resource.description());
-                    }
-                    if (libraryFilePathField != null) {
-                        libraryFilePathField.setText(resource.filePath());
-                    }
-                    if (libraryTypeField != null) {
-                        libraryTypeField.getSelectionModel().select(resource.type());
-                    }
-                });
-                libraryCards.getChildren().add(card);
-            }
+            libraryAllResources = resources;
+            applyLibraryFilters();
         } catch (Exception e) {
             setMessage(libraryMessageLabel, "Failed to load resources: " + e.getMessage(), true);
+        }
+    }
+
+    private void applyLibraryFilters() {
+        if (libraryCards == null) {
+            return;
+        }
+        String search = librarySearchField == null ? "" : safeText(librarySearchField).toLowerCase();
+        String type = libraryFilterTypeField == null ? "All" : libraryFilterTypeField.getValue();
+
+        List<Resource> filtered = libraryAllResources.stream()
+                .filter(resource -> {
+                    boolean matchesType = type == null || type.equals("All")
+                            || (resource.type() != null && resource.type().equalsIgnoreCase(type));
+                    if (!matchesType) {
+                        return false;
+                    }
+                    if (search.isEmpty()) {
+                        return true;
+                    }
+                    String title = resource.title() == null ? "" : resource.title().toLowerCase();
+                    String desc = resource.description() == null ? "" : resource.description().toLowerCase();
+                    String filePath = resource.filePath() == null ? "" : resource.filePath().toLowerCase();
+                    return title.contains(search) || desc.contains(search) || filePath.contains(search);
+                })
+                .toList();
+
+        libraryCards.getChildren().clear();
+        for (Resource resource : filtered) {
+            VBox card = buildCard(
+                    "Resource #" + resource.id() + " • " + resource.title(),
+                    resource.description() == null ? "" : resource.description(),
+                    "Type: " + resource.type()
+            );
+            card.setOnMouseClicked(e -> {
+                if (libraryIdField != null) {
+                    libraryIdField.setText(String.valueOf(resource.id()));
+                }
+                if (libraryTitleField != null) {
+                    libraryTitleField.setText(resource.title());
+                }
+                if (libraryDescriptionField != null) {
+                    libraryDescriptionField.setText(resource.description());
+                }
+                if (libraryFilePathField != null) {
+                    libraryFilePathField.setText(resource.filePath());
+                }
+                if (libraryTypeField != null) {
+                    libraryTypeField.getSelectionModel().select(resource.type());
+                }
+            });
+            libraryCards.getChildren().add(card);
         }
     }
 
@@ -834,6 +823,101 @@ public class GuardianController {
         } catch (Exception ignored) {
             // Ignore logging failures to keep the UX responsive if the table is missing.
         }
+    }
+
+    private void initRoomChat() {
+        if (roomChatList == null) {
+            return;
+        }
+        Integer roomId = selectedRoomId;
+        if (roomId == null) {
+            roomChatList.setItems(FXCollections.observableArrayList());
+            if (chatRoomTitle != null) {
+                chatRoomTitle.setText("Room Chat");
+            }
+            return;
+        }
+
+        ObservableList<String> messages = ROOM_CHAT_STORE.computeIfAbsent(roomId, id -> FXCollections.observableArrayList());
+        roomChatList.setItems(messages);
+
+        try {
+            VirtualRoom room = virtualRoomService.findById(roomId);
+            if (chatRoomTitle != null) {
+                String name = room == null || room.name() == null ? selectedRoomName : room.name();
+                chatRoomTitle.setText(name == null || name.isBlank() ? "Room Chat" : name);
+            }
+        } catch (Exception e) {
+            if (chatRoomTitle != null) {
+                chatRoomTitle.setText("Room Chat");
+            }
+        }
+
+        if (chatResourceSelector != null) {
+            loadChatResources();
+        }
+    }
+
+    private void loadChatResources() {
+        try {
+            int userId = requireUserId();
+            List<ResourceOption> options = resourceService.findByUploader(userId).stream()
+                    .sorted(Comparator.comparing(Resource::createdAt, Comparator.nullsLast(Comparator.naturalOrder())).reversed())
+                    .map(resource -> new ResourceOption(resource.id(), resource.title()))
+                    .toList();
+            chatResourceSelector.getItems().setAll(options);
+        } catch (Exception e) {
+            chatResourceSelector.getItems().clear();
+        }
+    }
+
+    @FXML
+    private void onSendChatMessage(ActionEvent event) {
+        if (roomChatList == null || chatInputField == null) {
+            return;
+        }
+        String text = safeText(chatInputField);
+        if (text.isEmpty()) {
+            return;
+        }
+        String sender = UserSession.getInstance().getEmail();
+        String label = sender == null || sender.isBlank() ? "Me" : sender;
+        roomChatList.getItems().add(label + ": " + text);
+        chatInputField.clear();
+    }
+
+    @FXML
+    private void onShareResource(ActionEvent event) {
+        if (roomChatList == null || chatResourceSelector == null) {
+            return;
+        }
+        ResourceOption selected = chatResourceSelector.getSelectionModel().getSelectedItem();
+        if (selected == null) {
+            return;
+        }
+        roomChatList.getItems().add("Shared resource: " + selected);
+    }
+
+    @FXML
+    private void onStartDailyCoCall(ActionEvent event) {
+        addRoomSystemMessage("Daily.co call integration is not configured.");
+    }
+
+    @FXML
+    private void onStartTwilioVideo(ActionEvent event) {
+        addRoomSystemMessage("Twilio video integration is not configured.");
+    }
+
+    @FXML
+    private void onStartAgoraVoice(ActionEvent event) {
+        addRoomSystemMessage("Agora voice integration is not configured.");
+    }
+
+    private void addRoomSystemMessage(String message) {
+        if (roomChatList == null) {
+            return;
+        }
+        roomChatList.getItems().add("System: " + message);
     }
 
     private void loadTaskOptions() {
@@ -918,6 +1002,21 @@ public class GuardianController {
         @Override
         public String toString() {
             return id + " - " + title;
+        }
+    }
+
+    private static final class ResourceOption {
+        private final int id;
+        private final String title;
+
+        private ResourceOption(int id, String title) {
+            this.id = id;
+            this.title = title == null ? "" : title;
+        }
+
+        @Override
+        public String toString() {
+            return "#" + id + " - " + title;
         }
     }
 

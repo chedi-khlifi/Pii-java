@@ -72,7 +72,7 @@
                         <HBox spacing="8">
                             <Button text="Join room" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-primary" />
                             <Button text="Send FCM Invite" onAction="#onSendRoomInvite" styleClass="guardian-action-warning" />
-                            <Button text="Open chat" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-secondary" />
+                            <Button text="Open chat" onAction="#onOpenRoomChat" styleClass="guardian-action-secondary" />
                         </HBox>
                     </VBox>
 
