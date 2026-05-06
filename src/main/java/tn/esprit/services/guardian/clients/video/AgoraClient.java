@@ -11,8 +11,22 @@ import java.util.logging.Logger;
 public class AgoraClient {
 
     private static final Logger logger = Logger.getLogger(AgoraClient.class.getName());
-    private final String appId = System.getenv("AGORA_APP_ID");
-    private final String appCert = System.getenv("AGORA_APP_CERT");
+    private static String getEnvOrFile(String key) {
+        String val = System.getenv(key);
+        if (val != null && !val.trim().isEmpty()) return val;
+        try {
+            java.nio.file.Path envPath = java.nio.file.Paths.get(".env");
+            if (java.nio.file.Files.exists(envPath)) {
+                for (String line : java.nio.file.Files.readAllLines(envPath)) {
+                    if (line.trim().startsWith(key + "=")) return line.substring(line.indexOf('=') + 1).trim();
+                }
+            }
+        } catch (Exception e) {}
+        return null;
+    }
+
+    private final String appId = getEnvOrFile("AGORA_APP_ID");
+    private final String appCert = getEnvOrFile("AGORA_APP_CERT");
 
     public String generateAccessToken(String channelName, String userId) {
         logger.info("Generating Agora token for channel: " + channelName + " user: " + userId);

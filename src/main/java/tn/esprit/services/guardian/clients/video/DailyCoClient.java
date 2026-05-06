@@ -11,7 +11,21 @@ import java.util.logging.Logger;
 public class DailyCoClient {
 
     private static final Logger logger = Logger.getLogger(DailyCoClient.class.getName());
-    private final String apiKey = "AIzaSyD09mMWjb7EqPAgKDmtbR5vS5ndvwMNrC8";
+    private static String getEnvOrFile(String key) {
+        String val = System.getenv(key);
+        if (val != null && !val.trim().isEmpty()) return val;
+        try {
+            java.nio.file.Path envPath = java.nio.file.Paths.get(".env");
+            if (java.nio.file.Files.exists(envPath)) {
+                for (String line : java.nio.file.Files.readAllLines(envPath)) {
+                    if (line.trim().startsWith(key + "=")) return line.substring(line.indexOf('=') + 1).trim();
+                }
+            }
+        } catch (Exception e) {}
+        return null;
+    }
+
+    private final String apiKey = getEnvOrFile("DAILYCO_API_KEY");
 
     public String createRoomSession(String roomName, int maxParticipants) {
         logger.info("Creating Daily.co room: " + roomName);

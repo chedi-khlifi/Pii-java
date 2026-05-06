@@ -20,7 +20,27 @@ import java.time.Duration;
 public class OpenAiClient {
 
     private static final Logger logger = LoggerFactory.getLogger(OpenAiClient.class);
-    private final String apiKey = System.getenv("OPENAI_API_KEY");
+    private static String getEnvOrFile(String key) {
+        String val = System.getenv(key);
+        if (val != null && !val.trim().isEmpty()) {
+            return val;
+        }
+        try {
+            java.nio.file.Path envPath = java.nio.file.Paths.get(".env");
+            if (java.nio.file.Files.exists(envPath)) {
+                for (String line : java.nio.file.Files.readAllLines(envPath)) {
+                    if (line.trim().startsWith(key + "=")) {
+                        return line.substring(line.indexOf('=') + 1).trim();
+                    }
+                }
+            }
+        } catch (Exception e) {
+            // ignore
+        }
+        return null;
+    }
+
+    private final String apiKey = getEnvOrFile("OPENAI_API_KEY");
     private final HttpClient httpClient;
 
     public OpenAiClient() {
@@ -36,7 +56,7 @@ public class OpenAiClient {
 
         try {
             JSONObject root = new JSONObject();
-            root.put("model", "gpt-3.5-turbo");
+            root.put("model", "llama-3.1-8b-instant");
 
             JSONArray messages = new JSONArray();
             messages.put(new JSONObject()
@@ -50,7 +70,7 @@ public class OpenAiClient {
             String requestBody = root.toString();
 
             HttpRequest request = HttpRequest.newBuilder()
-                    .uri(URI.create("https://api.openai.com/v1/chat/completions"))
+                    .uri(URI.create("https://api.groq.com/openai/v1/chat/completions"))
                     .header("Content-Type", "application/json")
                     .header("Authorization", "Bearer " + apiKey)
                     .POST(HttpRequest.BodyPublishers.ofString(requestBody))
