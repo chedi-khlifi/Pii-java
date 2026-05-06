@@ -16,12 +16,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        // Create the main launcher UI
         VBox root = new VBox(15);
         root.setStyle("-fx-padding: 30; -fx-background-color: #f5f5f5;");
         root.setAlignment(Pos.CENTER);
 
-        // Title
         Label title = new Label("MindForge Project Launcher");
         title.setStyle("-fx-font-size: 24; -fx-font-weight: bold; -fx-text-fill: #333;");
 
@@ -36,6 +34,14 @@ public class Main extends Application {
             launchMindForge();
         });
 
+        // Planner Button
+        Button plannerBtn = new Button("Launch Planner");
+        plannerBtn.setStyle("-fx-font-size: 14; -fx-padding: 15; -fx-min-width: 200;");
+        plannerBtn.setOnAction(e -> {
+            primaryStage.close();
+            launchPlanner();
+        });
+
         // Guardian Button
         Button guardianBtn = new Button("Launch Guardian");
         guardianBtn.setStyle("-fx-font-size: 14; -fx-padding: 15; -fx-min-width: 200;");
@@ -44,17 +50,15 @@ public class Main extends Application {
             launchGuardian();
         });
 
-        root.getChildren().addAll(title, subtitle, mindforgeBtn, guardianBtn);
+        root.getChildren().addAll(title, subtitle, mindforgeBtn, plannerBtn, guardianBtn);
 
-        Scene scene = new Scene(root, 500, 350);
+        Scene scene = new Scene(root, 500, 400);
         primaryStage.setTitle("MindForge Project Launcher");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
-    /**
-     * Launches the MindForge application
-     */
+    /** Launches the MindForge application */
     private void launchMindForge() {
         try {
             MainApp mindforgeApp = new MainApp();
@@ -66,9 +70,19 @@ public class Main extends Application {
         }
     }
 
-    /**
-     * Launches the Guardian application
-     */
+    /** Launches the Planner (Tasks & Exams) application */
+    private void launchPlanner() {
+        try {
+            example.PlannerModule plannerApp = new example.PlannerModule();
+            Stage stage = new Stage();
+            plannerApp.start(stage);
+        } catch (Exception e) {
+            System.err.println("Failed to launch Planner: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /** Launches the Guardian application */
     private void launchGuardian() {
         try {
             tn.esprit.Main guardianApp = new tn.esprit.Main();

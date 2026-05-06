@@ -5,32 +5,26 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-import com.mindforge.config.GroqConfig;
 
-import java.net.URI;
+import java.time.*;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.YearMonth;
+import java.net.URI;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.stream.Collectors;
 
-public class PlannerModule {
+public class PlannerModule extends Application {
 
     private static final DateTimeFormatter DT_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
@@ -61,11 +55,10 @@ public class PlannerModule {
     private ComboBox<String> filterImportance = new ComboBox<>();
     private Label examMsg = new Label();
     // Exam advanced features
-    private TextArea chatArea = new TextArea();
+    private javafx.scene.control.TextArea chatArea = new javafx.scene.control.TextArea();
     private ComboBox<String> examSelector = new ComboBox<>();
     private TextField chatInput = new TextField();
     private Label lblSuccessRate = new Label("0%");
-    private Label lblCreationRate = new Label("-%");
     private VBox programBox = new VBox(4);
     private ObservableList<Exam> allExams = FXCollections.observableArrayList();
 
@@ -77,6 +70,7 @@ public class PlannerModule {
     private Label lblTasksTodo = new Label("-");
     private Label lblTasksDone = new Label("-");
     private VBox notificationBox = new VBox(6);
+    private VBox historyBox = new VBox(6);
 
     // ===================== MAIN LAYOUT =====================
     private BorderPane root = new BorderPane();
@@ -93,7 +87,10 @@ public class PlannerModule {
     private GridPane calendarGrid = new GridPane();
     private Label calendarMonthLabel = new Label();
 
-    public Parent getView() {
+    @Override
+    public void start(Stage stage) {
+        stage.setTitle("MindForge - Planner Hub");
+
         // Build pages
         hubPage = buildHubPage();
         dashboardPage = buildDashboardPage();
@@ -110,10 +107,38 @@ public class PlannerModule {
         root.setCenter(contentArea);
         root.setStyle("-fx-background-color: #f0f2f5;");
 
+        Scene scene = new Scene(root, 1100, 700);
+        stage.setScene(scene);
+        stage.show();
+
         loadTasks();
         loadExams();
         refreshDashboard();
-        
+    }
+
+    /**
+     * Returns the fully-built Planner UI as a Parent node.
+     * Called by DashboardController to embed the planner inside MindForge.
+     */
+    public javafx.scene.Parent getView() {
+        hubPage       = buildHubPage();
+        dashboardPage = buildDashboardPage();
+        tasksPage     = buildTasksPage();
+        examsPage     = buildExamsPage();
+
+        VBox sidebar = buildSidebar();
+
+        contentArea.getChildren().clear();
+        contentArea.getChildren().add(hubPage);
+
+        root.setLeft(sidebar);
+        root.setCenter(contentArea);
+        root.setStyle("-fx-background-color: #f0f2f5;");
+
+        loadTasks();
+        loadExams();
+        refreshDashboard();
+
         return root;
     }
 
@@ -304,43 +329,69 @@ public class PlannerModule {
             refreshNotifications();
         });
 
-        // Notifications panel
+        // ---- Notifications panel (upcoming exams + overdue + due today) ----
         Label notifTitle = new Label("🔔  Notifications");
-        notifTitle.setFont(Font.font("Arial", FontWeight.BOLD, 12));
-        notifTitle.setTextFill(Color.web("#374151"));
+        notifTitle.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        notifTitle.setTextFill(Color.web("#991B1B"));
         notificationBox.setPadding(new Insets(4));
         notificationBox.setSpacing(3);
         notificationBox.setStyle("-fx-background-color: white;");
-        notificationBox.setMaxHeight(110);
 
-        ScrollPane notifScroll = new ScrollPane(notificationBox);
+        javafx.scene.control.ScrollPane notifScroll = new javafx.scene.control.ScrollPane(notificationBox);
         notifScroll.setFitToWidth(true);
-        notifScroll.setPrefHeight(115);
-        notifScroll.setMaxHeight(115);
+        notifScroll.setPrefHeight(140);
+        notifScroll.setMaxHeight(140);
         notifScroll.setStyle("-fx-background: white; -fx-border-color: transparent;");
-        notifScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        notifScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        notifScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        notifScroll.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
-        VBox notifSection = new VBox(4, notifTitle, notifScroll);
-        notifSection.setPadding(new Insets(8, 12, 8, 12));
+        VBox notifSection = new VBox(6, notifTitle, notifScroll);
+        notifSection.setPadding(new Insets(10, 14, 10, 14));
         notifSection.setStyle(
-                "-fx-background-color: white; -fx-border-color: #e5e7eb; -fx-border-radius: 10; -fx-background-radius: 10;");
+                "-fx-background-color: #FFF5F5; -fx-border-color: #FCA5A5; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
+        HBox.setHgrow(notifSection, javafx.scene.layout.Priority.ALWAYS);
+
+        // ---- History panel (done tasks + past exams) ----
+        Label histTitle = new Label("📜  History");
+        histTitle.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+        histTitle.setTextFill(Color.web("#166534"));
+        historyBox.setPadding(new Insets(4));
+        historyBox.setSpacing(3);
+        historyBox.setStyle("-fx-background-color: white;");
+
+        javafx.scene.control.ScrollPane histScroll = new javafx.scene.control.ScrollPane(historyBox);
+        histScroll.setFitToWidth(true);
+        histScroll.setPrefHeight(140);
+        histScroll.setMaxHeight(140);
+        histScroll.setStyle("-fx-background: white; -fx-border-color: transparent;");
+        histScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        histScroll.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED);
+
+        VBox histSection = new VBox(6, histTitle, histScroll);
+        histSection.setPadding(new Insets(10, 14, 10, 14));
+        histSection.setStyle(
+                "-fx-background-color: #F0FDF4; -fx-border-color: #6EE7B7; -fx-border-width: 2; -fx-border-radius: 10; -fx-background-radius: 10;");
+        HBox.setHgrow(histSection, javafx.scene.layout.Priority.ALWAYS);
+
+        // Row with both panels side by side
+        HBox notifHistRow = new HBox(15, notifSection, histSection);
+        notifHistRow.setFillHeight(true);
 
         // Calendar
         VBox calendarBox = buildCalendarBox();
 
-        VBox innerPage = new VBox(10, pageTitle, statsRow, btnRefresh, notifSection, calendarBox);
+        VBox innerPage = new VBox(10, pageTitle, statsRow, btnRefresh, notifHistRow, calendarBox);
         innerPage.setPadding(new Insets(20));
         innerPage.setStyle("-fx-background-color: #f0f2f5;");
 
-        ScrollPane pageScroll = new ScrollPane(innerPage);
+        javafx.scene.control.ScrollPane pageScroll = new javafx.scene.control.ScrollPane(innerPage);
         pageScroll.setFitToWidth(true);
         pageScroll.setStyle("-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;");
-        pageScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pageScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
 
         VBox page = new VBox(pageScroll);
         page.setStyle("-fx-background-color: #f0f2f5;");
-        VBox.setVgrow(pageScroll, Priority.ALWAYS);
+        VBox.setVgrow(pageScroll, javafx.scene.layout.Priority.ALWAYS);
         return page;
     }
 
@@ -376,7 +427,7 @@ public class PlannerModule {
 
         for (int i = 0; i < 7; i++) {
             // Fixed column width
-            ColumnConstraints cc = new ColumnConstraints();
+            javafx.scene.layout.ColumnConstraints cc = new javafx.scene.layout.ColumnConstraints();
             cc.setPrefWidth(90);
             cc.setMinWidth(90);
             cc.setMaxWidth(90);
@@ -429,7 +480,7 @@ public class PlannerModule {
                 } catch (Exception e) {
                     return false;
                 }
-            }).collect(Collectors.toList());
+            }).collect(java.util.stream.Collectors.toList());
 
             // Collect exams on this date
             java.util.List<Exam> examsOnDay = allExams.stream().filter(ex -> {
@@ -440,7 +491,7 @@ public class PlannerModule {
                 } catch (Exception e) {
                     return false;
                 }
-            }).collect(Collectors.toList());
+            }).collect(java.util.stream.Collectors.toList());
 
             VBox cell = new VBox(2);
             cell.setPrefSize(90, 60);
@@ -597,7 +648,7 @@ public class PlannerModule {
         c8.setCellValueFactory(new PropertyValueFactory<>("estimatedMinutes"));
         c8.setPrefWidth(110);
 
-        taskTable.getColumns().setAll(Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8));
+        taskTable.getColumns().addAll(c1, c2, c3, c4, c5, c6, c7, c8);
         taskTable.setPrefHeight(240);
         taskTable.setStyle("-fx-background-color: white;");
 
@@ -626,17 +677,11 @@ public class PlannerModule {
         taskDueDatePicker.setShowWeekNumbers(false);
         taskEstMin.setPromptText("Duration (min)");
         taskEstMin.setPrefWidth(140);
-        java.util.List<String> hours = new java.util.ArrayList<>();
-        for (int i = 0; i < 24; i++)
-            hours.add(String.format("%02d", i));
-        java.util.List<String> minutes = new java.util.ArrayList<>();
-        for (int i = 0; i < 60; i += 5)
-            minutes.add(String.format("%02d", i));
-        taskDueHour.getItems().addAll(hours);
+        taskDueHour.getItems().addAll(buildHourList());
         taskDueHour.setValue("08");
         taskDueHour.setPrefWidth(60);
         taskDueHour.setStyle("-fx-background-color: white;");
-        taskDueMinute.getItems().addAll(minutes);
+        taskDueMinute.getItems().addAll(buildMinuteList());
         taskDueMinute.setValue("00");
         taskDueMinute.setPrefWidth(60);
         taskDueMinute.setStyle("-fx-background-color: white;");
@@ -731,7 +776,7 @@ public class PlannerModule {
                 String td = n.getDueDate();
                 if (td != null && !td.isEmpty()) {
                     try {
-                        LocalDateTime ldt = LocalDateTime.parse(td, DT_FORMAT);
+                        java.time.LocalDateTime ldt = java.time.LocalDateTime.parse(td, DT_FORMAT);
                         taskDueDatePicker.setValue(ldt.toLocalDate());
                         taskDueHour.setValue(String.format("%02d", ldt.getHour()));
                         taskDueMinute.setValue(String.format("%02d", (ldt.getMinute() / 15) * 15));
@@ -831,7 +876,7 @@ public class PlannerModule {
         c8.setCellValueFactory(new PropertyValueFactory<>("ownerId"));
         c8.setPrefWidth(75);
 
-        examTable.getColumns().setAll(Arrays.asList(c1, c2, c3, c4, c5, c6, c7, c8));
+        examTable.getColumns().addAll(c1, c2, c3, c4, c5, c6, c7, c8);
         examTable.setPrefHeight(240);
         examTable.setStyle("-fx-background-color: white;");
 
@@ -844,17 +889,11 @@ public class PlannerModule {
         examDatePicker.setPrefWidth(150);
         examDatePicker.setStyle("-fx-background-color: white; -fx-border-color: #e0e0e0; -fx-border-radius: 6;");
         examDatePicker.setShowWeekNumbers(false);
-        java.util.List<String> eHours = new java.util.ArrayList<>();
-        for (int i = 0; i < 24; i++)
-            eHours.add(String.format("%02d", i));
-        java.util.List<String> eMinutes = new java.util.ArrayList<>();
-        for (int i = 0; i < 60; i += 5)
-            eMinutes.add(String.format("%02d", i));
-        examHour.getItems().addAll(eHours);
+        examHour.getItems().addAll(buildHourList());
         examHour.setValue("08");
         examHour.setPrefWidth(60);
         examHour.setStyle("-fx-background-color: white;");
-        examMinute.getItems().addAll(eMinutes);
+        examMinute.getItems().addAll(buildMinuteList());
         examMinute.setValue("00");
         examMinute.setPrefWidth(60);
         examMinute.setStyle("-fx-background-color: white;");
@@ -947,7 +986,7 @@ public class PlannerModule {
                 String ed = n.getExamDate();
                 if (ed != null && !ed.isEmpty()) {
                     try {
-                        LocalDateTime ldt = LocalDateTime.parse(ed, DT_FORMAT);
+                        java.time.LocalDateTime ldt = java.time.LocalDateTime.parse(ed, DT_FORMAT);
                         examDatePicker.setValue(ldt.toLocalDate());
                         examHour.setValue(String.format("%02d", ldt.getHour()));
                         examMinute.setValue(String.format("%02d", (ldt.getMinute() / 15) * 15));
@@ -1052,13 +1091,13 @@ public class PlannerModule {
         programBox.setStyle(
                 "-fx-background-color: #EFF6FF; -fx-border-color: #BFDBFE; -fx-border-radius: 6; -fx-background-radius: 6;");
 
-        ScrollPane progScroll = new ScrollPane(programBox);
+        javafx.scene.control.ScrollPane progScroll = new javafx.scene.control.ScrollPane(programBox);
         progScroll.setFitToWidth(true);
         progScroll.setPrefHeight(200);
         progScroll.setMinHeight(200);
         progScroll.setStyle("-fx-background: #EFF6FF; -fx-border-color: transparent;");
-        progScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
-        progScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.AS_NEEDED);
+        progScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
+        progScroll.setVbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.AS_NEEDED);
 
         VBox programSection = new VBox(8, progTitle, progScroll);
         programSection.setPadding(new Insets(12));
@@ -1097,7 +1136,7 @@ public class PlannerModule {
         });
 
         // --- AI Chatbot (Groq API) ---
-        Label groqChatTitle = new Label("AI Study Assistant (Groq)");
+        Label groqChatTitle = new Label("AI Assistant ");
         groqChatTitle.setFont(Font.font("Arial", FontWeight.BOLD, 13));
         groqChatTitle.setTextFill(Color.web("#7C3AED"));
 
@@ -1124,7 +1163,7 @@ public class PlannerModule {
         chatBox.setPrefWidth(460);
         chatBox.setStyle(
                 "-fx-background-color: white; -fx-border-color: #DDD6FE; -fx-border-radius: 8; -fx-background-radius: 8; -fx-border-width: 1.5;");
-        HBox.setHgrow(chatBox, Priority.ALWAYS);
+        HBox.setHgrow(chatBox, javafx.scene.layout.Priority.ALWAYS);
 
         HBox contentRow = new HBox(15, programSection, chatBox);
         contentRow.setAlignment(Pos.TOP_LEFT);
@@ -1138,14 +1177,14 @@ public class PlannerModule {
         innerPage.setPadding(new Insets(20));
         innerPage.setStyle("-fx-background-color: #f0f2f5;");
 
-        ScrollPane pageScroll = new ScrollPane(innerPage);
+        javafx.scene.control.ScrollPane pageScroll = new javafx.scene.control.ScrollPane(innerPage);
         pageScroll.setFitToWidth(true);
         pageScroll.setStyle("-fx-background: #f0f2f5; -fx-background-color: #f0f2f5;");
-        pageScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        pageScroll.setHbarPolicy(javafx.scene.control.ScrollPane.ScrollBarPolicy.NEVER);
 
         VBox page = new VBox(pageScroll);
         page.setStyle("-fx-background-color: #f0f2f5;");
-        VBox.setVgrow(pageScroll, Priority.ALWAYS);
+        VBox.setVgrow(pageScroll, javafx.scene.layout.Priority.ALWAYS);
         return page;
     }
 
@@ -1169,32 +1208,26 @@ public class PlannerModule {
     }
 
     private void refreshExamStatsForExam(Exam exam) {
-        // Always reload fresh from DB to get latest task titles
-        ObservableList<Task> freshTasks = TaskController.getTasks();
+        javafx.collections.ObservableList<Task> freshTasks = TaskController.getTasks();
         String examName = exam.getTitle().trim().toLowerCase();
-
-        // STRICT: only tasks whose current title is EXACTLY the exam name
-        long total = freshTasks.stream()
+        // Single stream pass: count total and done together
+        long[] counts = freshTasks.stream()
                 .filter(t -> t.getTitle().trim().toLowerCase().equals(examName))
-                .count();
-        long done = freshTasks.stream()
-                .filter(t -> t.getTitle().trim().toLowerCase().equals(examName))
-                .filter(t -> "done".equalsIgnoreCase(t.getStatus()))
-                .count();
-
+                .collect(java.util.stream.Collectors.teeing(
+                        java.util.stream.Collectors.counting(),
+                        java.util.stream.Collectors.filtering(
+                                t -> "done".equalsIgnoreCase(t.getStatus()),
+                                java.util.stream.Collectors.counting()),
+                        (tot, dn) -> new long[]{tot, dn}));
+        long total = counts[0], done = counts[1];
         if (total == 0) {
             lblSuccessRate.setText("0%");
             lblSuccessRate.setTextFill(Color.web("#6B7280"));
         } else {
-            double rate = (done * 100.0 / total);
+            double rate = done * 100.0 / total;
             lblSuccessRate.setText(String.format("%.0f%%", rate));
-            if (rate >= 100) {
-                lblSuccessRate.setTextFill(Color.web("#059669")); // green
-            } else if (rate >= 50) {
-                lblSuccessRate.setTextFill(Color.web("#D97706")); // orange
-            } else {
-                lblSuccessRate.setTextFill(Color.web("#DC2626")); // red
-            }
+            lblSuccessRate.setTextFill(Color.web(
+                    rate >= 100 ? "#059669" : rate >= 50 ? "#D97706" : "#DC2626"));
         }
     }
 
@@ -1208,33 +1241,33 @@ public class PlannerModule {
         // ---- All required fields ----
         if (taskTitle.getText().trim().isEmpty()) {
             highlightError(taskTitle);
-            taskMsg("Error: Title is required.", true);
+            taskMsg("Alert: Title is required.", true);
             valid = false;
         }
         if (valid && taskTitle.getText().trim().length() > 100) {
             highlightError(taskTitle);
-            taskMsg("Error: Title must be 100 characters or less.", true);
+            taskMsg("Alert: Title must be 100 characters or less.", true);
             valid = false;
         }
         if (valid && taskDesc.getText().trim().isEmpty()) {
-            taskMsg("Error: Description is required.", true);
+            taskMsg("Alert: Description is required.", true);
             valid = false;
         }
         if (valid && taskStatus.getValue() == null) {
-            taskMsg("Error: Please select a status.", true);
+            taskMsg("Alert: Please select a status.", true);
             valid = false;
         }
         if (valid && taskPriority.getValue() == null) {
-            taskMsg("Error: Please select a priority.", true);
+            taskMsg("Alert: Please select a priority.", true);
             valid = false;
         }
         if (valid && taskDueDatePicker.getValue() == null) {
-            taskMsg("Error: Due Date is required.", true);
+            taskMsg("Alert: Due Date is required.", true);
             valid = false;
         }
         if (valid && taskEstMin.getText().trim().isEmpty()) {
             highlightError(taskEstMin);
-            taskMsg("Error: Duration (min) is required.", true);
+            taskMsg("Alert: Duration (min) is required.", true);
             valid = false;
         }
         // ---- Check exact same datetime (same date + same time) - any subject ----
@@ -1248,7 +1281,7 @@ public class PlannerModule {
                     .filter(t -> t.getId() != editingId)
                     .anyMatch(t -> newDateTime.equals(t.getDueDate()));
             if (sameDateTime) {
-                taskMsg("Error: Another task already exists at the same date and time ("
+                taskMsg("Alert: Another task already exists at the same date and time ("
                         + newDateTime + "). Please choose a different time.", true);
                 valid = false;
             }
@@ -1260,16 +1293,16 @@ public class PlannerModule {
                 int em = Integer.parseInt(taskEstMin.getText().trim());
                 if (em <= 0) {
                     highlightError(taskEstMin);
-                    taskMsg("Error: Duration must be a positive number.", true);
+                    taskMsg("Alert: Duration must be a positive number.", true);
                     valid = false;
                 } else if (em > 180) {
                     highlightError(taskEstMin);
-                    taskMsg("Error: A single task cannot exceed 180 minutes.", true);
+                    taskMsg("Alert: A single task cannot exceed 180 minutes.", true);
                     valid = false;
                 }
             } catch (NumberFormatException ex) {
                 highlightError(taskEstMin);
-                taskMsg("Error: Duration must be a valid number (e.g. 60).", true);
+                taskMsg("Alert: Duration must be a valid number (e.g. 60).", true);
                 valid = false;
             }
         }
@@ -1277,7 +1310,7 @@ public class PlannerModule {
         // ---- Max 3 tasks per day + max 180 min total per day (same subject/title
         // only) ----
         if (valid && taskDueDatePicker.getValue() != null) {
-            LocalDate selectedDay = taskDueDatePicker.getValue();
+            java.time.LocalDate selectedDay = taskDueDatePicker.getValue();
             String newTitle = taskTitle.getText().trim().toLowerCase();
             Task selTask = taskTable.getSelectionModel().getSelectedItem();
             int editingId2 = (selTask != null) ? selTask.getId() : -1;
@@ -1290,17 +1323,17 @@ public class PlannerModule {
                         if (t.getDueDate() == null || t.getDueDate().isEmpty())
                             return false;
                         try {
-                            return LocalDateTime.parse(t.getDueDate(), DT_FORMAT)
+                            return java.time.LocalDateTime.parse(t.getDueDate(), DT_FORMAT)
                                     .toLocalDate().equals(selectedDay);
                         } catch (Exception e) {
                             return false;
                         }
                     })
-                    .collect(Collectors.toList());
+                    .collect(java.util.stream.Collectors.toList());
 
             // Check: max 3 tasks per day for the same subject
             if (sameDaySameSubject.size() >= 3) {
-                taskMsg("Error: You already have 3 tasks of '" + taskTitle.getText().trim()
+                taskMsg("Alert: You already have 3 tasks of '" + taskTitle.getText().trim()
                         + "' on " + selectedDay + ". Maximum is 3 tasks per subject per day.", true);
                 valid = false;
             }
@@ -1311,7 +1344,7 @@ public class PlannerModule {
                 int newTaskMinutes = parseEstMin();
                 if (existingMinutes + newTaskMinutes > 180) {
                     highlightError(taskEstMin);
-                    taskMsg("Error: Total duration for '" + taskTitle.getText().trim()
+                    taskMsg("Alert: Total duration for '" + taskTitle.getText().trim()
                             + "' on " + selectedDay + " would be "
                             + (existingMinutes + newTaskMinutes)
                             + " min. Max is 180 min (already: " + existingMinutes + " min).", true);
@@ -1332,21 +1365,21 @@ public class PlannerModule {
 
         if (examTitle.getText().trim().isEmpty()) {
             highlightError(examTitle);
-            examMsg("Error: Title is required.", true);
+            examMsg("Alert: Title is required.", true);
             valid = false;
         }
         if (valid && examTitle.getText().trim().length() > 100) {
             highlightError(examTitle);
-            examMsg("Error: Title must be 100 characters or less.", true);
+            examMsg("Alert: Title must be 100 characters or less.", true);
             valid = false;
         }
         if (valid && examDatePicker.getValue() == null) {
-            examMsg("Error: Date is required.", true);
+            examMsg("Alert: Date is required.", true);
             valid = false;
         }
         if (valid && examDuration.getText().trim().isEmpty()) {
             highlightError(examDuration);
-            examMsg("Error: Duration is required.", true);
+            examMsg("Alert: Duration is required.", true);
             valid = false;
         }
         if (valid) {
@@ -1354,21 +1387,21 @@ public class PlannerModule {
                 int dur = Integer.parseInt(examDuration.getText().trim());
                 if (dur <= 0) {
                     highlightError(examDuration);
-                    examMsg("Error: Duration must be a positive number.", true);
+                    examMsg("Alert: Duration must be a positive number.", true);
                     valid = false;
                 } else if (dur > 240) {
                     highlightError(examDuration);
-                    examMsg("Error: Duration cannot exceed 240 minutes.", true);
+                    examMsg("Alert: Duration cannot exceed 240 minutes.", true);
                     valid = false;
                 }
             } catch (NumberFormatException ex) {
                 highlightError(examDuration);
-                examMsg("Error: Duration must be a valid number.", true);
+                examMsg("Alert: Duration must be a valid number.", true);
                 valid = false;
             }
         }
         if (valid && examImportance.getValue() == null) {
-            examMsg("Error: Please select an importance level.", true);
+            examMsg("Alert: Please select an importance level.", true);
             valid = false;
         }
 
@@ -1383,19 +1416,19 @@ public class PlannerModule {
                     .filter(ex -> ex.getId() != editingId)
                     .anyMatch(ex -> newDateTime.equals(ex.getExamDate()));
             if (sameExact) {
-                examMsg("Error: Another exam already exists at the same date and time.", true);
+                examMsg("Alert: Another exam already exists at the same date and time.", true);
                 valid = false;
             }
 
             // Same hour on same day
             if (valid) {
                 try {
-                    LocalDateTime newDT = LocalDateTime.parse(newDateTime, DT_FORMAT);
+                    java.time.LocalDateTime newDT = java.time.LocalDateTime.parse(newDateTime, DT_FORMAT);
                     boolean sameHour = allExams.stream()
                             .filter(ex -> ex.getId() != editingId)
                             .anyMatch(ex -> {
                                 try {
-                                    LocalDateTime exDT = LocalDateTime.parse(ex.getExamDate(),
+                                    java.time.LocalDateTime exDT = java.time.LocalDateTime.parse(ex.getExamDate(),
                                             DT_FORMAT);
                                     return exDT.toLocalDate().equals(newDT.toLocalDate())
                                             && exDT.getHour() == newDT.getHour();
@@ -1404,7 +1437,7 @@ public class PlannerModule {
                                 }
                             });
                     if (sameHour) {
-                        examMsg("Error: Another exam is at the same hour on this day. Please choose a different hour.",
+                        examMsg("Alert: Another exam is at the same hour on this day. Please choose a different hour.",
                                 true);
                         valid = false;
                     }
@@ -1571,7 +1604,7 @@ public class PlannerModule {
         VBox root = new VBox(0, details, btnRow);
         root.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
 
-        popup.setScene(new Scene(root));
+        popup.setScene(new javafx.scene.Scene(root));
         popup.setResizable(false);
         popup.show();
     }
@@ -1628,7 +1661,7 @@ public class PlannerModule {
         VBox root = new VBox(0, details, btnRow);
         root.setStyle("-fx-background-color: white; -fx-background-radius: 10;");
 
-        popup.setScene(new Scene(root));
+        popup.setScene(new javafx.scene.Scene(root));
         popup.setResizable(false);
         popup.show();
     }
@@ -1656,76 +1689,95 @@ public class PlannerModule {
     // ================================================================
     private void refreshNotifications() {
         notificationBox.getChildren().clear();
+        historyBox.getChildren().clear();
         LocalDate today = LocalDate.now();
-        LocalDate in2Days = today.plusDays(2);
+        LocalDate in7Days = today.plusDays(7);
         boolean hasNotif = false;
+        boolean hasHistory = false;
 
-        // ---- Tasks notifications ----
-        for (Task t : allTasks) {
-            String due = t.getDueDate();
-            if (due == null || due.isEmpty())
-                continue;
-            try {
-                LocalDate dueDay = LocalDateTime.parse(due, DT_FORMAT).toLocalDate();
+        // ================================================================
+        // NOTIFICATIONS : upcoming exams + tasks overdue + tasks due today
+        // ================================================================
 
-                // Done task notification (green)
-                if ("done".equalsIgnoreCase(t.getStatus())) {
-                    notificationBox.getChildren().add(notifRow(
-                            "[OK] Task '" + t.getTitle() + "' is completed.",
-                            "#DCFCE7", "#166534"));
-                    hasNotif = true;
-                }
-                // Task approaching in <= 2 days and not done (red)
-                else if (!dueDay.isBefore(today) && !dueDay.isAfter(in2Days)) {
-                    long daysLeft = today.until(dueDay, java.time.temporal.ChronoUnit.DAYS);
-                    String dayText = daysLeft == 0 ? "today!" : "in " + daysLeft + " day(s)";
-                    notificationBox.getChildren().add(notifRow(
-                            "[!] Task '" + t.getTitle() + "' is due " + dayText + " (" + due + ")",
-                            "#FEE2E2", "#991B1B"));
-                    hasNotif = true;
-                }
-                // Overdue and not done (red)
-                else if (dueDay.isBefore(today) && !"done".equalsIgnoreCase(t.getStatus())) {
-                    notificationBox.getChildren().add(notifRow(
-                            "[X] Task '" + t.getTitle() + "' is OVERDUE since " + due,
-                            "#FEE2E2", "#991B1B"));
-                    hasNotif = true;
-                }
-            } catch (Exception e) {
-                /* skip */ }
-        }
-
-        // ---- Exams notifications ----
+        // ---- Upcoming exams (within 7 days) ----
         for (Exam ex : allExams) {
             String examD = ex.getExamDate();
             if (examD == null || examD.isEmpty())
                 continue;
             try {
                 LocalDate examDay = LocalDateTime.parse(examD, DT_FORMAT).toLocalDate();
-
-                // Exam approaching in <= 2 days (red)
-                if (!examDay.isBefore(today) && !examDay.isAfter(in2Days)) {
+                if (!examDay.isBefore(today) && !examDay.isAfter(in7Days)) {
                     long daysLeft = today.until(examDay, java.time.temporal.ChronoUnit.DAYS);
-                    String dayText = daysLeft == 0 ? "today!" : "in " + daysLeft + " day(s)";
+                    String dayText = daysLeft == 0 ? "TODAY!" : "in " + daysLeft + " day(s)";
                     notificationBox.getChildren().add(notifRow(
-                            "[!] Exam '" + ex.getTitle() + "' is " + dayText + " (" + examD + ")",
+                            "🎓 Exam '" + ex.getTitle() + "' is " + dayText + "  (" + examD + ")",
+                            "#FEF3C7", "#92400E"));
+                    hasNotif = true;
+                }
+            } catch (Exception e) { /* skip */ }
+        }
+
+        // ---- Tasks overdue OR due today (single pass) ----
+        for (Task t : allTasks) {
+            String due = t.getDueDate();
+            if (due == null || due.isEmpty() || "done".equalsIgnoreCase(t.getStatus()))
+                continue;
+            try {
+                LocalDate dueDay = LocalDateTime.parse(due, DT_FORMAT).toLocalDate();
+                if (dueDay.isBefore(today)) {
+                    notificationBox.getChildren().add(notifRow(
+                            "⚠️ Task '" + t.getTitle() + "' OVERDUE since " + due,
                             "#FEE2E2", "#991B1B"));
                     hasNotif = true;
-                }
-                // Exam passed (treated as done) - green
-                else if (examDay.isBefore(today)) {
+                } else if (dueDay.equals(today)) {
                     notificationBox.getChildren().add(notifRow(
-                            "[OK] Exam '" + ex.getTitle() + "' has passed (" + examD + ")",
-                            "#DCFCE7", "#166534"));
+                            "⏰ Task '" + t.getTitle() + "' is due TODAY  (" + due + ")",
+                            "#FFF7ED", "#C2410C"));
                     hasNotif = true;
                 }
-            } catch (Exception e) {
-                /* skip */ }
+            } catch (Exception e) { /* skip */ }
         }
 
         if (!hasNotif) {
             notificationBox.getChildren().add(notifRow(
                     "✅  No urgent notifications - everything is on track!",
+                    "#F0FDF4", "#166534"));
+        }
+
+        // ================================================================
+        // HISTORY : done tasks + past exams
+        // ================================================================
+
+        // ---- Done tasks ----
+        for (Task t : allTasks) {
+            if ("done".equalsIgnoreCase(t.getStatus())) {
+                String due = t.getDueDate() != null && !t.getDueDate().isEmpty() ? "  (" + t.getDueDate() + ")" : "";
+                historyBox.getChildren().add(notifRow(
+                        "✅ Task '" + t.getTitle() + "' completed" + due,
+                        "#DCFCE7", "#166534"));
+                hasHistory = true;
+            }
+        }
+
+        // ---- Past exams ----
+        for (Exam ex : allExams) {
+            String examD = ex.getExamDate();
+            if (examD == null || examD.isEmpty())
+                continue;
+            try {
+                LocalDate examDay = LocalDateTime.parse(examD, DT_FORMAT).toLocalDate();
+                if (examDay.isBefore(today)) {
+                    historyBox.getChildren().add(notifRow(
+                            "🎓 Exam '" + ex.getTitle() + "' passed  (" + examD + ")",
+                            "#DBEAFE", "#1E40AF"));
+                    hasHistory = true;
+                }
+            } catch (Exception e) { /* skip */ }
+        }
+
+        if (!hasHistory) {
+            historyBox.getChildren().add(notifRow(
+                    "📭  No history yet.",
                     "#F0FDF4", "#166534"));
         }
     }
@@ -1747,18 +1799,7 @@ public class PlannerModule {
     // EXAM ADVANCED METHODS
     // ================================================================
 
-    // ---- AI Chatbot ----
-    private void handleChatMessage() {
-        String question = chatInput.getText().trim();
-        if (question.isEmpty())
-            return;
-        chatArea.appendText("\n\n You: " + question);
-        chatInput.clear();
 
-        String response = generateAIResponse(question.toLowerCase());
-        chatArea.appendText("\n Bot: " + response);
-        chatArea.setScrollTop(Double.MAX_VALUE);
-    }
 
     // Currently selected exam for chatbot context
     private Exam currentChatExam = null;
@@ -1776,7 +1817,7 @@ public class PlannerModule {
         String subjectLower = subject.toLowerCase();
 
         // Compute stats fresh
-        ObservableList<Task> freshTasks = TaskController.getTasks();
+        javafx.collections.ObservableList<Task> freshTasks = TaskController.getTasks();
         long relatedTotal = freshTasks.stream()
                 .filter(t -> t.getTitle().trim().equalsIgnoreCase(subject))
                 .count();
@@ -1786,14 +1827,14 @@ public class PlannerModule {
                 .count();
         long daysLeft = -1;
         try {
-            LocalDate examDay = LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
-            daysLeft = LocalDate.now().until(examDay, java.time.temporal.ChronoUnit.DAYS);
+            java.time.LocalDate examDay = java.time.LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
+            daysLeft = java.time.LocalDate.now().until(examDay, java.time.temporal.ChronoUnit.DAYS);
         } catch (Exception e) {
             /* skip */ }
 
         String daysStr = daysLeft > 0 ? daysLeft + " day(s) left"
                 : daysLeft == 0 ? "exam is TODAY!"
-                        : "exam has passed";
+                  : "exam has passed";
 
         // Check if question is related to the selected exam subject
         boolean isAboutSubject = q.contains(subjectLower)
@@ -1866,7 +1907,7 @@ public class PlannerModule {
                 return "No tasks named '" + subject + "' found. Add tasks with the same name as this exam!";
             return "'" + subject + "' tasks: " + relatedDone + " / " + relatedTotal + " done. "
                     + (relatedDone == relatedTotal ? "All done! You are ready!"
-                            : "Complete the remaining " + (relatedTotal - relatedDone) + " task(s)!");
+                    : "Complete the remaining " + (relatedTotal - relatedDone) + " task(s)!");
         }
 
         // Tips / Advice
@@ -1895,8 +1936,8 @@ public class PlannerModule {
             return;
 
         try {
-            LocalDate examDay = LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
-            LocalDate today = LocalDate.now();
+            java.time.LocalDate examDay = java.time.LocalDateTime.parse(exam.getExamDate(), DT_FORMAT).toLocalDate();
+            java.time.LocalDate today = java.time.LocalDate.now();
             long daysLeft = today.until(examDay, java.time.temporal.ChronoUnit.DAYS);
             long totalDays = 14; // default preparation period
 
@@ -1947,7 +1988,7 @@ public class PlannerModule {
 
             long planDays = Math.min(daysLeft, activities.length);
             for (long i = 0; i < planDays; i++) {
-                LocalDate planDay = today.plusDays(i);
+                java.time.LocalDate planDay = today.plusDays(i);
                 String activityLabel = i < activities.length ? activities[(int) i] : "Study and review";
                 String dayLabel;
                 String color;
@@ -1992,50 +2033,20 @@ public class PlannerModule {
         lbl.setMaxWidth(420);
         String bg = "#DC2626".equals(textColor) ? "#FEF2F2"
                 : "#059669".equals(textColor) ? "#F0FDF4"
-                        : "#D97706".equals(textColor) ? "#FFFBEB"
-                                : "transparent";
+                  : "#D97706".equals(textColor) ? "#FFFBEB"
+                    : "transparent";
         HBox row = new HBox(lbl);
         row.setPadding(new Insets(5, 8, 5, 8));
         row.setStyle("-fx-background-color:" + bg + "; -fx-background-radius:5;");
         return row;
     }
 
-    // ---- Success Rate & Creation Rate ----
+    // ---- Global exam stats (global success rate display) ----
     private void refreshExamStats() {
         long totalTasks = allTasks.size();
         long doneTasks = allTasks.stream().filter(t -> "done".equalsIgnoreCase(t.getStatus())).count();
-
-        // Success rate = % of tasks done globally (exam readiness)
         double successRate = totalTasks == 0 ? 0 : (doneTasks * 100.0 / totalTasks);
         lblSuccessRate.setText(String.format("%.0f%%", successRate));
-
-        // Creation rate per exam: % of exams where related tasks (same title) are done
-        // e.g. exam "java" → tasks titled "java" done / total "java" tasks
-        if (allExams.isEmpty()) {
-            lblCreationRate.setText("-");
-            return;
-        }
-
-        double totalRate = 0;
-        int counted = 0;
-        for (Exam ex : allExams) {
-            String examTitle2 = ex.getTitle().toLowerCase();
-            long relatedTotal = allTasks.stream()
-                    .filter(t -> t.getTitle().toLowerCase().contains(examTitle2)
-                            || examTitle2.contains(t.getTitle().toLowerCase()))
-                    .count();
-            long relatedDone = allTasks.stream()
-                    .filter(t -> t.getTitle().toLowerCase().contains(examTitle2)
-                            || examTitle2.contains(t.getTitle().toLowerCase()))
-                    .filter(t -> "done".equalsIgnoreCase(t.getStatus()))
-                    .count();
-            if (relatedTotal > 0) {
-                totalRate += (relatedDone * 100.0 / relatedTotal);
-                counted++;
-            }
-        }
-        double creationRate = counted == 0 ? 0 : totalRate / counted;
-        lblCreationRate.setText(String.format("%.0f%%", creationRate));
     }
 
     // ---- Per-exam success rate popup (called from exam row click) ----
@@ -2060,22 +2071,15 @@ public class PlannerModule {
     // ================================================================
     // GROQ AI CHATBOT
     // ================================================================
-    private static final GroqConfig groqConfig = GroqConfig.getInstance();
-    private static final String GROQ_API_KEY = groqConfig.getApiKey();
-    private static final String GROQ_URL = groqConfig.getApiUrl();
-    private static final String GROQ_MODEL = groqConfig.getModel();
+    private static final String GROQ_API_KEY = "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";
+    private static final String GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+    private static final String GROQ_MODEL = "llama-3.1-8b-instant";
+    private static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
     private void handleGroqChat() {
         String userMsg = chatInput.getText().trim();
         if (userMsg.isEmpty())
             return;
-
-        if (GROQ_API_KEY == null || GROQ_API_KEY.isEmpty()) {
-            chatArea.appendText("\nBot: ❌ Error: GROQ_API_KEY is not configured.\n"
-                    + "Please set your Groq API key in src/main/resources/config.properties\n"
-                    + "(Get your key from https://console.groq.com/keys)");
-            return;
-        }
 
         if (currentChatExam == null) {
             chatArea.appendText("\nBot: Please select an exam first.");
@@ -2148,7 +2152,6 @@ public class PlannerModule {
 
                 String body = bodyBuilder.toString();
 
-                HttpClient client = HttpClient.newHttpClient();
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(URI.create(GROQ_URL))
                         .header("Content-Type", "application/json; charset=utf-8")
@@ -2156,7 +2159,7 @@ public class PlannerModule {
                         .POST(HttpRequest.BodyPublishers.ofString(body, java.nio.charset.StandardCharsets.UTF_8))
                         .build();
 
-                HttpResponse<String> resp = client.send(request,
+                HttpResponse<String> resp = HTTP_CLIENT.send(request,
                         HttpResponse.BodyHandlers.ofString());
                 int statusCode = resp.statusCode();
                 String responseBody = resp.body();
@@ -2278,14 +2281,6 @@ public class PlannerModule {
         }
     }
 
-    private boolean isValidDateTime(String v) {
-        try {
-            LocalDateTime.parse(v, DT_FORMAT);
-            return true;
-        } catch (DateTimeParseException e) {
-            return false;
-        }
-    }
 
     private boolean isOverdue(String d) {
         if (d == null || d.isEmpty())
@@ -2304,6 +2299,20 @@ public class PlannerModule {
     private void resetFieldStyles(TextField... fields) {
         for (TextField f : fields)
             f.setStyle("");
+    }
+
+    /** Returns "00"."23" for hour ComboBoxes */
+    private static java.util.List<String> buildHourList() {
+        java.util.List<String> list = new java.util.ArrayList<>(24);
+        for (int i = 0; i < 24; i++) list.add(String.format("%02d", i));
+        return list;
+    }
+
+    /** Returns "00","05"."55" for minute ComboBoxes */
+    private static java.util.List<String> buildMinuteList() {
+        java.util.List<String> list = new java.util.ArrayList<>(12);
+        for (int i = 0; i < 60; i += 5) list.add(String.format("%02d", i));
+        return list;
     }
 
     private int taskPriorityInt() {
@@ -2379,5 +2388,7 @@ public class PlannerModule {
                 err ? "-fx-text-fill:#E24B4A;-fx-font-size:12px;" : "-fx-text-fill:#1D9E75;-fx-font-size:12px;");
     }
 
-
+    public static void main(String[] args) {
+        launch(args);
+    }
 }

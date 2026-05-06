@@ -2,7 +2,7 @@
   <configuration default="false" name="MainApp" type="Application" factoryName="Application">
     <option name="MAIN_CLASS_NAME" value="com.mindforge.MainApp" />
     <module name="PI" />
-    <option name="VM_PARAMETERS" value="--module-path &quot;C:/Users/trabe/.m2/repository/org/openjfx/javafx-graphics/17.0.6/javafx-graphics-17.0.6-win.jar;C:/Users/trabe/.m2/repository/org/openjfx/javafx-controls/17.0.6/javafx-controls-17.0.6-win.jar;C:/Users/trabe/.m2/repository/org/openjfx/javafx-fxml/17.0.6/javafx-fxml-17.0.6-win.jar;C:/Users/trabe/.m2/repository/org/openjfx/javafx-base/17.0.6/javafx-base-17.0.6-win.jar&quot; --add-modules javafx.controls,javafx.fxml" />
+    <option name="VM_PARAMETERS" value="--module-path &quot;C:/Users/Bastali2/.m2/repository/org/openjfx/javafx-graphics/17.0.6/javafx-graphics-17.0.6-win.jar;C:/Users/Bastali2/.m2/repository/org/openjfx/javafx-controls/17.0.6/javafx-controls-17.0.6-win.jar;C:/Users/Bastali2/.m2/repository/org/openjfx/javafx-fxml/17.0.6/javafx-fxml-17.0.6-win.jar;C:/Users/Bastali2/.m2/repository/org/openjfx/javafx-base/17.0.6/javafx-base-17.0.6-win.jar&quot; --add-modules javafx.controls,javafx.fxml" />
     <method v="2" />
   </configuration>
 </component>
