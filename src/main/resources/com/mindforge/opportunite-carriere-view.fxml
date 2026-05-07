@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mindforge.controllers.carriere.OpportuniteCarriereController"
+      spacing="16" style="-fx-padding: 32; -fx-background-color: #f7f8fc;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox>
+            <Label text="Opportunites" styleClass="page-title"/>
+            <Label text="Manage career opportunities" styleClass="page-subtitle"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ Add" styleClass="btn-primary" onAction="#showAddForm"/>
+        <Button text="Edit" styleClass="btn-success" onAction="#showEditForm"/>
+        <Button text="Delete" styleClass="btn-danger" onAction="#deleteSelected"/>
+    </HBox>
+
+    <!-- Table -->
+    <VBox styleClass="table-wrapper" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tableView" VBox.vgrow="ALWAYS" maxWidth="Infinity">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="colTitle" text="Title" prefWidth="190"/>
+                <TableColumn fx:id="colType" text="Type" prefWidth="110"/>
+                <TableColumn fx:id="colLocation" text="Location" prefWidth="130"/>
+                <TableColumn fx:id="colStatus" text="Status" prefWidth="90"/>
+                <TableColumn fx:id="colDeadline" text="Deadline" prefWidth="110"/>
+                <TableColumn fx:id="colCompany" text="Company" prefWidth="150"/>
+            </columns>
+            <placeholder><Label text="No opportunities found. Click Add to create one."/></placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Form Panel -->
+    <VBox fx:id="formPanel" styleClass="form-panel" spacing="14" visible="false" managed="false">
+        <Label fx:id="formTitle" text="Add Opportunite" styleClass="section-title"/>
+
+        <GridPane hgap="20" vgap="12">
+            <columnConstraints>
+                <ColumnConstraints minWidth="110" prefWidth="110"/>
+                <ColumnConstraints prefWidth="240" hgrow="ALWAYS"/>
+                <ColumnConstraints minWidth="110" prefWidth="110"/>
+                <ColumnConstraints prefWidth="240" hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="Title *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="fieldTitle" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Type" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+            <ComboBox fx:id="fieldType" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+            <Label text="Location" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="fieldLocation" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Duration" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <TextField fx:id="fieldDuration" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+            <Label text="Deadline" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <DatePicker fx:id="fieldDeadline" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Status" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="2"/>
+            <ComboBox fx:id="fieldStatus" maxWidth="Infinity" GridPane.columnIndex="3" GridPane.rowIndex="2"/>
+
+            <Label text="Company" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <ComboBox fx:id="fieldCompany" maxWidth="Infinity" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+            <Label text="Description" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+            <TextArea fx:id="fieldDescription" prefHeight="68" wrapText="true"
+                      GridPane.columnIndex="1" GridPane.rowIndex="4" GridPane.columnSpan="3"/>
+        </GridPane>
+
+        <HBox spacing="10">
+            <Button text="Save" styleClass="btn-primary" onAction="#saveEntity"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#cancelForm"/>
+        </HBox>
+    </VBox>
+
+</VBox>

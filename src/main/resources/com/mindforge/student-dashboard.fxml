@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mindforge.controllers.carriere.StudentController"
+      maxWidth="Infinity" maxHeight="Infinity"
+      stylesheets="@styles.css"
+      style="-fx-background-color: #f7f8fc;">
+
+    <!-- Top Header - Gradient -->
+    <HBox fx:id="careerHeader" style="-fx-background-color: linear-gradient(from 0% 0% to 100% 0%, #e91e8c, #7c4dff, #00bcd4);
+                 -fx-padding: 20 28 20 28;"
+          alignment="CENTER_LEFT" spacing="12">
+        <VBox spacing="4">
+            <Label fx:id="pageTitle" text="Career Opportunities"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+            <Label text="MindForge workspace module view"
+                   style="-fx-font-size: 13px; -fx-text-fill: rgba(255,255,255,0.8);"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Label fx:id="notifBadge" text="🔔"
+               style="-fx-font-size: 18px; -fx-cursor: hand; -fx-padding: 4 10; -fx-text-fill: white;"/>
+        <Button text="Logout" onAction="#logout"
+                style="-fx-background-color: rgba(255,255,255,0.2); -fx-text-fill: white;
+                       -fx-font-weight: bold; -fx-padding: 8 20; -fx-background-radius: 8; -fx-cursor: hand;
+                       -fx-border-color: rgba(255,255,255,0.4); -fx-border-radius: 8;"/>
+    </HBox>
+
+    <!-- Tab Pane -->
+    <TabPane fx:id="careerTabPane" VBox.vgrow="ALWAYS" tabClosingPolicy="UNAVAILABLE"
+             style="-fx-background-color: transparent; -fx-tab-min-height: 40px;">
+
+        <!-- Tab 1: Companies -->
+        <Tab text="  Companies  ">
+            <VBox>
+                <!-- Search / Filter Bar (hidden when viewing a company's opportunities) -->
+                <HBox fx:id="companiesSearchBar"
+                      style="-fx-background-color: white; -fx-padding: 20 28;
+                             -fx-border-color: transparent transparent #e2e8f0 transparent;
+                             -fx-border-width: 0 0 1 0;"
+                      spacing="12" alignment="CENTER">
+                    <TextField fx:id="searchCompanyKeyword" promptText="Company name or keyword..."
+                               prefWidth="320" HBox.hgrow="ALWAYS"
+                               style="-fx-background-color: white; -fx-border-color: #e2e8f0;
+                                      -fx-border-radius: 8; -fx-background-radius: 8;
+                                      -fx-padding: 10 16; -fx-font-size: 13px;"/>
+                    <ComboBox fx:id="searchCompanyIndustry" prefWidth="200"
+                              style="-fx-background-color: white; -fx-border-color: #e2e8f0;
+                                     -fx-border-radius: 8; -fx-background-radius: 8;
+                                     -fx-font-size: 13px;"/>
+                    <Button text="🔍  Search" onAction="#searchCompanies"
+                            style="-fx-background-color: #7c4dff; -fx-text-fill: white;
+                                   -fx-font-size: 14px; -fx-font-weight: bold;
+                                   -fx-padding: 10 28; -fx-background-radius: 25; -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Sub-navigation bar (shown when viewing a company's opportunities) -->
+                <HBox fx:id="companiesNavBar" visible="false" managed="false"
+                      alignment="CENTER_LEFT" spacing="12"
+                      style="-fx-background-color: #f8fafc; -fx-padding: 10 28;
+                             -fx-border-color: transparent transparent #e2e8f0 transparent;
+                             -fx-border-width: 0 0 1 0;">
+                    <Button text="← Back" styleClass="btn-secondary" onAction="#goBackInCompanies"/>
+                    <Label fx:id="companiesNavLabel" text=""
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1f2e;"/>
+                </HBox>
+                <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="false"
+                            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                    <FlowPane fx:id="companiesFlow" hgap="20" vgap="20"
+                              style="-fx-padding: 28; -fx-background-color: transparent;"/>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+
+        <!-- Tab 2: Browse All Opportunities -->
+        <Tab text="  Browse Opportunities  ">
+            <VBox>
+                <!-- Search / Filter Bar -->
+                <HBox style="-fx-background-color: white; -fx-padding: 20 28;
+                             -fx-border-color: transparent transparent #e2e8f0 transparent;
+                             -fx-border-width: 0 0 1 0;"
+                      spacing="12" alignment="CENTER">
+                    <TextField fx:id="searchKeyword" promptText="Job title or keyword..."
+                               prefWidth="280" HBox.hgrow="ALWAYS"
+                               style="-fx-background-color: white; -fx-border-color: #e2e8f0;
+                                      -fx-border-radius: 8; -fx-background-radius: 8;
+                                      -fx-padding: 10 16; -fx-font-size: 13px;"/>
+                    <ComboBox fx:id="searchType" prefWidth="170"
+                              style="-fx-background-color: white; -fx-border-color: #e2e8f0;
+                                     -fx-border-radius: 8; -fx-background-radius: 8;
+                                     -fx-font-size: 13px;"/>
+                    <TextField fx:id="searchLocation" promptText="Location..."
+                               prefWidth="200" HBox.hgrow="ALWAYS"
+                               style="-fx-background-color: white; -fx-border-color: #e2e8f0;
+                                      -fx-border-radius: 8; -fx-background-radius: 8;
+                                      -fx-padding: 10 16; -fx-font-size: 13px;"/>
+                    <Button text="🔍  Search" onAction="#searchOpportunities"
+                            style="-fx-background-color: #7c4dff; -fx-text-fill: white;
+                                   -fx-font-size: 14px; -fx-font-weight: bold;
+                                   -fx-padding: 10 28; -fx-background-radius: 25; -fx-cursor: hand;"/>
+                </HBox>
+                <ScrollPane VBox.vgrow="ALWAYS" fitToWidth="true" fitToHeight="false"
+                            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                    <FlowPane fx:id="opportunitiesFlow" hgap="20" vgap="20"
+                              style="-fx-padding: 28; -fx-background-color: transparent;"/>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+
+        <!-- Tab 3: My Applications -->
+        <Tab text="  My Applications  ">
+            <ScrollPane fitToWidth="true" fitToHeight="false"
+                        style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                <FlowPane fx:id="myApplicationsFlow" hgap="20" vgap="20"
+                          style="-fx-padding: 28; -fx-background-color: transparent;"/>
+            </ScrollPane>
+        </Tab>
+
+        <!-- Tab 4: My Alerts (subscriptions) -->
+        <Tab fx:id="alertsTab" text="  My Alerts  ">
+            <VBox>
+                <HBox alignment="CENTER_LEFT" spacing="12"
+                      style="-fx-padding: 16 28; -fx-background-color: white;
+                             -fx-border-color: transparent transparent #e2e8f0 transparent;
+                             -fx-border-width: 0 0 1 0;">
+                    <Label text="Job Alert Subscriptions"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1f2e;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="+ New Alert" styleClass="btn-primary" onAction="#showAddAlertDialog"/>
+                </HBox>
+                <ScrollPane fitToWidth="true" fitToHeight="false"
+                            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                    <FlowPane fx:id="alertsFlow" hgap="20" vgap="20"
+                              style="-fx-padding: 28; -fx-background-color: transparent;"/>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+
+        <!-- Tab 5: Notifications -->
+        <Tab fx:id="notificationsTab" text="  Notifications  ">
+            <VBox>
+                <HBox alignment="CENTER_LEFT" spacing="12"
+                      style="-fx-padding: 16 28; -fx-background-color: white;
+                             -fx-border-color: transparent transparent #e2e8f0 transparent;
+                             -fx-border-width: 0 0 1 0;">
+                    <Label fx:id="notifHeader" text="Notifications"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #1a1f2e;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Mark All Read" styleClass="btn-secondary" onAction="#markAllNotificationsRead"/>
+                </HBox>
+                <ScrollPane fitToWidth="true" fitToHeight="false"
+                            style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-color: transparent;">
+                    <FlowPane fx:id="notificationsFlow" hgap="20" vgap="20"
+                              style="-fx-padding: 28; -fx-background-color: transparent;"/>
+                </ScrollPane>
+            </VBox>
+        </Tab>
+
+    </TabPane>
+
+</VBox>

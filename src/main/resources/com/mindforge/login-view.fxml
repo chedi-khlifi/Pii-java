@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<StackPane xmlns:fx="http://javafx.com/fxml"
+           fx:controller="com.mindforge.controllers.LoginController"
+           maxWidth="Infinity" maxHeight="Infinity"
+           stylesheets="@styles.css"
+           style="-fx-background-color: #f0f4ff;">
+
+    <VBox alignment="CENTER" spacing="36" maxWidth="720">
+
+        <!-- Branding -->
+        <VBox alignment="CENTER" spacing="6">
+            <Label text="MindForge"
+                   style="-fx-font-size: 40px; -fx-font-weight: bold; -fx-text-fill: #1a1f2e;"/>
+            <Label text="Career Management Platform"
+                   style="-fx-font-size: 16px; -fx-text-fill: #64748b;"/>
+        </VBox>
+
+        <!-- Role Cards -->
+        <HBox spacing="28" alignment="CENTER">
+
+            <!-- Student -->
+            <VBox styleClass="role-card" spacing="14" alignment="CENTER"
+                  prefWidth="300" prefHeight="220">
+                <Label text="🎓" style="-fx-font-size: 52px;"/>
+                <Label text="Student"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1f2e;"/>
+                <Label text="Browse opportunities and apply for jobs"
+                       wrapText="true" alignment="CENTER"
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-text-alignment: center;"/>
+                <Button text="Enter as Student" styleClass="btn-primary"
+                        onAction="#selectStudent" prefWidth="180"/>
+            </VBox>
+
+            <!-- Company Owner -->
+            <VBox styleClass="role-card" spacing="14" alignment="CENTER"
+                  prefWidth="300" prefHeight="220">
+                <Label text="🏢" style="-fx-font-size: 52px;"/>
+                <Label text="Company Owner"
+                       style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #1a1f2e;"/>
+                <Label text="Manage companies and review applications"
+                       wrapText="true" alignment="CENTER"
+                       style="-fx-font-size: 13px; -fx-text-fill: #64748b; -fx-text-alignment: center;"/>
+                <Button text="Enter as Company Owner" styleClass="btn-primary"
+                        onAction="#selectCompanyOwner" prefWidth="180"/>
+            </VBox>
+        </HBox>
+
+        <!-- User selector -->
+        <VBox alignment="CENTER" spacing="8">
+            <Label text="Select account"
+                   style="-fx-font-size: 13px; -fx-text-fill: #94a3b8;"/>
+            <ComboBox fx:id="userIdBox" prefWidth="320"
+                      style="-fx-font-size: 13px;"/>
+            <Label fx:id="userLoadError" text="" visible="false" managed="false"
+                   style="-fx-font-size: 12px; -fx-text-fill: #ef4444;"/>
+        </VBox>
+
+    </VBox>
+</StackPane>

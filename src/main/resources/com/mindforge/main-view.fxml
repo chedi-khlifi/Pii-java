@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<BorderPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mindforge.controllers.MainController"
+            prefWidth="1200" prefHeight="750"
+            stylesheets="@styles.css">
+    <left>
+        <VBox styleClass="sidebar" prefWidth="220" prefHeight="750">
+            <padding><Insets top="28" left="0" right="0" bottom="0"/></padding>
+
+            <!-- Logo -->
+            <VBox spacing="3" style="-fx-padding: 0 20 20 20;">
+                <Label text="MindForge" styleClass="app-logo-text"/>
+                <Label text="Career Management" styleClass="app-tagline"/>
+            </VBox>
+
+            <Region styleClass="nav-divider"/>
+
+            <!-- Main nav -->
+            <VBox spacing="2" style="-fx-padding: 8 0 0 0;">
+                <Label text="MAIN" styleClass="nav-section-label"/>
+                <Button fx:id="btnHome" text="  Home" styleClass="nav-btn"
+                        maxWidth="Infinity" onAction="#navigateHome"/>
+            </VBox>
+
+            <!-- Carriere nav -->
+            <VBox spacing="2" style="-fx-padding: 4 0 0 0;">
+                <Label text="CARRIERE" styleClass="nav-section-label"/>
+                <Button fx:id="btnEntreprises" text="  Entreprises" styleClass="nav-btn"
+                        maxWidth="Infinity" onAction="#navigateEntreprises"/>
+                <Button fx:id="btnOpportunites" text="  Opportunites" styleClass="nav-btn"
+                        maxWidth="Infinity" onAction="#navigateOpportunites"/>
+                <Button fx:id="btnDemandes" text="  Demandes" styleClass="nav-btn"
+                        maxWidth="Infinity" onAction="#navigateDemandes"/>
+            </VBox>
+
+            <Region VBox.vgrow="ALWAYS"/>
+            <Region styleClass="nav-divider"/>
+            <Label text="v1.0.0" styleClass="version-label"
+                   style="-fx-padding: 10 0 12 20;"/>
+        </VBox>
+    </left>
+
+    <center>
+        <AnchorPane fx:id="contentArea" style="-fx-background-color: #f7f8fc;"/>
+    </center>
+</BorderPane>

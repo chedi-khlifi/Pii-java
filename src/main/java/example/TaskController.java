@@ -80,6 +80,34 @@ public class TaskController {
         }
     }
 
+    public static ObservableList<Task> getTasksByOwner(int ownerId) {
+        ObservableList<Task> list = FXCollections.observableArrayList();
+        String sql = "SELECT id, title, description, status, priority, due_date, owner_id, estimated_minutes FROM task WHERE owner_id = ?";
+        try {
+            Connection con = DBConnection.getInstance().getConnection();
+            try (PreparedStatement ps = con.prepareStatement(sql)) {
+                ps.setInt(1, ownerId);
+                try (ResultSet rs = ps.executeQuery()) {
+                    while (rs.next()) {
+                        list.add(new Task(
+                                rs.getInt("id"),
+                                rs.getString("title"),
+                                rs.getString("description") != null ? rs.getString("description") : "",
+                                rs.getString("status"),
+                                rs.getInt("priority"),
+                                rs.getString("due_date") != null ? rs.getString("due_date") : "",
+                                rs.getInt("owner_id"),
+                                rs.getInt("estimated_minutes")
+                        ));
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
     public static void deleteTask(int id) {
         String sql = "DELETE FROM task WHERE id=?";
 

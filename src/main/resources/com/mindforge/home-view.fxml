@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<ScrollPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.mindforge.controllers.HomeController"
+            fitToWidth="true" hbarPolicy="NEVER"
+            style="-fx-background-color: #f7f8fc; -fx-background: #f7f8fc; -fx-border-color: transparent;">
+
+    <VBox spacing="24" style="-fx-padding: 32; -fx-background-color: #f7f8fc;">
+
+        <!-- Header -->
+        <VBox spacing="5">
+            <Label text="Welcome to MindForge" styleClass="page-title"/>
+            <Label text="Manage your career opportunities, companies, and applications."
+                   styleClass="page-subtitle"/>
+        </VBox>
+
+        <!-- Stats Row -->
+        <HBox spacing="20">
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="8">
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="[E]" styleClass="stat-icon" style="-fx-text-fill: #4f6df5;"/>
+                    <VBox>
+                        <Label fx:id="lblEntreprisesCount" text="-" styleClass="stat-number"
+                               style="-fx-text-fill: #4f6df5;"/>
+                        <Label text="Entreprises" styleClass="stat-label"/>
+                    </VBox>
+                </HBox>
+                <Label text="Registered companies" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="8">
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="[O]" styleClass="stat-icon" style="-fx-text-fill: #22c55e;"/>
+                    <VBox>
+                        <Label fx:id="lblOpportunitesCount" text="-" styleClass="stat-number"
+                               style="-fx-text-fill: #22c55e;"/>
+                        <Label text="Opportunites" styleClass="stat-label"/>
+                    </VBox>
+                </HBox>
+                <Label text="Active career listings" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+
+            <VBox styleClass="card" HBox.hgrow="ALWAYS" maxWidth="Infinity" spacing="8">
+                <HBox spacing="14" alignment="CENTER_LEFT">
+                    <Label text="[D]" styleClass="stat-icon" style="-fx-text-fill: #f59e0b;"/>
+                    <VBox>
+                        <Label fx:id="lblDemandesCount" text="-" styleClass="stat-number"
+                               style="-fx-text-fill: #f59e0b;"/>
+                        <Label text="Demandes" styleClass="stat-label"/>
+                    </VBox>
+                </HBox>
+                <Label text="Applications submitted" style="-fx-font-size: 11px; -fx-text-fill: #94a3b8;"/>
+            </VBox>
+        </HBox>
+
+        <!-- Recent Opportunites -->
+        <VBox styleClass="card" spacing="14">
+            <Label text="Recent Opportunites" styleClass="section-title"/>
+            <TableView fx:id="tblRecentOpp" prefHeight="200" maxWidth="Infinity">
+                <columns>
+                    <TableColumn fx:id="colOppTitle" text="Title" prefWidth="220"/>
+                    <TableColumn fx:id="colOppType" text="Type" prefWidth="120"/>
+                    <TableColumn fx:id="colOppLocation" text="Location" prefWidth="140"/>
+                    <TableColumn fx:id="colOppStatus" text="Status" prefWidth="100"/>
+                    <TableColumn fx:id="colOppDeadline" text="Deadline" prefWidth="120"/>
+                </columns>
+                <placeholder><Label text="No opportunities yet."/></placeholder>
+            </TableView>
+        </VBox>
+
+        <!-- Recent Demandes -->
+        <VBox styleClass="card" spacing="14">
+            <Label text="Recent Demandes" styleClass="section-title"/>
+            <TableView fx:id="tblRecentDemandes" prefHeight="180" maxWidth="Infinity">
+                <columns>
+                    <TableColumn fx:id="colDemId" text="ID" prefWidth="60"/>
+                    <TableColumn fx:id="colDemOpportunity" text="Opportunity" prefWidth="230"/>
+                    <TableColumn fx:id="colDemStatus" text="Status" prefWidth="120"/>
+                    <TableColumn fx:id="colDemApplied" text="Applied At" prefWidth="160"/>
+                </columns>
+                <placeholder><Label text="No applications yet."/></placeholder>
+            </TableView>
+        </VBox>
+
+    </VBox>
+</ScrollPane>

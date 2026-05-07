@@ -8,6 +8,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
+            fx:id="rootBorderPane"
             fx:controller="com.mindforge.architect.controller.HomeController"
             prefWidth="1280" prefHeight="800"
             styleClass="root-pane">
@@ -87,7 +88,7 @@
          MAIN CONTENT — ScrollPane wrapping all sections
     ═══════════════════════════════════════════════════════════ -->
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll">
+        <ScrollPane fx:id="homeScrollPane" fitToWidth="true" hbarPolicy="NEVER" styleClass="main-scroll">
             <VBox spacing="0">
 
                 <!-- ─────────────────────────────────────────────

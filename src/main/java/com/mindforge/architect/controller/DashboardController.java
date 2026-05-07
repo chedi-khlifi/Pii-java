@@ -1,6 +1,8 @@
 package com.mindforge.architect.controller;
 
 import com.mindforge.util.UserSession;
+import com.mindforge.utils.SessionManager;
+import com.mindforge.controllers.carriere.StudentController;
 import example.PlannerModule;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -152,6 +154,72 @@ public class DashboardController {
     // ----------------------------------------------------------------
     // OTHER ACTIONS
     // ----------------------------------------------------------------
+    // ----------------------------------------------------------------
+    // CAREERS
+    // ----------------------------------------------------------------
+    @FXML
+    private void goToCareers() {
+        try {
+            Scene scene = centerContent.getScene();
+            if (originalRoot == null) {
+                originalRoot = scene.getRoot();
+            }
+
+            UserSession us = UserSession.getInstance();
+            SessionManager.Role role = us.isCompany()
+                    ? SessionManager.Role.COMPANY_OWNER
+                    : SessionManager.Role.STUDENT;
+            SessionManager.setSession(role, us.getUserId(), us.getEmail());
+
+            String fxml = us.isCompany()
+                    ? "/com/mindforge/company-dashboard.fxml"
+                    : "/com/mindforge/student-dashboard.fxml";
+
+            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxml));
+            Parent careerRoot = loader.load();
+
+            // Hide the inner career header (redundant with dashboard chrome)
+            javafx.scene.Node header = careerRoot.lookup("#careerHeader");
+            if (header != null) {
+                header.setVisible(false);
+                header.setManaged(false);
+            }
+
+            if (!us.isCompany()) {
+                StudentController ctrl = loader.getController();
+                ctrl.selectTab(0);
+            }
+
+            Button backBtn = new Button("← Back to Dashboard");
+            backBtn.setStyle(
+                    "-fx-background-color: #4e64f4; -fx-text-fill: white;" +
+                    "-fx-background-radius: 8; -fx-padding: 8 18; -fx-cursor: hand;" +
+                    "-fx-font-weight: bold; -fx-font-size: 13px;"
+            );
+            final Scene capturedScene = scene;
+            final Parent capturedRoot = originalRoot;
+            backBtn.setOnAction(e -> capturedScene.setRoot(capturedRoot));
+
+            HBox topBar = new HBox(backBtn);
+            topBar.setPadding(new Insets(10, 15, 10, 15));
+            topBar.setAlignment(Pos.CENTER_LEFT);
+            topBar.setStyle("-fx-background-color: #f0f2f5;");
+
+            VBox.setVgrow(careerRoot, Priority.ALWAYS);
+            VBox fullPage = new VBox(topBar, careerRoot);
+            fullPage.setStyle("-fx-background-color: #f7f8fc;");
+
+            scene.setRoot(fullPage);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Alert alert = new Alert(Alert.AlertType.ERROR);
+            alert.setTitle("Careers");
+            alert.setHeaderText(null);
+            alert.setContentText("Could not load Careers: " + e.getClass().getSimpleName() + " – " + e.getMessage());
+            alert.showAndWait();
+        }
+    }
+
     @FXML
     private void goToWorkspace() {
         System.out.println("Going to workspace...");

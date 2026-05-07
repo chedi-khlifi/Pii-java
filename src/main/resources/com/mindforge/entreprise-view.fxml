@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.Insets?>
+<VBox xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.mindforge.controllers.carriere.EntrepriseController"
+      spacing="16" style="-fx-padding: 32; -fx-background-color: #f7f8fc;">
+
+    <!-- Header -->
+    <HBox alignment="CENTER_LEFT" spacing="12">
+        <VBox>
+            <Label text="Entreprises" styleClass="page-title"/>
+            <Label text="Manage registered companies" styleClass="page-subtitle"/>
+        </VBox>
+        <Region HBox.hgrow="ALWAYS"/>
+        <Button text="+ Add" styleClass="btn-primary" onAction="#showAddForm"/>
+        <Button text="Edit" styleClass="btn-success" onAction="#showEditForm"/>
+        <Button text="Delete" styleClass="btn-danger" onAction="#deleteSelected"/>
+    </HBox>
+
+    <!-- Table -->
+    <VBox styleClass="table-wrapper" VBox.vgrow="ALWAYS">
+        <TableView fx:id="tableView" VBox.vgrow="ALWAYS" maxWidth="Infinity">
+            <columns>
+                <TableColumn fx:id="colId" text="ID" prefWidth="55"/>
+                <TableColumn fx:id="colName" text="Name" prefWidth="190"/>
+                <TableColumn fx:id="colIndustry" text="Industry" prefWidth="130"/>
+                <TableColumn fx:id="colEmail" text="Contact Email" prefWidth="185"/>
+                <TableColumn fx:id="colPhone" text="Phone" prefWidth="100"/>
+                <TableColumn fx:id="colWebsite" text="Website" prefWidth="160"/>
+                <TableColumn fx:id="colCreatedAt" text="Created At" prefWidth="135"/>
+            </columns>
+            <placeholder><Label text="No companies found. Click Add to create one."/></placeholder>
+        </TableView>
+    </VBox>
+
+    <!-- Form Panel -->
+    <VBox fx:id="formPanel" styleClass="form-panel" spacing="14" visible="false" managed="false">
+        <Label fx:id="formTitle" text="Add Entreprise" styleClass="section-title"/>
+
+        <GridPane hgap="20" vgap="12">
+            <columnConstraints>
+                <ColumnConstraints minWidth="110" prefWidth="110"/>
+                <ColumnConstraints prefWidth="250" hgrow="ALWAYS"/>
+                <ColumnConstraints minWidth="110" prefWidth="110"/>
+                <ColumnConstraints prefWidth="250" hgrow="ALWAYS"/>
+            </columnConstraints>
+
+            <Label text="Name *" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <TextField fx:id="fieldName" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+            <Label text="Industry" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="0"/>
+            <TextField fx:id="fieldIndustry" GridPane.columnIndex="3" GridPane.rowIndex="0"/>
+
+            <Label text="Email" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <TextField fx:id="fieldEmail" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+            <Label text="Phone" styleClass="form-label" GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+            <TextField fx:id="fieldPhone" GridPane.columnIndex="3" GridPane.rowIndex="1"/>
+
+            <Label text="Website" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+            <TextField fx:id="fieldWebsite" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+            <Label text="Description" styleClass="form-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+            <TextArea fx:id="fieldDescription" prefHeight="68" wrapText="true"
+                      GridPane.columnIndex="1" GridPane.rowIndex="3" GridPane.columnSpan="3"/>
+        </GridPane>
+
+        <HBox spacing="10">
+            <Button text="Save" styleClass="btn-primary" onAction="#saveEntity"/>
+            <Button text="Cancel" styleClass="btn-secondary" onAction="#cancelForm"/>
+        </HBox>
+    </VBox>
+
+</VBox>

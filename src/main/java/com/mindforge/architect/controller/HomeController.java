@@ -16,6 +16,11 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
 import java.util.ResourceBundle;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.control.ScrollPane;
+import com.mindforge.util.UserSession;
+import com.mindforge.utils.SessionManager;
+import com.mindforge.controllers.carriere.StudentController;
 
 public class HomeController implements Initializable {
 
@@ -54,6 +59,10 @@ public class HomeController implements Initializable {
     // ── Footer ──────────────────────────────────────────────
     @FXML private ImageView footerLogo;
     @FXML private Label     footerCopyright;
+
+    // ── Career integration ───────────────────────────────────
+    @FXML private BorderPane rootBorderPane;
+    @FXML private ScrollPane homeScrollPane;
 
     // ────────────────────────────────────────────────────────
     //  INITIALIZE
@@ -111,7 +120,9 @@ public class HomeController implements Initializable {
     // ════════════════════════════════════════════════════════
 
     @FXML public void onHome(ActionEvent e) {
-        System.out.println("Home clicked");
+        if (rootBorderPane != null && homeScrollPane != null) {
+            rootBorderPane.setCenter(homeScrollPane);
+        }
     }
 
     @FXML public void onAbout(ActionEvent e) {
@@ -159,12 +170,42 @@ public class HomeController implements Initializable {
     //  CAREERS MENU HANDLERS
     // ════════════════════════════════════════════════════════
 
-    @FXML public void onBrowseOpportunities(ActionEvent e) { System.out.println("Browse Opportunities"); }
-    @FXML public void onCompanies(ActionEvent e)           { System.out.println("Companies"); }
-    @FXML public void onMyApplications(ActionEvent e)      { System.out.println("My Applications"); }
-    @FXML public void onPostOpportunity(ActionEvent e)     { System.out.println("Post Opportunity"); }
-    @FXML public void onMyPostings(ActionEvent e)          { System.out.println("My Postings"); }
-    @FXML public void onApplicationsReceived(ActionEvent e){ System.out.println("Applications Received"); }
+    @FXML public void onBrowseOpportunities(ActionEvent e) { loadStudentCareer(1); }
+    @FXML public void onCompanies(ActionEvent e)           { loadStudentCareer(0); }
+    @FXML public void onMyApplications(ActionEvent e)      { loadStudentCareer(2); }
+    @FXML public void onPostOpportunity(ActionEvent e)     { loadCompanyCareer(); }
+    @FXML public void onMyPostings(ActionEvent e)          { loadCompanyCareer(); }
+    @FXML public void onApplicationsReceived(ActionEvent e){ loadCompanyCareer(); }
+
+    private void loadStudentCareer(int tabIndex) {
+        try {
+            UserSession us = UserSession.getInstance();
+            SessionManager.setSession(SessionManager.Role.STUDENT, us.getUserId(), us.getEmail());
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/student-dashboard.fxml"));
+            Parent root = loader.load();
+            StudentController ctrl = loader.getController();
+            ctrl.selectTab(tabIndex);
+            rootBorderPane.setCenter(root);
+        } catch (IOException e) {
+            System.err.println("Could not load student-dashboard.fxml");
+            e.printStackTrace();
+        }
+    }
+
+    private void loadCompanyCareer() {
+        try {
+            UserSession us = UserSession.getInstance();
+            SessionManager.setSession(SessionManager.Role.COMPANY_OWNER, us.getUserId(), us.getEmail());
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/company-dashboard.fxml"));
+            Parent root = loader.load();
+            rootBorderPane.setCenter(root);
+        } catch (IOException e) {
+            System.err.println("Could not load company-dashboard.fxml");
+            e.printStackTrace();
+        }
+    }
 
     // ════════════════════════════════════════════════════════
     //  PROFILE MENU HANDLERS

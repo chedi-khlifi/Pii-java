@@ -62,7 +62,7 @@
                 <Button onAction="#goToPlanner" text="📁  Planner" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;" />
                 <Button text="👥  Community" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
                 <Button text="📚  Guardian" onAction="#openGuardian" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="💼  Careers" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="💼  Careers" onAction="#goToCareers" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
                 <Button text="📊  Analyst" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
             </VBox>
 
