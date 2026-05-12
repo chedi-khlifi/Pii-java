@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<ScrollPane fx:id="rootScrollPane" xmlns="http://javafx.com/javafx/17"
+        xmlns:fx="http://javafx.com/fxml"
+        fx:controller="com.example.controllers.ClaimController"
+        fitToWidth="true"
+        hbarPolicy="NEVER"
+        style="-fx-background-color: #f8f9fa;">
+
+    <content>
+        <VBox spacing="30" alignment="TOP_CENTER" style="-fx-background-color: #f8f9fa; -fx-padding: 40; -fx-font-family: 'Poppins', 'Segoe UI', sans-serif;">
+            <children>
+                
+                <!-- Simple Header -->
+                <VBox spacing="10" alignment="CENTER_LEFT" maxWidth="1000" style="-fx-padding: 0 0 20 0;">
+                    <children>
+                        <Label fx:id="screenTitle" text="Nouveau Ticket de Support" style="-fx-font-size: 32px; -fx-font-weight: 900; -fx-text-fill: #6f42c1;"/>
+                        <Label text="Veuillez remplir le formulaire ci-dessous pour nous envoyer votre demande." style="-fx-font-size: 14px; -fx-text-fill: #6c757d;"/>
+                    </children>
+                </VBox>
+
+                <!-- Form Card -->
+                <VBox fx:id="formCard" spacing="30" maxWidth="1000" style="-fx-background-color: white; -fx-padding: 40; -fx-background-radius: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 20, 0, 0, 10);" visible="false" managed="false">
+                    <children>
+                        <Label text="Détails du Ticket" style="-fx-font-size: 24px; -fx-font-weight: 800; -fx-text-fill: #212529;"/>
+                        <Separator style="-fx-opacity: 0.5;"/>
+
+                        <GridPane hgap="30" vgap="25">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                                <ColumnConstraints hgrow="ALWAYS" percentWidth="50"/>
+                            </columnConstraints>
+                            <children>
+                                <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="0" GridPane.columnSpan="2">
+                                    <children>
+                                        <Label text="Titre du problème" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                        <TextField fx:id="titleField" prefHeight="45" promptText="Ex: Problème de connexion..." style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="1" GridPane.columnSpan="2">
+                                    <children>
+                                        <Label text="Description complète" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                        <TextArea fx:id="descriptionArea" prefHeight="200" wrapText="true" promptText="Décrivez votre problème en détails..." style="-fx-control-inner-background: #f8f9fa; -fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="2" GridPane.columnSpan="2">
+                                    <children>
+                                        <Label text="Niveau de Priorité" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                        <ComboBox fx:id="priorityComboBox" maxWidth="Infinity" prefHeight="45" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                    </children>
+                                </VBox>
+
+                                <!-- Admin Fields -->
+                                <VBox fx:id="statusSection" spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="3" GridPane.columnSpan="2" visible="false" managed="false">
+                                    <children>
+                                        <Label text="Statut du Ticket" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                        <ComboBox fx:id="statusComboBox" maxWidth="Infinity" prefHeight="45" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                    </children>
+                                </VBox>
+                                <VBox fx:id="adminSection" spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="4" GridPane.columnSpan="2" visible="false" managed="false">
+                                    <children>
+                                        <VBox spacing="10">
+                                            <children>
+                                                <Label text="Assigner à" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                                <ComboBox fx:id="assignedToComboBox" maxWidth="Infinity" prefHeight="45" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="10">
+                                            <children>
+                                                <Label text="Notes Administrateur" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                                <TextArea fx:id="adminNotesArea" prefHeight="100" wrapText="true" style="-fx-control-inner-background: #f8f9fa; -fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </VBox>
+                                <VBox fx:id="createdBySection" spacing="10" GridPane.columnIndex="0" GridPane.rowIndex="5" GridPane.columnSpan="2" visible="false" managed="false">
+                                    <children>
+                                        <Label text="Créé par" style="-fx-font-weight: 800; -fx-text-fill: #495057;"/>
+                                        <ComboBox fx:id="createdByComboBox" maxWidth="Infinity" prefHeight="45" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 10; -fx-background-radius: 10;"/>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </GridPane>
+
+                        <HBox spacing="15" alignment="CENTER_RIGHT" style="-fx-padding: 20 0 0 0;">
+                            <children>
+                                <Button fx:id="backButton" text="Retour" onAction="#handleBackButton" prefHeight="50" prefWidth="120" style="-fx-background-color: #f1f3f5; -fx-text-fill: #495057; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;"/>
+                                <Button fx:id="clearButton" text="Annuler" onAction="#handleClearButton" prefHeight="50" prefWidth="120" style="-fx-background-color: #f1f3f5; -fx-text-fill: #495057; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;"/>
+                                <Button fx:id="deleteButton" text="🗑 Supprimer" onAction="#handleDeleteButton" prefHeight="50" prefWidth="150" style="-fx-background-color: #e74a3b; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;" visible="false" managed="false"/>
+                                <Button fx:id="updateButton" text="💾 Mettre à jour" onAction="#handleUpdateButton" prefHeight="50" prefWidth="200" style="-fx-background-color: #4e73df; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand;" visible="false" managed="false"/>
+                                <Button fx:id="addButton" text="🚀 Créer Ticket" onAction="#handleAddButton" prefHeight="50" prefWidth="250" style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 12; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.2), 10, 0, 0, 5);"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <!-- Dashboard / Admin Section -->
+                <HBox fx:id="adminViewContainer" spacing="20" maxWidth="1500" visible="false" managed="false" alignment="TOP_LEFT">
+                    <children>
+                        <VBox fx:id="sidebarPanel" prefWidth="240" spacing="18" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 20, 0, 0, 10);" visible="false" managed="false">
+                            <children>
+                                <Label text="CORE" style="-fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: #8b94a3; -fx-letter-spacing: 1px;"/>
+                                <Button text="🏠  Dashboard" maxWidth="1.7976931348623157E308"/>
+                                <Label text="ADDONS" style="-fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: #8b94a3; -fx-letter-spacing: 1px; -fx-padding: 6 0 0 0;"/>
+                                <Button text="📊  Tables" maxWidth="1.7976931348623157E308"/>
+                                <Label text="MANAGEMENT" style="-fx-font-size: 10px; -fx-font-weight: 900; -fx-text-fill: #8b94a3; -fx-letter-spacing: 1px; -fx-padding: 6 0 0 0;"/>
+                                <Button text="👤  Users" maxWidth="1.7976931348623157E308"/>
+                                <Button text="🛡  Role Requests" maxWidth="1.7976931348623157E308"/>
+                                <Button text="🎫  Community Claims" maxWidth="1.7976931348623157E308"/>
+                                <Button text="📈  Charts" maxWidth="1.7976931348623157E308"/>
+                                <Pane VBox.vgrow="ALWAYS"/>
+                                <Button text="← Retour au Hub" onAction="#handleBackButton" maxWidth="1.7976931348623157E308" style="-fx-background-color: #f7f7fb; -fx-text-fill: #394150; -fx-font-weight: 800; -fx-background-radius: 10; -fx-border-color: #e6e8f0; -fx-border-radius: 10;"/>
+                            </children>
+                        </VBox>
+
+                        <VBox spacing="16" HBox.hgrow="ALWAYS">
+                            <children>
+                                <!-- Top Search Bar -->
+                                <HBox alignment="CENTER_RIGHT" style="-fx-background-color: white; -fx-padding: 12 16; -fx-background-radius: 14; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.04), 10, 0, 0, 4);">
+                                    <children>
+                                        <TextField promptText="Search..." prefWidth="260" prefHeight="36" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8; -fx-background-radius: 8;"/>
+                                        <Region prefWidth="8"/>
+                                        <Button text="🔍" prefHeight="36" style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+                                    </children>
+                                </HBox>
+
+                                <!-- Admin Title Bar -->
+                                <HBox fx:id="statsBar" spacing="20" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 15; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                                    <children>
+                                        <Label text="Gestion des Tickets" style="-fx-font-size: 30px; -fx-font-weight: 900; -fx-text-fill: #6f42c1;"/>
+                                        <Region HBox.hgrow="ALWAYS"/>
+                                        <Label text="En cours" style="-fx-background-color: rgba(111, 66, 193, 0.1); -fx-text-fill: #6f42c1; -fx-padding: 6 16; -fx-background-radius: 14; -fx-font-weight: bold;"/>
+                                    </children>
+                                </HBox>
+
+                                <!-- Filter Bar -->
+                                <HBox fx:id="filterBar" spacing="15" alignment="CENTER_LEFT" style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 15;">
+                                    <children>
+                                        <ComboBox fx:id="filterStatus" promptText="Statut" prefHeight="40" HBox.hgrow="ALWAYS" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8;"/>
+                                        <ComboBox fx:id="filterPriority" promptText="Priorité" prefHeight="40" HBox.hgrow="ALWAYS" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8;"/>
+                                        <TextField fx:id="searchField" promptText="Rechercher un ticket..." prefWidth="260" prefHeight="40" style="-fx-background-color: #f8f9fa; -fx-border-color: #dee2e6; -fx-border-radius: 8;"/>
+                                        <Button text="Réinitialiser" onAction="#handleClearFilter" prefHeight="40" style="-fx-background-color: #f1f3f5; -fx-text-fill: #495057; -fx-font-weight: bold; -fx-background-radius: 8;"/>
+                                    </children>
+                                </HBox>
+
+                                <!-- Table Container -->
+                                <VBox fx:id="tableContainer" spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 20, 0, 0, 10);">
+                                    <children>
+                                        <HBox alignment="CENTER_LEFT">
+                                            <children>
+                                                <Label text="Liste des Demandes" style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: #212529;"/>
+                                                <Region HBox.hgrow="ALWAYS"/>
+                                                <Button fx:id="navNewTicket" text="+ Nouveau Ticket" onAction="#handleNewTicketButton" style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 15; -fx-cursor: hand;"/>
+                                                <Region prefWidth="10"/>
+                                                <Button fx:id="myTicketsButton" text="Mes Tickets" onAction="#handleMyTicketsButton" style="-fx-background-color: #f1f3f5; -fx-text-fill: #495057; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 15; -fx-cursor: hand;"/>
+                                                <Region prefWidth="10"/>
+                                                <Label fx:id="modeBadge" text="Mode Admin" style="-fx-background-color: rgba(111, 66, 193, 0.1); -fx-text-fill: #6f42c1; -fx-padding: 5 15; -fx-background-radius: 15; -fx-font-weight: bold;"/>
+                                            </children>
+                                        </HBox>
+                                        <TableView fx:id="claimTable" VBox.vgrow="ALWAYS" prefHeight="430">
+                                            <columns>
+                                                <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+                                                <TableColumn fx:id="titleColumn" text="Titre" prefWidth="250"/>
+                                                <TableColumn fx:id="statusColumn" text="Statut" prefWidth="120"/>
+                                                <TableColumn fx:id="priorityColumn" text="Priorité" prefWidth="120"/>
+                                                <TableColumn fx:id="createdByColumn" text="Créateur" prefWidth="120"/>
+                                                <TableColumn fx:id="assignedToColumn" text="Assigné à" prefWidth="120"/>
+                                                <TableColumn fx:id="createdAtColumn" text="Date" prefWidth="150"/>
+                                                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="100"/>
+                                            </columns>
+                                        </TableView>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </VBox>
+
+                        <!-- Chart Container (for MY_TICKETS mode) -->
+                        <VBox fx:id="chartContainer" prefWidth="400" spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 20, 0, 0, 10);" visible="false" managed="false">
+                            <children>
+                                <Label text="Répartition" style="-fx-font-size: 20px; -fx-font-weight: 800; -fx-text-fill: #212529;"/>
+                                <PieChart fx:id="problemChart" VBox.vgrow="ALWAYS" legendSide="BOTTOM"/>
+                            </children>
+                        </VBox>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>

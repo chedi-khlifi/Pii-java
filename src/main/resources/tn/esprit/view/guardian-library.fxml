@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
@@ -12,118 +11,157 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:controller="tn.esprit.GuardianController" styleClass="guardian-root" stylesheets="@guardian-cards.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane fx:controller="tn.esprit.GuardianController"
+            stylesheets="@guardian-cards.css"
+            style="-fx-background-color: #f5f5fa;"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- ══ LEFT SIDEBAR ═════════════════════════════════════════════ -->
     <left>
-        <VBox spacing="12" styleClass="guardian-sidebar">
-            <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
-            <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
-            <Button text="▣ Planner" onAction="#onOpenPlanner" styleClass="guardian-global-nav-button" />
-            <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
-            <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Button text="◔ Analyst" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Label text="QUICK LINKS" styleClass="guardian-side-group-title" />
-            <Button text="Contact Support" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Button text="Friends" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Region VBox.vgrow="ALWAYS" />
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
+              minWidth="210" maxWidth="210" spacing="5">
+            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
+                <Label text="🔥" style="-fx-font-size: 20px;"/>
+                <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
+            </HBox>
+            <VBox spacing="5">
+                <Button text="📁  Planner"   onAction="#onOpenPlanner"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="👥  Community" onAction="#onOpenCommunity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📚  Guardian"  onAction="#onGoHub"
+                        style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: 700; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="💼  Careers"   onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📊  Analyst"   onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            </VBox>
+            <Region minHeight="20"/>
+            <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
+                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
+            </Label>
+            <Button text="Contact Support" onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button text="Friends"         onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button text="Leaderboard"     onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
         </VBox>
     </left>
+
+    <!-- ══ CENTER ════════════════════════════════════════════════════ -->
     <center>
         <ScrollPane fitToWidth="true" styleClass="guardian-main-scroll">
             <content>
-                <VBox spacing="14" styleClass="guardian-page-wrap">
-                    <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+                <VBox spacing="14" style="-fx-background-color: #f5f5fa;">
+                    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
-                    <VBox spacing="5" styleClass="guardian-hero,guardian-hero-library">
-                        <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
-                        <Label text="Resource Library" styleClass="guardian-hero-title" />
-                        <Label text="Manage files and curated learning content with fast filtering." styleClass="guardian-hero-subtitle" />
+                    <!-- Hero banner — mirrors library.html.twig header with "Add a resource" button -->
+                    <VBox spacing="5" styleClass="guardian-hero guardian-hero-library">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="📚 Popular resources"
+                                       style="-fx-background-color: rgba(124,92,255,0.25); -fx-text-fill: #3f2fbf; -fx-background-radius: 20; -fx-padding: 3 10; -fx-font-size: 12px;"/>
+                                <Label text="Resource Library" styleClass="guardian-hero-title"/>
+                                <Label text="Browse a curated collection of shared learning resources." styleClass="guardian-hero-subtitle"/>
+                            </VBox>
+                            <!-- mirrors library.html.twig "Add a resource" button (can_upload) -->
+                            <Button text="⬆ Add a resource" onAction="#onGoResourceUpload"
+                                    style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 12 24; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                        </HBox>
                     </VBox>
 
-                    <HBox spacing="8">
-                        <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-tab-button" />
-                        <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-tab-button" />
-                        <Button text="Resource Library" onAction="#onGoLibrary" styleClass="guardian-tab-button,guardian-tab-selected" />
-                    </HBox>
-
-                    <Label fx:id="moduleSnapshotLabel" text="Loading snapshot..." styleClass="guardian-snapshot" />
-
-                    <HBox spacing="10" styleClass="guardian-panel">
-                        <VBox spacing="4" HBox.hgrow="ALWAYS">
-                            <Label text="Search" styleClass="guardian-input-label" />
-                            <TextField fx:id="librarySearchField" promptText="Search title or description..." />
-                        </VBox>
-                        <VBox spacing="4">
-                            <Label text="Type" styleClass="guardian-input-label" />
-                            <ComboBox fx:id="libraryFilterTypeField" prefWidth="160" />
-                        </VBox>
-                        <VBox spacing="4" alignment="BOTTOM_RIGHT">
-                            <Label text="" />
-                            <HBox spacing="8">
-                                <Button text="Apply" onAction="#onLibraryApplyFilters" styleClass="guardian-action-primary" />
-                                <Button text="Clear" onAction="#onLibraryClearFilters" styleClass="guardian-action-ghost" />
-                            </HBox>
-                        </VBox>
-                    </HBox>
-
+                    <!-- Filter panel — mirrors library.html.twig filter form (subject / type / search) -->
                     <VBox spacing="10" styleClass="guardian-panel">
-                        <Label text="Add / Update Resource" styleClass="guardian-section-title" />
-                        <HBox spacing="10">
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Resource ID (auto)" styleClass="guardian-input-label" /><TextField fx:id="libraryIdField" editable="false" /></VBox>
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Title" styleClass="guardian-input-label" /><TextField fx:id="libraryTitleField" /></VBox>
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Description" styleClass="guardian-input-label" /><TextField fx:id="libraryDescriptionField" /></VBox>
-                        </HBox>
-                        <HBox spacing="10">
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="File path" styleClass="guardian-input-label" /><TextField fx:id="libraryFilePathField" /></VBox>
-                            <VBox spacing="4" HBox.hgrow="ALWAYS"><Label text="Type" styleClass="guardian-input-label" /><ComboBox fx:id="libraryTypeField" maxWidth="Infinity" /></VBox>
+                        <HBox spacing="12">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Subject" styleClass="guardian-input-label"/>
+                                <ComboBox fx:id="librarySubjectFilter" promptText="-- All subjects --" maxWidth="Infinity"/>
+                            </VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Type" styleClass="guardian-input-label"/>
+                                <ComboBox fx:id="libraryFilterTypeField" promptText="-- All types --" maxWidth="Infinity"/>
+                            </VBox>
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="Search" styleClass="guardian-input-label"/>
+                                <TextField fx:id="librarySearchField" promptText="Search..."/>
+                            </VBox>
                         </HBox>
                         <HBox spacing="8">
-                            <Button text="Add resource" onAction="#onLibraryCreate" styleClass="guardian-action-primary" />
-                            <Button text="Update" onAction="#onLibraryUpdate" styleClass="guardian-action-secondary" />
-                            <Button text="Delete" onAction="#onLibraryDelete" styleClass="guardian-action-danger" />
-                            <Button text="Refresh" onAction="#onLibraryRefresh" styleClass="guardian-action-secondary" />
-                            <Button text="Filter by subject/type" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-success" />
-                            <Button text="Search" onAction="#onIntegrationPlaceholder" styleClass="guardian-action-ghost" />
+                            <Button text="Filter" onAction="#onLibraryApplyFilters"
+                                    style="-fx-background-color: #22c55e; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 9 24; -fx-background-radius: 8; -fx-cursor: hand;"/>
+                            <Button text="Reset"  onAction="#onLibraryClearFilters"
+                                    style="-fx-background-color: transparent; -fx-border-color: #374151; -fx-border-radius: 8; -fx-text-fill: #374151; -fx-font-weight: bold; -fx-padding: 8 24; -fx-cursor: hand;"/>
                         </HBox>
                     </VBox>
 
+                    <Label fx:id="libraryMessageLabel" text="" wrapText="true" styleClass="guardian-message guardian-message-muted"/>
+
+                    <!-- Resource cards grid — mirrors library.html.twig card loop -->
+                    <FlowPane fx:id="libraryCards" hgap="16" vgap="16" prefWrapLength="980" styleClass="guardian-cards-flow"/>
+
+                    <!-- External Suggestions — mirrors library.html.twig "External Suggestions" section -->
                     <VBox spacing="10" styleClass="guardian-panel">
-                        <Label text="External suggestions &amp; Cloud Storage" styleClass="guardian-section-title" />
-                        <HBox spacing="8">
-                            <Button text="AI Suggested Links" onAction="#onAiSuggestedLinks" styleClass="guardian-action-secondary" />
-                            <Button text="Trending Resources" onAction="#onTrendingResources" styleClass="guardian-action-secondary" />
-                            <Button text="Import from Drive" onAction="#onImportFromDrive" styleClass="guardian-action-primary" />
-                            <Button text="Sync Dropbox Folder" onAction="#onSyncDropboxFolder" styleClass="guardian-action-secondary" />
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="External Suggestions (Open Library)" styleClass="guardian-section-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="↺ Refresh" onAction="#onAiSuggestedLinks" styleClass="guardian-action-secondary"/>
                         </HBox>
+                        <Label fx:id="externalSuggestionsLabel" text="Query: study skills"
+                               style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
+                        <FlowPane fx:id="externalSuggestionsCards" hgap="12" vgap="12" prefWrapLength="980" styleClass="guardian-cards-flow"/>
                     </VBox>
 
-                    <VBox fx:id="libraryMessageContainer" spacing="5" />
-                    <Label fx:id="libraryMessageLabel" text="" wrapText="true" styleClass="guardian-message,guardian-message-muted" />
-                    <ScrollPane fitToWidth="true" prefViewportHeight="420" styleClass="guardian-card-scroll">
-                        <content>
-                            <FlowPane fx:id="libraryCards" hgap="12" vgap="12" prefWrapLength="980" styleClass="guardian-cards-flow" />
-                        </content>
-                    </ScrollPane>
+                    <VBox fx:id="libraryMessageContainer" spacing="5"/>
+
+                    <!-- Hidden fields kept for controller compatibility -->
+                    <TextField fx:id="libraryIdField"          visible="false" managed="false"/>
+                    <TextField fx:id="libraryTitleField"       visible="false" managed="false"/>
+                    <TextField fx:id="libraryDescriptionField" visible="false" managed="false"/>
+                    <TextField fx:id="libraryFilePathField"    visible="false" managed="false"/>
+                    <TextField fx:id="libraryRatingField"      visible="false" managed="false"/>
+                    <ComboBox  fx:id="libraryTypeField"        visible="false" managed="false"/>
+
                 </VBox>
             </content>
         </ScrollPane>
     </center>
+
+    <!-- ══ RIGHT SIDEBAR ════════════════════════════════════════════ -->
     <right>
-        <VBox spacing="12" styleClass="guardian-rightbar">
-            <padding><Insets top="16" right="14" bottom="16" left="14" /></padding>
-            <VBox spacing="8" styleClass="guardian-side-card">
-                <Label text="Network" styleClass="guardian-side-title" />
-                <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
-                <Button text="Workspace Home" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
-                <Button text="Friends Directory" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
+              minWidth="240" maxWidth="240" spacing="12">
+            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Network" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Workspace Home" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Friends Directory" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                </VBox>
             </VBox>
-            <VBox spacing="8" styleClass="guardian-side-card">
-                <Label text="Shortcuts" styleClass="guardian-side-title" />
-                <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-side-link" />
-                <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-side-link" />
-                <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Shortcuts" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="Focus Timer"      onAction="#onGoFocus"              style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Virtual Rooms"    onAction="#onGoRooms"              style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="⬆ Add Resource"   onAction="#onGoResourceUpload"     style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Leaderboard"      onAction="#onIntegrationPlaceholder" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                </VBox>
             </VBox>
         </VBox>
     </right>
+
 </BorderPane>

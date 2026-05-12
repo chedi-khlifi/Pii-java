@@ -166,36 +166,32 @@
                     </VBox>
                 </HBox>
 
-                <!-- ── AI Security Summary + Alerts ──────────────────────── -->
-                <HBox spacing="16">
+                <!-- ── AI Security Summary ────────────────────────────────── -->
+                <VBox spacing="10"
+                      style="-fx-background-color: white; -fx-background-radius: 18;
+                             -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 30, 0, 0, 16);
+                             -fx-border-color: rgba(15,23,42,0.08); -fx-border-radius: 18; -fx-border-width: 1;
+                             -fx-padding: 20;">
+                    <Label text="🤖 AI SECURITY ANALYSIS"
+                           style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: 700;"/>
+                    <Label fx:id="labelAiSummary" text="Analyzing platform…"
+                           wrapText="true" maxWidth="Infinity"
+                           style="-fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-line-spacing: 3;"/>
+                </VBox>
 
-                    <!-- AI Summary -->
-                    <VBox spacing="10" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: white; -fx-background-radius: 18;
-                                 -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 30, 0, 0, 16);
-                                 -fx-border-color: rgba(15,23,42,0.08); -fx-border-radius: 18; -fx-border-width: 1;
-                                 -fx-padding: 20;">
-                        <Label text="🤖 AI SECURITY ANALYSIS"
-                               style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: 700;"/>
-                        <Label fx:id="labelAiSummary" text="Analyzing platform…"
-                               wrapText="true"
-                               style="-fx-font-size: 13px; -fx-text-fill: #1e293b; -fx-line-spacing: 3;"/>
+                <!-- ── Alerts ─────────────────────────────────────────────── -->
+                <VBox spacing="8"
+                      style="-fx-background-color: white; -fx-background-radius: 18;
+                             -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 30, 0, 0, 16);
+                             -fx-border-color: rgba(15,23,42,0.08); -fx-border-radius: 18; -fx-border-width: 1;
+                             -fx-padding: 20;">
+                    <Label text="⚠ ALERTS"
+                           style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: 700;"/>
+                    <VBox fx:id="vboxAlerts" spacing="6" fillWidth="true">
+                        <Label text="Loading…" wrapText="true" maxWidth="Infinity"
+                               style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
                     </VBox>
-
-                    <!-- Alerts -->
-                    <VBox spacing="8" prefWidth="320"
-                          style="-fx-background-color: white; -fx-background-radius: 18;
-                                 -fx-effect: dropshadow(gaussian, rgba(15,23,42,0.08), 30, 0, 0, 16);
-                                 -fx-border-color: rgba(15,23,42,0.08); -fx-border-radius: 18; -fx-border-width: 1;
-                                 -fx-padding: 20;">
-                        <Label text="⚠ ALERTS"
-                               style="-fx-text-fill: #94a3b8; -fx-font-size: 11px; -fx-font-weight: 700;"/>
-                        <VBox fx:id="vboxAlerts" spacing="6">
-                            <Label text="Loading…" style="-fx-font-size: 12px; -fx-text-fill: #94a3b8;"/>
-                        </VBox>
-                    </VBox>
-
-                </HBox>
+                </VBox>
 
                 <!-- ── Anomaly Detection ──────────────────────────────────── -->
                 <VBox spacing="10"

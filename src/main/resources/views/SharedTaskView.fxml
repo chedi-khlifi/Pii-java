@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.chart.*?>
+
+<ScrollPane fx:id="rootScrollPane" xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.controllers.SharedTaskController"
+            fitToWidth="true"
+            hbarPolicy="NEVER"
+            styleClass="community-root">
+
+    <content>
+        <VBox spacing="0">
+            <children>
+                <!-- Top Navigation -->
+                <HBox styleClass="top-navbar" alignment="CENTER_LEFT" style="-fx-padding: 20 40; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+                    <children>
+                        <Label fx:id="screenTitle" text="Gestion des Défis" styleClass="section-title" style="-fx-font-size: 32px; -fx-font-weight: 900;"/>
+                        <Pane HBox.hgrow="ALWAYS"/>
+                        <HBox spacing="10">
+                            <children>
+                                <Button fx:id="navNewChallenge" text="+ Nouveau Défi" onAction="#handleNewNav" styleClass="button"/>
+                                <Button fx:id="navInbox" text="📥 Reçus" onAction="#handleInboxNav" styleClass="secondary-button"/>
+                                <Button fx:id="navSentHistory" text="📤 Envoyés" onAction="#handleSentNav" styleClass="secondary-button"/>
+                                <Button fx:id="backButton" text="← Hub" onAction="#handleBack" styleClass="secondary-button"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </HBox>
+
+                <VBox spacing="30" style="-fx-padding: 40;" alignment="CENTER">
+                    <children>
+                        <!-- Hero Section -->
+                        <VBox spacing="15" alignment="CENTER" styleClass="community-hero" style="-fx-padding: 50; -fx-max-width: 1000; -fx-background-radius: 30; -fx-background-color: linear-gradient(to right, #6f42c1, #a29bfe);">
+                            <children>
+                                <Label text="Relevez de nouveaux défis" styleClass="community-hero-title" style="-fx-font-size: 42px;"/>
+                                <Label text="Collaborez avec vos collègues pour monter en compétence." style="-fx-text-fill: white; -fx-font-size: 18px; -fx-opacity: 0.9;"/>
+                            </children>
+                        </VBox>
+
+                        <!-- Filter Bar -->
+                        <HBox fx:id="filterBar" spacing="15" alignment="CENTER_LEFT" styleClass="form-panel" style="-fx-max-width: 1000;">
+                            <children>
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label text="Statut" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <ComboBox fx:id="filterStatus" prefWidth="180" promptText="Statut"/>
+                                    </children>
+                                </VBox>
+                                <VBox spacing="5">
+                                    <children>
+                                        <Label text="Catégorie" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <ComboBox fx:id="filterCategory" prefWidth="200" promptText="Catégorie"/>
+                                    </children>
+                                </VBox>
+                                <Pane HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="filterBtn" text="Appliquer" onAction="#handleFilter" styleClass="button"/>
+                                <Button fx:id="clearFilterBtn" text="Effacer" onAction="#handleClearFilter" styleClass="secondary-button"/>
+                            </children>
+                        </HBox>
+
+                        <!-- Table View -->
+                        <TableView fx:id="taskTable" prefHeight="400" minHeight="300" styleClass="table-view" style="-fx-max-width: 1200;">
+                            <columns>
+                                <TableColumn fx:id="idColumn" text="ID" prefWidth="60"/>
+                                <TableColumn fx:id="titleColumn" text="Titre" prefWidth="250"/>
+                                <TableColumn fx:id="statusColumn" text="Statut" prefWidth="120"/>
+                                <TableColumn fx:id="categoryColumn" text="Catégorie" prefWidth="150"/>
+                                <TableColumn fx:id="difficultyColumn" text="Difficulté" prefWidth="110"/>
+                                <TableColumn fx:id="sharedByColumn" text="Expéditeur" prefWidth="130"/>
+                                <TableColumn fx:id="sharedWithColumn" text="Destinataire" prefWidth="130"/>
+                                <TableColumn fx:id="createdAtColumn" text="Date" prefWidth="160"/>
+                                <TableColumn fx:id="actionsColumn" text="Actions" prefWidth="180"/>
+                            </columns>
+                            <placeholder><Label text="Aucun défi trouvé." styleClass="muted-label"/></placeholder>
+                        </TableView>
+
+                        <!-- Response Bar (Inbox) -->
+                        <HBox fx:id="respondBar" spacing="20" alignment="CENTER_LEFT" styleClass="form-panel" style="-fx-max-width: 1000; -fx-background-color: #f3f0ff;">
+                            <children>
+                                <Label text="Répondre à ce défi :" styleClass="room-card-title" style="-fx-font-size: 18px;"/>
+                                <Pane HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="acceptBtn" text="Accepter le défi" onAction="#handleAccept" styleClass="button" style="-fx-background-color: #05c46b;"/>
+                                <Button fx:id="rejectBtn" text="Refuser" onAction="#handleReject" styleClass="danger-button"/>
+                            </children>
+                        </HBox>
+
+                        <!-- Details Section (Inbox Detail) -->
+                        <VBox fx:id="receivedDetailsSection" spacing="20" styleClass="form-panel" style="-fx-max-width: 1000;">
+                            <children>
+                                <Label text="Détails du défi sélectionné" styleClass="room-card-title"/>
+                                <Separator/>
+                                <GridPane hgap="30" vgap="15">
+                                    <columnConstraints>
+                                        <ColumnConstraints prefWidth="120"/>
+                                        <ColumnConstraints hgrow="ALWAYS"/>
+                                    </columnConstraints>
+                                    <children>
+                                        <Label text="Titre :" styleClass="muted-label" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                        <Label fx:id="receivedTitleValue" text="-" style="-fx-font-weight: bold; -fx-font-size: 16px;" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                                        
+                                        <Label text="De :" styleClass="muted-label" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                        <Label fx:id="receivedFromValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        
+                                        <Label text="Statut :" styleClass="muted-label" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                        <Label fx:id="receivedStatusValue" text="-" styleClass="role-badge" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                                        <Label text="Catégorie :" styleClass="muted-label" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                        <Label fx:id="receivedCategoryValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                                        <Label text="Difficulté :" styleClass="muted-label" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                                        <Label fx:id="receivedDifficultyValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+                                        <Label text="Date :" styleClass="muted-label" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
+                                        <Label fx:id="receivedDateValue" text="-" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
+                                    </children>
+                                </GridPane>
+                                <VBox spacing="10">
+                                    <children>
+                                        <Label text="Description du défi" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <TextArea fx:id="receivedDescriptionArea" editable="false" wrapText="true" prefHeight="120" styleClass="text-area"/>
+                                    </children>
+                                </VBox>
+                                <HBox spacing="15" alignment="CENTER_LEFT">
+                                    <children>
+                                        <Label text="📁 Pièce jointe :" styleClass="muted-label"/>
+                                        <Label fx:id="receivedAttachmentValue" text="Aucune" style="-fx-font-style: italic;"/>
+                                        <Pane HBox.hgrow="ALWAYS"/>
+                                        <Button fx:id="openAttachmentButton" text="Ouvrir le fichier" onAction="#handleOpenAttachment" styleClass="secondary-button"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <!-- Create Section -->
+                        <VBox fx:id="sendSection" spacing="25" styleClass="form-panel" style="-fx-max-width: 1000;">
+                            <children>
+                                <Label text="Créer un Nouveau Défi" styleClass="room-card-title"/>
+                                <Separator/>
+                                
+                                <VBox spacing="10">
+                                    <children>
+                                        <Label text="Destinataire" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <ComboBox fx:id="sharedWithComboBox" maxWidth="400" promptText="Choisir un membre"/>
+                                    </children>
+                                </VBox>
+
+                                <HBox spacing="30">
+                                    <children>
+                                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label text="Catégorie" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                                <ComboBox fx:id="categoryComboBox" maxWidth="Infinity" promptText="Type de compétence"/>
+                                            </children>
+                                        </VBox>
+                                        <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                            <children>
+                                                <Label text="Difficulté" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                                <ComboBox fx:id="difficultyComboBox" maxWidth="Infinity" promptText="Niveau"/>
+                                            </children>
+                                        </VBox>
+                                    </children>
+                                </HBox>
+
+                                <VBox spacing="10">
+                                    <children>
+                                        <Label text="Titre du défi" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <HBox spacing="15">
+                                            <children>
+                                                <TextField fx:id="titleField" HBox.hgrow="ALWAYS" promptText="Ex: Maîtriser les Streams Java"/>
+                                                <Button fx:id="generateAIButton" text="✨ Générer par IA" onAction="#handleGenerateAI" styleClass="button" style="-fx-background-color: #6f42c1;"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="10">
+                                    <children>
+                                        <Label text="Description détaillée" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <TextArea fx:id="descriptionArea" prefHeight="150" wrapText="true" promptText="Expliquez les objectifs du défi..."/>
+                                    </children>
+                                </VBox>
+
+                                <VBox spacing="10">
+                                    <children>
+                                        <Label text="Document (Optionnel)" styleClass="muted-label" style="-fx-font-weight: bold;"/>
+                                        <HBox spacing="15" alignment="CENTER_LEFT">
+                                            <children>
+                                                <Button fx:id="chooseFileButton" text="📎 Joindre un fichier" onAction="#handleChooseFileButton" styleClass="secondary-button"/>
+                                                <Label fx:id="attachmentLabel" text="Aucun fichier" style="-fx-font-style: italic;"/>
+                                            </children>
+                                        </HBox>
+                                    </children>
+                                </VBox>
+
+                                <Separator/>
+
+                                <HBox spacing="15" alignment="CENTER_RIGHT">
+                                    <children>
+                                        <Button fx:id="addButton" text="🚀 Envoyer le défi" onAction="#handleAddButton" prefHeight="50" prefWidth="220" styleClass="button"/>
+                                        <Button fx:id="updateButton" text="💾 Update" onAction="#handleUpdateButton" prefHeight="50" prefWidth="150" styleClass="button" visible="false" managed="false"/>
+                                        <Button fx:id="deleteButton" text="🗑 Delete" onAction="#handleDeleteButton" prefHeight="50" prefWidth="150" styleClass="danger-button" visible="false" managed="false"/>
+                                        <Button fx:id="clearButton" text="Réinitialiser" onAction="#handleClearButton" styleClass="secondary-button"/>
+                                    </children>
+                                </HBox>
+                            </children>
+                        </VBox>
+
+                        <!-- Charts Section -->
+                        <HBox fx:id="chartsContainer" spacing="30" alignment="CENTER" style="-fx-max-width: 1200;">
+                            <children>
+                                <VBox alignment="CENTER" spacing="20" HBox.hgrow="ALWAYS" styleClass="form-panel">
+                                    <children>
+                                        <Label text="Statut des Défis" styleClass="room-card-title" style="-fx-font-size: 18px;"/>
+                                        <PieChart fx:id="statusPieChart" prefHeight="300"/>
+                                    </children>
+                                </VBox>
+                                <VBox alignment="CENTER" spacing="20" HBox.hgrow="ALWAYS" styleClass="form-panel">
+                                    <children>
+                                        <Label text="Répartition par Difficulté" styleClass="room-card-title" style="-fx-font-size: 18px;"/>
+                                        <BarChart fx:id="difficultyBarChart" prefHeight="300">
+                                            <xAxis><CategoryAxis tickLabelFill="#808e9b"/></xAxis>
+                                            <yAxis><NumberAxis tickLabelFill="#808e9b"/></yAxis>
+                                        </BarChart>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <!-- Hidden helpers -->
+                        <ComboBox fx:id="sharedByComboBox" visible="false" managed="false"/>
+                        <ComboBox fx:id="statusComboBox" visible="false" managed="false"/>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </content>
+</ScrollPane>

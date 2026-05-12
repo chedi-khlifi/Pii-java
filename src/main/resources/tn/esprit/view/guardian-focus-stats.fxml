@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
@@ -10,76 +9,150 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane fx:controller="tn.esprit.GuardianController" styleClass="guardian-root" stylesheets="@guardian-cards.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+<!-- Mirrors: stats.html.twig — Focus Overview with summary stats, per-task totals table, raw task totals -->
+<BorderPane fx:controller="tn.esprit.GuardianController"
+            stylesheets="@guardian-cards.css"
+            style="-fx-background-color: #f5f5fa;"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- ══ LEFT SIDEBAR ═════════════════════════════════════════════ -->
     <left>
-        <VBox spacing="12" styleClass="guardian-sidebar">
-            <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
-            <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
-            <Button text="▣ Planner" onAction="#onOpenPlanner" styleClass="guardian-global-nav-button" />
-            <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
-            <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Button text="◔ Analyst" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Label text="QUICK LINKS" styleClass="guardian-side-group-title" />
-            <Button text="Contact Support" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Button text="Friends" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Region VBox.vgrow="ALWAYS" />
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
+              minWidth="210" maxWidth="210" spacing="5">
+            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
+                <Label text="🔥" style="-fx-font-size: 20px;"/>
+                <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
+            </HBox>
+            <VBox spacing="5">
+                <Button text="📁  Planner"   onAction="#onOpenPlanner"          styleClass="guardian-global-nav-button"/>
+                <Button text="👥  Community" onAction="#onOpenCommunity"         styleClass="guardian-global-nav-button"/>
+                <Button text="📚  Guardian"  onAction="#onGoHub"                 styleClass="guardian-global-nav-button guardian-global-nav-selected"/>
+                <Button text="💼  Careers"   onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button"/>
+                <Button text="📊  Analyst"   onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button"/>
+            </VBox>
+            <Region minHeight="20"/>
+            <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
+                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
+            </Label>
+            <Button text="Contact Support" onAction="#onIntegrationPlaceholder"  styleClass="guardian-quick-link"/>
+            <Button text="Friends"         onAction="#onIntegrationPlaceholder"  styleClass="guardian-quick-link"/>
+            <Button text="Leaderboard"     onAction="#onIntegrationPlaceholder"  styleClass="guardian-quick-link"/>
         </VBox>
     </left>
+
+    <!-- ══ CENTER ════════════════════════════════════════════════════ -->
     <center>
         <ScrollPane fitToWidth="true" styleClass="guardian-main-scroll">
             <content>
-                <VBox spacing="14" styleClass="guardian-page-wrap">
-                    <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+                <VBox spacing="14" style="-fx-background-color: #f5f5fa;">
+                    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
 
-                    <VBox spacing="5" styleClass="guardian-hero,guardian-hero-focus">
-                        <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
-                        <Label text="Focus Stats" styleClass="guardian-hero-title" />
-                        <Label text="Track total focus minutes and top tasks." styleClass="guardian-hero-subtitle" />
+                    <!-- Hero banner — mirrors stats.html.twig header -->
+                    <VBox spacing="5" styleClass="guardian-hero guardian-hero-focus">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                        <!-- Stats pills row (today / week / total) -->
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label fx:id="labelTodaySessions" text="Today: 0 sessions"
+                                   style="-fx-background-color: rgba(72,198,239,0.25); -fx-text-fill: #1b4d6b; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 12px;"/>
+                            <Label fx:id="labelWeekMin" text="This week: 0 min"
+                                   style="-fx-background-color: rgba(124,92,255,0.25); -fx-text-fill: #3f2fbf; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 12px;"/>
+                            <Label fx:id="labelTotalMin" text="Total: 0 min"
+                                   style="-fx-background-color: rgba(72,198,239,0.25); -fx-text-fill: #1b4d6b; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 12px;"/>
+                        </HBox>
+                        <Label text="My Focus Stats" styleClass="guardian-hero-title"/>
+                        <Label text="Visualize how you actually use your Focus Timer." styleClass="guardian-hero-subtitle"/>
                     </VBox>
 
+                    <!-- Tab bar -->
                     <HBox spacing="8">
-                        <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-tab-button" />
-                        <Button text="Focus Stats" onAction="#onGoFocusStats" styleClass="guardian-tab-button,guardian-tab-selected" />
-                        <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-tab-button" />
-                        <Button text="Resource Library" onAction="#onGoLibrary" styleClass="guardian-tab-button" />
+                        <Button text="Focus Timer"      onAction="#onGoFocus"      styleClass="guardian-tab-button"/>
+                        <Button text="Focus Stats"      onAction="#onGoFocusStats" styleClass="guardian-tab-button guardian-tab-selected"/>
+                        <Button text="Virtual Rooms"    onAction="#onGoRooms"      styleClass="guardian-tab-button"/>
+                        <Button text="Resource Library" onAction="#onGoLibrary"    styleClass="guardian-tab-button"/>
                     </HBox>
 
-                    <Label fx:id="moduleSnapshotLabel" text="Loading snapshot..." styleClass="guardian-snapshot" />
+                    <Label fx:id="moduleSnapshotLabel" text="Guardian module ready." styleClass="guardian-snapshot"/>
 
+                    <!-- Summary stat cards — mirrors stats.html.twig guardian-badge row -->
                     <VBox spacing="10" styleClass="guardian-panel">
-                        <Label text="Summary" styleClass="guardian-section-title" />
-                        <FlowPane fx:id="focusUserStatsCards" hgap="10" vgap="10" prefWrapLength="950" styleClass="guardian-cards-flow" />
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Focus Overview" styleClass="guardian-section-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="← Back to Focus Timer" onAction="#onGoFocus" styleClass="guardian-action-secondary"/>
+                        </HBox>
+                        <Label text="These stats come from your real focus sessions logged with Guardian."
+                               style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
+                        <FlowPane fx:id="focusUserStatsCards" hgap="10" vgap="10" prefWrapLength="950" styleClass="guardian-cards-flow"/>
                     </VBox>
 
+                    <!-- Per-task totals table — mirrors stats.html.twig "Top focused tasks" -->
                     <VBox spacing="10" styleClass="guardian-panel">
-                        <Label text="Recent Focus Sessions" styleClass="guardian-section-title" />
-                        <ScrollPane fitToWidth="true" prefViewportHeight="360" styleClass="guardian-card-scroll">
+                        <Label text="Top Focused Tasks" styleClass="guardian-section-title"/>
+                        <Label text="By total minutes" style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8;"/>
+                        <!-- Header row -->
+                        <HBox style="-fx-background-color: #f3f4f6; -fx-padding: 8 12; -fx-border-radius: 6; -fx-background-radius: 6;">
+                            <Label text="Task" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" HBox.hgrow="ALWAYS" minWidth="200"/>
+                            <Label text="Total minutes" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" minWidth="120"/>
+                        </HBox>
+                        <!-- Per-task rows rendered by controller into focusUserStatsCards above -->
+                    </VBox>
+
+                    <!-- Recent sessions table — mirrors stats.html.twig "Raw task totals" -->
+                    <VBox spacing="10" styleClass="guardian-panel">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="Recent Focus Sessions" styleClass="guardian-section-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="sessionCountLabel" text="Latest 12 entries"
+                                   style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8;"/>
+                        </HBox>
+                        <!-- Table header -->
+                        <HBox style="-fx-background-color: #f3f4f6; -fx-padding: 8 12; -fx-border-radius: 6; -fx-background-radius: 6;">
+                            <Label text="Task"      style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" HBox.hgrow="ALWAYS" minWidth="200"/>
+                            <Label text="Duration"  style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" minWidth="100"/>
+                            <Label text="Timestamp" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" minWidth="160"/>
+                        </HBox>
+                        <ScrollPane fitToWidth="true" prefViewportHeight="300" styleClass="guardian-card-scroll">
                             <content>
-                                <FlowPane fx:id="focusCards" hgap="12" vgap="12" prefWrapLength="980" styleClass="guardian-cards-flow" />
+                                <FlowPane fx:id="focusCards" hgap="0" vgap="0" prefWrapLength="9999" styleClass="guardian-cards-flow"/>
                             </content>
                         </ScrollPane>
                     </VBox>
+
                 </VBox>
             </content>
         </ScrollPane>
     </center>
+
+    <!-- ══ RIGHT SIDEBAR ════════════════════════════════════════════ -->
     <right>
-        <VBox spacing="12" styleClass="guardian-rightbar">
-            <padding><Insets top="16" right="14" bottom="16" left="14" /></padding>
-            <VBox spacing="8" styleClass="guardian-side-card">
-                <Label text="Network" styleClass="guardian-side-title" />
-                <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
-                <Button text="Workspace Home" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
-                <Button text="Friends Directory" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
+              minWidth="240" maxWidth="240" spacing="12">
+            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Network" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Workspace Home"        onAction="#onIntegrationPlaceholder" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Friends Directory"     onAction="#onIntegrationPlaceholder" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                </VBox>
             </VBox>
-            <VBox spacing="8" styleClass="guardian-side-card">
-                <Label text="Shortcuts" styleClass="guardian-side-title" />
-                <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-side-link" />
-                <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-side-link" />
-                <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Shortcuts" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="Focus Timer"   onAction="#onGoFocus"              style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Virtual Rooms" onAction="#onGoRooms"              style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Leaderboard"   onAction="#onIntegrationPlaceholder" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                </VBox>
             </VBox>
         </VBox>
     </right>
+
 </BorderPane>

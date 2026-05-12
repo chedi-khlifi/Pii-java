@@ -1,5 +1,6 @@
 package com.mindforge.architect.controller;
 
+import com.mindforge.community.CommunityLauncher;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -145,7 +146,7 @@ public class HomeController implements Initializable {
     }
 
     @FXML public void onLogin(ActionEvent e) {
-        switchScene(e, "login.fxml", "MindForge - Login", 500, 400);
+        switchScene(e, "login.fxml", "MindForge - Login", 1100, 700);
     }
 
     @FXML public void onAdminPanel(ActionEvent e) {
@@ -157,14 +158,40 @@ public class HomeController implements Initializable {
     //  COMMUNITY MENU HANDLERS
     // ════════════════════════════════════════════════════════
 
-    @FXML public void onCommunityHub(ActionEvent e)     { System.out.println("Community Hub"); }
-    @FXML public void onChallengeInbox(ActionEvent e)   { System.out.println("Challenge Inbox"); }
-    @FXML public void onChallengeOutbox(ActionEvent e)  { System.out.println("Challenge Outbox"); }
-    @FXML public void onCommunityTasks(ActionEvent e)   { System.out.println("Community Tasks"); }
-    @FXML public void onMyTickets(ActionEvent e)        { System.out.println("My Tickets"); }
-    @FXML public void onContactSupport(ActionEvent e)   { System.out.println("Contact Support"); }
+    /** Opens the full Community Hub (virtual rooms, challenges, tickets). */
+    @FXML public void onCommunityHub(ActionEvent e) {
+        loadCommunityHubDashboard(e);
+    }
+
+    /** Opens the Community Hub pre-navigated to the challenge inbox. */
+    @FXML public void onChallengeInbox(ActionEvent e) {
+        loadCommunityHubDashboard(e);
+    }
+
+    /** Opens the Community Hub pre-navigated to sent challenges. */
+    @FXML public void onChallengeOutbox(ActionEvent e) {
+        loadCommunityHubDashboard(e);
+    }
+
+    @FXML public void onCommunityTasks(ActionEvent e)   { loadCommunityHubDashboard(e); }
+    @FXML public void onMyTickets(ActionEvent e)        { loadCommunityHubDashboard(e); }
+    @FXML public void onContactSupport(ActionEvent e)   { loadCommunityHubDashboard(e); }
     @FXML public void onFriends(ActionEvent e)          { System.out.println("Friends"); }
-    @FXML public void onManageTickets(ActionEvent e)    { System.out.println("Manage Tickets"); }
+    @FXML public void onManageTickets(ActionEvent e)    { loadCommunityHubDashboard(e); }
+
+    private void loadCommunityHubDashboard(ActionEvent e) {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/community-hub-dashboard.fxml"));
+            Parent root = loader.load();
+            Stage stage = (Stage) rootBorderPane.getScene().getWindow();
+            rootBorderPane.getScene().setRoot(root);
+            stage.setTitle("Community Hub — MindForge");
+        } catch (IOException ex) {
+            System.err.println("Could not load Community Hub: " + ex.getMessage());
+            ex.printStackTrace();
+        }
+    }
 
     // ════════════════════════════════════════════════════════
     //  CAREERS MENU HANDLERS
@@ -216,14 +243,14 @@ public class HomeController implements Initializable {
     @FXML public void onMyRequests(ActionEvent e)   { System.out.println("My Requests"); }
     @FXML public void onStudentPlus(ActionEvent e)  { System.out.println("Student+"); }
     @FXML public void onLogout(ActionEvent e)       {
-        switchScene(e, "login.fxml", "MindForge - Login", 500, 400);
+        switchScene(e, "login.fxml", "MindForge - Login", 1100, 700);
     }
 
     // ════════════════════════════════════════════════════════
     //  HERO / COURSE / FOOTER HANDLERS
     // ════════════════════════════════════════════════════════
 
-    @FXML public void onGetStarted(ActionEvent e)    { switchScene(e, "login.fxml", "MindForge - Login", 500, 400); }
+    @FXML public void onGetStarted(ActionEvent e)    { switchScene(e, "login.fxml", "MindForge - Login", 1100, 700); }
     @FXML public void onCourse1(ActionEvent e)       { System.out.println("Course 1"); }
     @FXML public void onCourse2(ActionEvent e)       { System.out.println("Course 2"); }
     @FXML public void onCourse3(ActionEvent e)       { System.out.println("Course 3"); }
@@ -234,7 +261,7 @@ public class HomeController implements Initializable {
     @FXML public void onCourse8(ActionEvent e)       { System.out.println("Course 8"); }
     @FXML public void onMoreCourses(ActionEvent e)   { System.out.println("More Courses"); }
     @FXML public void onGuardian(ActionEvent e)      { System.out.println("Guardian"); }
-    @FXML public void onVirtualRooms(ActionEvent e)  { System.out.println("Virtual Rooms"); }
+    @FXML public void onVirtualRooms(ActionEvent e)  { loadCommunityHubDashboard(e); }
     @FXML public void onFocusTimer(ActionEvent e)    { System.out.println("Focus Timer"); }
     @FXML public void onFacebook(ActionEvent e)      { System.out.println("Facebook"); }
     @FXML public void onTwitter(ActionEvent e)       { System.out.println("Twitter"); }

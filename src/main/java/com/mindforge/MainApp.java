@@ -1,5 +1,6 @@
 package com.mindforge;
 
+import com.example.util.SchemaMigrator;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -12,6 +13,13 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        // Migrate community module schema (idempotent — safe to run every startup)
+        try {
+            SchemaMigrator.migrateAll();
+        } catch (Exception e) {
+            System.err.println("[MainApp] Community schema migration warning: " + e.getMessage());
+        }
+
         FXMLLoader loader = new FXMLLoader(
                 getClass().getResource("/com/mindforge/fxml/MindForge.fxml")
         );

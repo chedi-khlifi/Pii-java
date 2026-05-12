@@ -132,17 +132,22 @@ public class RegisterController {
     }
 
     private boolean registerUser(String email, String hashedPassword) {
-        String userSql = "INSERT INTO user (email, password, roles, is_verified, created_at) " +
-                "VALUES (?, ?, ?, ?, ?)";
+        String userSql = "INSERT INTO user (email, password, roles, is_verified, created_at, username) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
 
         try (Connection conn = getConnection();
              PreparedStatement pstmt = conn.prepareStatement(userSql, Statement.RETURN_GENERATED_KEYS)) {
+
+            // Derive a unique username from the email local-part
+            String baseUsername = email.contains("@") ? email.split("@")[0] : email;
+            String username = ensureUniqueUsername(conn, baseUsername);
 
             pstmt.setString(1, email);
             pstmt.setString(2, hashedPassword);
             pstmt.setString(3, "[\"ROLE_USER\"]");
             pstmt.setInt(4, 1);
             pstmt.setTimestamp(5, new Timestamp(System.currentTimeMillis()));
+            pstmt.setString(6, username);
 
             int rows = pstmt.executeUpdate();
             if (rows == 0) return false;
@@ -159,6 +164,23 @@ public class RegisterController {
         } catch (Exception e) {
             e.printStackTrace();
             return false;
+        }
+    }
+
+    private String ensureUniqueUsername(Connection conn, String base) throws SQLException {
+        // Sanitize: keep only alphanumeric + underscore, max 40 chars
+        String sanitized = base.replaceAll("[^a-zA-Z0-9_]", "_");
+        if (sanitized.length() > 40) sanitized = sanitized.substring(0, 40);
+
+        String candidate = sanitized;
+        int suffix = 1;
+        String check = "SELECT id FROM user WHERE username = ?";
+        while (true) {
+            try (PreparedStatement ps = conn.prepareStatement(check)) {
+                ps.setString(1, candidate);
+                if (!ps.executeQuery().next()) return candidate;
+            }
+            candidate = sanitized + suffix++;
         }
     }
 
@@ -234,11 +256,11 @@ public class RegisterController {
 
     @FXML
     private void goToLogin() {
-        navigateToScene("/com/mindforge/fxml/login.fxml", "MindForge - Login", 500, 400);
+        navigateToScene("/com/mindforge/fxml/login.fxml", "MindForge - Login", 1100, 700);
     }
 
     private void goToSetupPassword() {
-        navigateToScene("/com/mindforge/fxml/setup_password.fxml", "MindForge - Set Password", 500, 400);
+        navigateToScene("/com/mindforge/fxml/setup_password.fxml", "MindForge - Set Password", 1100, 700);
     }
 
     private void navigateToScene(String fxmlPath, String title, int width, int height) {

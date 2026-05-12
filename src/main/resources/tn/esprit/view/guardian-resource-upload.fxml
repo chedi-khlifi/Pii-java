@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import java.lang.String?>
+
+<!-- Mirrors: resource_upload.html.twig — Upload + AI Generate resource form -->
+<BorderPane fx:controller="tn.esprit.GuardianController"
+            stylesheets="@guardian-cards.css"
+            style="-fx-background-color: #f5f5fa;"
+            xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+
+    <!-- ══ LEFT SIDEBAR ═════════════════════════════════════════════ -->
+    <left>
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
+              minWidth="210" maxWidth="210" spacing="5">
+            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
+                <Label text="🔥" style="-fx-font-size: 20px;"/>
+                <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
+            </HBox>
+            <VBox spacing="5">
+                <Button text="📁  Planner"   onAction="#onOpenPlanner"           styleClass="guardian-global-nav-button"/>
+                <Button text="👥  Community" onAction="#onOpenCommunity"          styleClass="guardian-global-nav-button"/>
+                <Button text="📚  Guardian"  onAction="#onGoHub"                  styleClass="guardian-global-nav-button guardian-global-nav-selected"/>
+                <Button text="💼  Careers"   onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button"/>
+                <Button text="📊  Analyst"   onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button"/>
+            </VBox>
+            <Region minHeight="20"/>
+            <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
+                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
+            </Label>
+            <Button text="← Back to Library" onAction="#onGoLibrary" styleClass="guardian-quick-link"/>
+            <Button text="Contact Support"    onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link"/>
+            <Button text="Leaderboard"        onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link"/>
+        </VBox>
+    </left>
+
+    <!-- ══ CENTER ════════════════════════════════════════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true" styleClass="guardian-main-scroll">
+            <content>
+                <VBox spacing="14" style="-fx-background-color: #f5f5fa;">
+                    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+
+                    <!-- Hero banner -->
+                    <VBox spacing="5" styleClass="guardian-hero guardian-hero-library">
+                        <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
+                        <HBox alignment="CENTER_LEFT" spacing="12">
+                            <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                <Label text="⬆ Quick share"
+                                       style="-fx-background-color: rgba(72,198,239,0.25); -fx-text-fill: #1b4d6b; -fx-background-radius: 20; -fx-padding: 3 10; -fx-font-size: 12px;"/>
+                                <Label text="Add a Resource" styleClass="guardian-hero-title"/>
+                                <Label text="Share useful material with your community." styleClass="guardian-hero-subtitle"/>
+                                <!-- AI mode badge — mirrors resource_upload.html.twig external_ai_available badge -->
+                                <Label fx:id="aiModeBadge" text="Local generator mode active"
+                                       style="-fx-background-color: rgba(245,158,11,0.2); -fx-text-fill: #92400e; -fx-background-radius: 10; -fx-padding: 3 10; -fx-font-size: 11px;"/>
+                            </VBox>
+                            <Button text="← Back to Library" onAction="#onGoLibrary" styleClass="guardian-action-secondary"/>
+                        </HBox>
+                    </VBox>
+
+                    <Label fx:id="moduleSnapshotLabel" text="Guardian module ready." styleClass="guardian-snapshot"/>
+
+                    <!-- Main form + tips side by side -->
+                    <HBox spacing="14" alignment="TOP_LEFT">
+
+                        <!-- ── Upload form (mirrors resource_upload col-lg-8) ── -->
+                        <VBox spacing="14" HBox.hgrow="ALWAYS" styleClass="guardian-panel">
+                            <Label text="Resource Details" styleClass="guardian-section-title"/>
+
+                            <!-- Title — ResourceType: NotBlank, Length 3–255 -->
+                            <VBox spacing="4">
+                                <Label text="Resource title *" styleClass="guardian-input-label"/>
+                                <TextField fx:id="libraryTitleField"
+                                           promptText="Example: Fractions in Mathematics"/>
+                            </VBox>
+
+                            <!-- Description — ResourceType: optional, max 2000 -->
+                            <VBox spacing="4">
+                                <Label text="Description" styleClass="guardian-input-label"/>
+                                <TextArea fx:id="libraryDescriptionField"
+                                          promptText="Describe your resource..." prefRowCount="4" wrapText="true"/>
+                            </VBox>
+
+                            <!-- Student demand (AI generation context) -->
+                            <VBox spacing="4">
+                                <Label text="Student demand / need (for AI generation)" styleClass="guardian-input-label"/>
+                                <TextArea fx:id="uploadStudentDemandField"
+                                          promptText="Example: I need a concise explanation with practical exercises for exam prep."
+                                          prefRowCount="3" wrapText="true"/>
+                                <Label text="Used by the AI generator. Only study-related educational requests are accepted."
+                                       style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
+                            </VBox>
+
+                            <!-- Type + Rating row -->
+                            <HBox spacing="12">
+                                <VBox spacing="4" HBox.hgrow="ALWAYS">
+                                    <Label text="Resource type *" styleClass="guardian-input-label"/>
+                                    <ComboBox fx:id="libraryTypeField" maxWidth="Infinity"/>
+                                </VBox>
+                                <VBox spacing="4">
+                                    <Label text="Rating (0–5)" styleClass="guardian-input-label"/>
+                                    <TextField fx:id="libraryRatingField" promptText="0" prefWidth="70"/>
+                                </VBox>
+                            </HBox>
+
+                            <!-- File path + Browse — ResourceType: accept .pdf, max 10MB -->
+                            <VBox spacing="4">
+                                <Label text="File (PDF, max 10 MB) *" styleClass="guardian-input-label"/>
+                                <HBox spacing="8" alignment="CENTER_LEFT">
+                                    <TextField fx:id="libraryFilePathField" HBox.hgrow="ALWAYS"
+                                               promptText="Select a PDF file or enter path..."/>
+                                    <Button text="📂 Browse" onAction="#onLibraryBrowseFile"
+                                            styleClass="guardian-action-secondary"/>
+                                </HBox>
+                                <Label text="Accepted format: PDF" style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
+                            </VBox>
+
+                            <!-- Message label -->
+                            <Label fx:id="libraryMessageLabel" text="" wrapText="true"
+                                   styleClass="guardian-message guardian-message-muted"/>
+
+                            <!-- Action buttons -->
+                            <HBox spacing="10">
+                                <Button text="⬆ Add resource" onAction="#onLibraryCreate"
+                                        styleClass="guardian-action-primary"/>
+                                <Button text="✨ Generate with AI" onAction="#onLibraryGenerateAi"
+                                        styleClass="guardian-action-success"/>
+                                <Button text="Cancel" onAction="#onGoLibrary"
+                                        styleClass="guardian-action-secondary"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- ── Quick tips panel (mirrors resource_upload col-lg-4) ── -->
+                        <VBox spacing="10" minWidth="220" maxWidth="240" styleClass="guardian-panel">
+                            <Label text="Quick tips" styleClass="guardian-section-title"/>
+                            <Label text="Clear descriptions help everyone." style="-fx-font-size: 12px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                            <Label text="1. Add a specific title."    style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
+                            <Label text="2. Choose a relevant type."  style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
+                            <Label text="3. Upload a clean PDF."      style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
+                            <Label text="4. Fill in student demand for AI generation." style="-fx-font-size: 12px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                        </VBox>
+
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+
+    <!-- ══ RIGHT SIDEBAR ════════════════════════════════════════════ -->
+    <right>
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
+              minWidth="220" maxWidth="220" spacing="12">
+            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Library Actions" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="← Back to Library" onAction="#onGoLibrary"           style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #534AB7; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="⬆ Add resource"    onAction="#onLibraryCreate"        style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="✨ Generate AI"     onAction="#onLibraryGenerateAi"   style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="📂 Browse file"     onAction="#onLibraryBrowseFile"   style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                </VBox>
+            </VBox>
+        </VBox>
+    </right>
+
+</BorderPane>

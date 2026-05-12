@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.controllers.RoomsController"
+      spacing="0"
+      styleClass="community-root">
+
+    <children>
+        <!-- Top Navigation -->
+        <HBox styleClass="top-navbar" alignment="CENTER_LEFT" style="-fx-padding: 15 30; -fx-background-color: rgba(30, 34, 53, 0.8);">
+            <children>
+                <Label text="Salles Virtuelles" styleClass="section-title"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <HBox spacing="10">
+                    <children>
+                        <Button text="Actualiser" onAction="#handleRefresh" styleClass="secondary-button"/>
+                        <Button fx:id="backButton" text="← Retour" onAction="#handleBackButton" styleClass="secondary-button"/>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+
+        <ScrollPane fx:id="roomsScrollPane" fitToWidth="true" hbarPolicy="NEVER" VBox.vgrow="ALWAYS" styleClass="rooms-cards-scroll">
+            <content>
+                <VBox spacing="30" style="-fx-padding: 40;" alignment="CENTER">
+                    <children>
+                        <VBox spacing="8" alignment="CENTER">
+                            <children>
+                                <Label text="Salles Disponibles" styleClass="community-hero-title"/>
+                                <Label text="Sélectionnez une salle pour commencer à discuter avec d'autres membres." styleClass="muted-label" style="-fx-font-size: 16px;"/>
+                            </children>
+                        </VBox>
+
+                        <Separator styleClass="separator"/>
+
+                        <!-- Rooms Grid -->
+                        <FlowPane fx:id="roomsCardsPane" hgap="24" vgap="24" alignment="CENTER">
+                            <!-- Cards dynamically loaded from Controller -->
+                        </FlowPane>
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </children>
+</VBox>

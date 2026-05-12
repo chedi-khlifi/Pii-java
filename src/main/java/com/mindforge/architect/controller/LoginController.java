@@ -115,7 +115,7 @@ public class LoginController {
 
             FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
-            Scene scene = new Scene(root, 500, 700);
+            Scene scene = new Scene(root, 1100, 700);
 
             URL cssUrl = getClass().getResource("/com/mindforge/css/style.css");
             if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());

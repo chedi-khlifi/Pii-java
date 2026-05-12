@@ -1,198 +1,204 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToWidth="true"
+<BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.mindforge.architect.controller.EmotionsController"
-            style="-fx-background-color: #ececf2; -fx-background: #ececf2;">
+            style="-fx-background-color: #ececf2;">
 
-    <VBox spacing="16" style="-fx-padding: 28 28 32 28;">
-
-        <!-- Header -->
-        <HBox spacing="12" alignment="CENTER_LEFT">
-            <Label text="🧠 Mental Health Check"
-                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
+    <!-- ══ TOP BAR ══════════════════════════════════════════════════ -->
+    <top>
+        <HBox style="-fx-background-color: #1e1e2e; -fx-border-color: transparent transparent #333 transparent; -fx-border-width: 0 0 1 0;"
+              alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+            <Label text="🔥 MindForge" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="← Back to Profile" onAction="#goBack"
-                    style="-fx-background-color: transparent; -fx-text-fill: #888888;
-                           -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 6 14;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #cdd3e0; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 6 12;"/>
         </HBox>
+    </top>
 
-        <Label text="Look at the camera and we'll detect how you're feeling."
-               style="-fx-font-size: 14px; -fx-text-fill: #666666;"/>
-
-        <!-- Camera View -->
-        <VBox spacing="10" alignment="CENTER"
-              style="-fx-background-color: white; -fx-background-radius: 12;
-                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
-                     -fx-border-radius: 12; -fx-padding: 16;">
-
-            <ImageView fx:id="cameraView" fitWidth="640" fitHeight="480"
-                       preserveRatio="true"
-                       style="-fx-background-color: #1a1a1a; -fx-background-radius: 8;"/>
-
-            <Label fx:id="statusLabel" text="Camera stopped"
-                   style="-fx-font-size: 13px; -fx-text-fill: #888888;"/>
-
-            <HBox spacing="10" alignment="CENTER">
-                <Button fx:id="btnStartCamera" text="▶ Start Camera" onAction="#startCamera"
-                        style="-fx-background-color: #534AB7; -fx-text-fill: white;
-                               -fx-font-size: 13px; -fx-font-weight: bold;
-                               -fx-background-radius: 8; -fx-padding: 10 24; -fx-cursor: hand;"/>
-                <Button fx:id="btnCapture" text="📸 Capture &amp; Analyze" onAction="#captureAndAnalyze"
-                        disable="true"
-                        style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32;
-                               -fx-font-size: 13px; -fx-font-weight: bold;
-                               -fx-background-radius: 8; -fx-padding: 10 24; -fx-cursor: hand;"/>
+    <!-- ══ LEFT SIDEBAR ═════════════════════════════════════════════ -->
+    <left>
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
+              minWidth="210" maxWidth="210" spacing="5">
+            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
+                <Label text="🔥" style="-fx-font-size: 20px;"/>
+                <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
             </HBox>
-        </VBox>
-
-        <!-- Detection Result -->
-        <VBox fx:id="resultBox" spacing="10" visible="false" managed="false"
-              style="-fx-background-color: white; -fx-background-radius: 12;
-                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
-                     -fx-border-radius: 12; -fx-padding: 16 18;">
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Label text="DETECTED EMOTION"
-                       style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold;"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="confidenceLabel" text=""
-                       style="-fx-font-size: 11px; -fx-text-fill: #888888;"/>
-            </HBox>
-
-            <Label fx:id="emotionLabel" text="—"
-                   style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #1a1a1a;"/>
-
-            <ProgressBar fx:id="confidenceBar" progress="0" maxWidth="Infinity"
-                         style="-fx-accent: #534AB7; -fx-pref-height: 8px;"/>
-        </VBox>
-
-        <!-- AI Insight -->
-        <VBox fx:id="insightBox" spacing="10" visible="false" managed="false"
-              style="-fx-background-color: white; -fx-background-radius: 12;
-                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
-                     -fx-border-radius: 12; -fx-padding: 16 18;">
-
-            <HBox spacing="8" alignment="CENTER_LEFT">
-                <Label text="🤖 AI INSIGHT"
-                       style="-fx-font-size: 11px; -fx-text-fill: #534AB7; -fx-font-weight: bold;"/>
-                <!-- FIXED: prefSize → prefWidth + prefHeight -->
-                <ProgressIndicator fx:id="loadingIndicator" visible="false"
-                                   prefWidth="16" prefHeight="16"/>
-            </HBox>
-
-            <Label fx:id="insightLabel" text="Select a mood or capture your face to get started."
-                   wrapText="true" style="-fx-font-size: 13px; -fx-text-fill: #555555; -fx-line-spacing: 3;"/>
-        </VBox>
-
-        <!-- Manual Fallback -->
-        <VBox spacing="10"
-              style="-fx-background-color: white; -fx-background-radius: 12;
-                     -fx-border-color: #e0e0e0; -fx-border-width: 0.5;
-                     -fx-border-radius: 12; -fx-padding: 16 18;">
-
-            <Label text="OR SELECT MANUALLY"
-                   style="-fx-font-size: 11px; -fx-text-fill: #aaaaaa; -fx-font-weight: bold;"/>
-
-            <HBox spacing="10" alignment="CENTER">
-                <Button text="😊 Happy" onAction="#setMoodHappy"
-                        style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32;
-                               -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 12 24;"/>
-                <Button text="😐 Neutral" onAction="#setMoodNeutral"
-                        style="-fx-background-color: #E3F2FD; -fx-text-fill: #1565C0;
-                               -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 12 24;"/>
-                <Button text="😔 Sad" onAction="#setMoodSad"
-                        style="-fx-background-color: #FCE4EC; -fx-text-fill: #C62828;
-                               -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 12 24;"/>
-                <Button text="😠 Angry" onAction="#setMoodAngry"
-                        style="-fx-background-color: #FFEBEE; -fx-text-fill: #B71C1C;
-                               -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 12 24;"/>
-                <Button text="😨 Anxious" onAction="#setMoodAnxious"
-                        style="-fx-background-color: #FFF3E0; -fx-text-fill: #E65100;
-                               -fx-font-size: 14px; -fx-background-radius: 10; -fx-padding: 12 24;"/>
-            </HBox>
-            <!--
-  ══════════════════════════════════════════════════════════════════
-  ADD THESE SNIPPETS TO YOUR emotions.fxml
-  ══════════════════════════════════════════════════════════════════
-
-  1️⃣  ACTION BUTTONS  — paste below your existing resultBox VBox
-  ──────────────────────────────────────────────────────────────────
--->
-            <HBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 0 0 10 0;">
-                <Button fx:id="btnReanalyze"
-                        text="🔁 Re-analyze"
-                        onAction="#reanalyze"
-                        disable="true"
-                        style="-fx-background-color: #5C6BC0; -fx-text-fill: white;
-                   -fx-background-radius: 6; -fx-padding: 6 14;"/>
-
-                <Button fx:id="btnCopyInsight"
-                        text="📋 Copy Insight"
-                        onAction="#copyInsight"
-                        disable="true"
-                        style="-fx-background-color: #26A69A; -fx-text-fill: white;
-                   -fx-background-radius: 6; -fx-padding: 6 14;"/>
-
-                <Button fx:id="btnSpeak"
-                        text="🔊 Read Aloud"
-                        onAction="#speakInsight"
-                        disable="true"
-                        style="-fx-background-color: #EF6C00; -fx-text-fill: white;
-                   -fx-background-radius: 6; -fx-padding: 6 14;"/>
-            </HBox>
-
-            <!--
-              2️⃣  EMOTION HISTORY PANEL  — paste after insightBox VBox
-              ──────────────────────────────────────────────────────────────────
-            -->
-            <VBox fx:id="historyBox"
-                  spacing="8"
-                  style="-fx-background-color: #F5F5F5; -fx-background-radius: 10;
-             -fx-padding: 16; -fx-border-color: #E0E0E0;
-             -fx-border-radius: 10; -fx-border-width: 1;">
-
-                <Label text="📊 EMOTION HISTORY"
-                       style="-fx-font-size: 11px; -fx-font-weight: bold;
-                  -fx-text-fill: #5C6BC0; -fx-letter-spacing: 1;"/>
-
-                <Label fx:id="historyLabel"
-                       wrapText="true"
-                       style="-fx-font-family: 'Courier New'; -fx-font-size: 12px;
-                  -fx-text-fill: #424242;"/>
+            <VBox spacing="5">
+                <Button text="🏠  Dashboard"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📁  Planner"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="👥  Community"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📚  Guardian"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="💼  Careers"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
             </VBox>
+            <Region minHeight="20"/>
+            <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
+                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
+            </Label>
+            <Button text="← Back to Profile" onAction="#goBack"
+                    style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 9 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+        </VBox>
+    </left>
 
-            <!--
-              ══════════════════════════════════════════════════════════════════
-              FULL INSIGHT BOX  (replace your existing insightBox entirely)
-              ══════════════════════════════════════════════════════════════════
-            -->
-            <VBox fx:id="insightBox"
-                  spacing="10"
-                  style="-fx-background-color: #FAFAFA; -fx-background-radius: 10;
-             -fx-padding: 16; -fx-border-color: #E8EAF6;
-             -fx-border-radius: 10; -fx-border-width: 1;">
+    <!-- ══ CENTER ════════════════════════════════════════════════════ -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #f5f5fa; -fx-background: #f5f5fa; -fx-border-color: transparent;">
+            <VBox spacing="16" style="-fx-padding: 16 16 32 16; -fx-background-color: #f5f5fa;">
 
-                <HBox alignment="CENTER_LEFT" spacing="8">
-                    <Label text="✨ AI INSIGHT"
-                           style="-fx-font-size: 11px; -fx-font-weight: bold;
-                      -fx-text-fill: #5C6BC0; -fx-letter-spacing: 1;"/>
-                    <ProgressIndicator fx:id="loadingIndicator"
-                                       prefWidth="16" prefHeight="16"
-                                       visible="false"/>
+                <!-- Gradient hero banner -->
+                <VBox style="-fx-background-color: linear-gradient(to right, #eb5fac, #8185ff 54%, #86d8ea); -fx-background-radius: 12;" spacing="4">
+                    <padding><Insets bottom="18" left="20" right="20" top="18"/></padding>
+                    <Label text="🧠 Mental Health Check" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                    <Label text="Look at the camera and we'll detect how you're feeling — or select your mood manually."
+                           style="-fx-text-fill: white; -fx-opacity: 0.92; -fx-font-size: 13px;" wrapText="true"/>
+                </VBox>
+
+                <!-- Two-column layout -->
+                <HBox spacing="16" VBox.vgrow="ALWAYS">
+
+                    <!-- LEFT: Camera + Result + Manual + History -->
+                    <VBox spacing="14" HBox.hgrow="ALWAYS">
+
+                        <!-- Camera Card -->
+                        <VBox spacing="12" alignment="CENTER"
+                              style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-width: 1; -fx-border-radius: 10; -fx-padding: 16;">
+                            <ImageView fx:id="cameraView" fitWidth="480" fitHeight="360" preserveRatio="true"
+                                       style="-fx-background-color: #1a1a1a; -fx-background-radius: 8;"/>
+                            <Label fx:id="statusLabel" text="Camera stopped." style="-fx-font-size: 12px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                            <HBox spacing="10" alignment="CENTER">
+                                <Button fx:id="btnStartCamera" text="▶ Start Camera" onAction="#startCamera"
+                                        style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 24; -fx-cursor: hand;"/>
+                                <Button fx:id="btnCapture" text="📸 Capture &amp; Analyze" onAction="#captureAndAnalyze" disable="true"
+                                        style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-size: 13px; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 10 24; -fx-cursor: hand;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Detection Result -->
+                        <VBox fx:id="resultBox" spacing="10" visible="false" managed="false"
+                              style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-width: 1; -fx-border-radius: 10; -fx-padding: 16 18;">
+                            <HBox spacing="10" alignment="CENTER_LEFT">
+                                <Label text="DETECTED EMOTION" style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8; -fx-font-weight: bold;"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label fx:id="confidenceLabel" text="" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                            </HBox>
+                            <Label fx:id="emotionLabel" text="—" style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                            <ProgressBar fx:id="confidenceBar" progress="0" maxWidth="Infinity" style="-fx-accent: #534AB7; -fx-pref-height: 8px;"/>
+                        </VBox>
+
+                        <!-- Manual Mood Selection -->
+                        <VBox spacing="10" style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-width: 1; -fx-border-radius: 10; -fx-padding: 16 18;">
+                            <Label text="OR SELECT MANUALLY" style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8; -fx-font-weight: bold;"/>
+                            <HBox spacing="8" alignment="CENTER" style="-fx-padding: 4 0;">
+                                <Button text="😊 Happy"   onAction="#setMoodHappy"   style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-font-size: 13px; -fx-background-radius: 10; -fx-padding: 10 18; -fx-cursor: hand;"/>
+                                <Button text="😐 Neutral" onAction="#setMoodNeutral" style="-fx-background-color: #E3F2FD; -fx-text-fill: #1565C0; -fx-font-size: 13px; -fx-background-radius: 10; -fx-padding: 10 18; -fx-cursor: hand;"/>
+                                <Button text="😔 Sad"     onAction="#setMoodSad"     style="-fx-background-color: #FCE4EC; -fx-text-fill: #C62828; -fx-font-size: 13px; -fx-background-radius: 10; -fx-padding: 10 18; -fx-cursor: hand;"/>
+                                <Button text="😠 Angry"   onAction="#setMoodAngry"   style="-fx-background-color: #FFEBEE; -fx-text-fill: #B71C1C; -fx-font-size: 13px; -fx-background-radius: 10; -fx-padding: 10 18; -fx-cursor: hand;"/>
+                                <Button text="😨 Anxious" onAction="#setMoodAnxious" style="-fx-background-color: #FFF3E0; -fx-text-fill: #E65100; -fx-font-size: 13px; -fx-background-radius: 10; -fx-padding: 10 18; -fx-cursor: hand;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Emotion History -->
+                        <VBox fx:id="historyBox" spacing="8" visible="false" managed="false"
+                              style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-width: 1; -fx-border-radius: 10; -fx-padding: 16 18;">
+                            <Label text="📊 EMOTION HISTORY" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #534AB7;"/>
+                            <Label fx:id="historyLabel" wrapText="true" style="-fx-font-family: 'Courier New'; -fx-font-size: 12px; -fx-text-fill: #424242;"/>
+                        </VBox>
+                    </VBox>
+
+                    <!-- RIGHT: AI Insight + Chat -->
+                    <VBox spacing="14" minWidth="360" maxWidth="420">
+
+                        <!-- AI Insight Card -->
+                        <VBox fx:id="insightBox" spacing="12" visible="false" managed="false"
+                              style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-width: 1; -fx-border-radius: 10; -fx-padding: 16 18;">
+                            <HBox spacing="8" alignment="CENTER_LEFT">
+                                <Label text="✨ AI INSIGHT" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #534AB7;"/>
+                                <ProgressIndicator fx:id="loadingIndicator" visible="false" prefWidth="16" prefHeight="16"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button fx:id="btnReanalyze" text="🔁 Re-analyze" onAction="#reanalyze" disable="true"
+                                        style="-fx-background-color: #EEEDFE; -fx-text-fill: #534AB7; -fx-background-radius: 6; -fx-padding: 5 12; -fx-font-size: 11px; -fx-cursor: hand;"/>
+                            </HBox>
+                            <Label fx:id="insightLabel" text="Select a mood or capture your face to get started."
+                                   wrapText="true" style="-fx-font-size: 13px; -fx-text-fill: #37474F; -fx-line-spacing: 4;"/>
+                            <HBox spacing="8">
+                                <Button fx:id="btnCopyInsight" text="📋 Copy" onAction="#copyInsight" disable="true"
+                                        style="-fx-background-color: #E0F2F1; -fx-text-fill: #00695C; -fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;"/>
+                                <Button fx:id="btnSpeak" text="🔊 Read Aloud" onAction="#speakInsight" disable="true"
+                                        style="-fx-background-color: #FFF3E0; -fx-text-fill: #E65100; -fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;"/>
+                            </HBox>
+                        </VBox>
+
+                        <!-- Mental Health Chat -->
+                        <VBox spacing="0" VBox.vgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-width: 1; -fx-border-radius: 10;">
+                            <HBox alignment="CENTER_LEFT" spacing="8"
+                                  style="-fx-padding: 14 16 12 16; -fx-border-color: transparent transparent #e0e3ef transparent; -fx-border-width: 0 0 1 0;">
+                                <Label text="💬" style="-fx-font-size: 16px;"/>
+                                <VBox spacing="1">
+                                    <Label text="Mental Health Chat" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                                    <Label text="Talk to your AI wellness companion" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                                </VBox>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label text="🟢 Online" style="-fx-font-size: 11px; -fx-text-fill: #2E7D32;"/>
+                            </HBox>
+                            <ScrollPane fx:id="chatScrollPane" fitToWidth="true" prefHeight="320" minHeight="280"
+                                        style="-fx-background: #f5f5fa; -fx-border-color: transparent; -fx-background-color: #f5f5fa;">
+                                <VBox fx:id="chatMessagesBox" spacing="8" style="-fx-padding: 12 14 12 14; -fx-background-color: #f5f5fa;">
+                                    <HBox alignment="CENTER_LEFT">
+                                        <Label text="👋  Hi! I'm your mental health companion. How are you feeling today? You can share anything — I'm here to listen and support you."
+                                               wrapText="true" maxWidth="340"
+                                               style="-fx-background-color: white; -fx-text-fill: #333333; -fx-background-radius: 16 16 16 2; -fx-font-size: 13px; -fx-border-color: #e8e8e8; -fx-border-width: 0.5; -fx-border-radius: 16 16 16 2; -fx-padding: 10 14;"/>
+                                    </HBox>
+                                </VBox>
+                            </ScrollPane>
+                            <HBox spacing="8" alignment="CENTER"
+                                  style="-fx-padding: 10 12; -fx-border-color: #e0e3ef transparent transparent transparent; -fx-border-width: 1 0 0 0;">
+                                <TextField fx:id="chatInputField" promptText="Type a message..." HBox.hgrow="ALWAYS" onAction="#sendChatMessage"
+                                           style="-fx-background-color: #f5f5fa; -fx-border-color: #e1e3ef; -fx-border-radius: 20; -fx-background-radius: 20; -fx-padding: 9 14; -fx-font-size: 13px;"/>
+                                <Button text="Send" onAction="#sendChatMessage"
+                                        style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 20; -fx-padding: 9 18; -fx-font-size: 13px; -fx-cursor: hand;"/>
+                            </HBox>
+                        </VBox>
+                    </VBox>
                 </HBox>
 
-                <Label fx:id="insightLabel"
-                       wrapText="true"
-                       style="-fx-font-size: 13px; -fx-text-fill: #37474F; -fx-line-spacing: 4;"/>
             </VBox>
+        </ScrollPane>
+    </center>
 
+    <!-- ══ RIGHT SIDEBAR ════════════════════════════════════════════ -->
+    <right>
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
+              minWidth="220" maxWidth="220" spacing="12">
+            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Wellness Tools" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="← Back to Profile" onAction="#goBack"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #534AB7; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="😊 Happy"   onAction="#setMoodHappy"   style="-fx-background-color: #E8F5E9; -fx-text-fill: #2E7D32; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="😐 Neutral" onAction="#setMoodNeutral" style="-fx-background-color: #E3F2FD; -fx-text-fill: #1565C0; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="😔 Sad"     onAction="#setMoodSad"     style="-fx-background-color: #FCE4EC; -fx-text-fill: #C62828; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="😠 Angry"   onAction="#setMoodAngry"   style="-fx-background-color: #FFEBEE; -fx-text-fill: #B71C1C; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                    <Button text="😨 Anxious" onAction="#setMoodAnxious" style="-fx-background-color: #FFF3E0; -fx-text-fill: #E65100; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                </VBox>
+            </VBox>
         </VBox>
+    </right>
 
-
-    </VBox>
-</ScrollPane>
+</BorderPane>

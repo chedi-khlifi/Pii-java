@@ -1,0 +1,278 @@
+/* Unified project theme: Modern White & Vibrant Purple */
+.root {
+    -fx-bg: #fdfdff;
+    -fx-surface: #ffffff;
+    -fx-surface-2: #f8f7ff;
+    -fx-sidebar: #ffffff;
+    -fx-accent: #6f42c1;
+    -fx-accent-light: #a29bfe;
+    -fx-text-primary: #1e272e;
+    -fx-text-muted: #808e9b;
+    -fx-success: #05c46b;
+    -fx-danger: #ff3f34;
+    -fx-warning: #ffa801;
+
+    -fx-font-family: "Poppins", "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+    -fx-background-color: -fx-bg;
+}
+
+/* Optimize Scroll Speed */
+.scroll-pane {
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #ced4da;
+    -fx-background-radius: 10;
+}
+
+.scroll-bar .thumb:hover {
+    -fx-background-color: #6f42c1;
+}
+
+.label {
+    -fx-text-fill: -fx-text-primary;
+}
+
+/* Creative Buttons */
+.button {
+    -fx-background-color: linear-gradient(to bottom right, #6f42c1, #8e44ad);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10 20;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.3), 8, 0, 0, 3);
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom right, #8e44ad, #9b59b6);
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.5), 12, 0, 0, 4);
+    -fx-translate-y: -1;
+}
+
+.secondary-button, .module-secondary-action {
+    -fx-background-color: #f1f2f6;
+    -fx-text-fill: #6f42c1;
+    -fx-border-color: #dfe4ea;
+    -fx-effect: none;
+}
+
+.secondary-button:hover {
+    -fx-background-color: #e2e4f0;
+    -fx-translate-y: -1;
+}
+
+.danger-button {
+    -fx-background-color: linear-gradient(to bottom right, #ff3f34, #eb3b5a);
+    -fx-effect: dropshadow(gaussian, rgba(255, 63, 52, 0.3), 8, 0, 0, 3);
+}
+
+/* Modern Panels */
+.main-container, .app-card, .content-panel, .module-card, .chat-panel, .form-panel {
+    -fx-background-color: -fx-surface;
+    -fx-background-radius: 20;
+    -fx-border-color: #f1f2f6;
+    -fx-border-radius: 20;
+    -fx-padding: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 20, 0, 0, 10);
+}
+
+.section-title {
+    -fx-text-fill: linear-gradient(to right, #6f42c1, #8e44ad);
+    -fx-font-size: 28px;
+    -fx-font-weight: 900;
+}
+
+/* Tables Redesign */
+.table-view {
+    -fx-background-color: transparent;
+    -fx-border-color: #f1f2f6;
+    -fx-border-radius: 15;
+    -fx-background-radius: 15;
+    -fx-padding: 5;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #f8f9fa;
+    -fx-background-radius: 15 15 0 0;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-padding: 12;
+}
+
+.table-view .column-header .label {
+    -fx-text-fill: #4b4b4b;
+    -fx-font-weight: 800;
+    -fx-font-size: 13px;
+}
+
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f2f6 transparent;
+    -fx-padding: 0;
+    -fx-cell-size: 50px;
+}
+
+.table-cell {
+    -fx-alignment: CENTER_LEFT;
+    -fx-padding: 10 15;
+    -fx-text-fill: #1e272e;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #f8f7ff;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #f3f0ff;
+}
+
+/* Charts Redesign */
+.chart {
+    -fx-padding: 10;
+}
+
+.chart-content {
+    -fx-padding: 20;
+}
+
+.chart-pie-label {
+    -fx-fill: -fx-text-primary;
+    -fx-font-weight: bold;
+}
+
+.default-color0.chart-pie { -fx-pie-color: #6f42c1; }
+.default-color1.chart-pie { -fx-pie-color: #a29bfe; }
+.default-color2.chart-pie { -fx-pie-color: #05c46b; }
+.default-color3.chart-pie { -fx-pie-color: #ff3f34; }
+
+.chart-bar {
+    -fx-bar-fill: linear-gradient(to top, #6f42c1, #a29bfe);
+    -fx-background-radius: 10 10 0 0;
+}
+
+/* Creative Hub Cards */
+.room-card {
+    -fx-background-color: white;
+    -fx-border-color: #f1f2f6;
+    -fx-border-radius: 25;
+    -fx-background-radius: 25;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 8);
+}
+
+.room-card:hover {
+    -fx-border-color: #6f42c1;
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.15), 25, 0, 0, 15);
+}
+
+.room-card-title {
+    -fx-font-size: 22px;
+    -fx-font-weight: 900;
+    -fx-text-fill: #6f42c1;
+}
+
+.room-card-description {
+    -fx-text-fill: #808e9b;
+    -fx-font-size: 13px;
+}
+
+.room-card-meta {
+    -fx-text-fill: #4b4b4b;
+    -fx-font-size: 12px;
+}
+
+.room-card-actions {
+    -fx-padding: 5 0 0 0;
+}
+
+.room-capacity-badge {
+    -fx-background-color: #e8f5e9;
+    -fx-text-fill: #2e7d32;
+    -fx-padding: 4 12;
+    -fx-background-radius: 20;
+    -fx-font-weight: 800;
+    -fx-font-size: 12px;
+}
+
+/* Input Fields */
+.text-field, .text-area, .combo-box {
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #e9ecef;
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 12;
+}
+
+.text-field:focused, .text-area:focused, .combo-box:focused {
+    -fx-background-color: white;
+    -fx-border-color: #6f42c1;
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.1), 10, 0, 0, 2);
+}
+
+.role-badge {
+    -fx-background-color: #f3f0ff;
+    -fx-text-fill: #6f42c1;
+    -fx-padding: 6 15;
+    -fx-background-radius: 20;
+    -fx-font-weight: 800;
+}
+
+/* Community Hub specific */
+.community-root {
+    -fx-background-color: #fdfdff;
+}
+
+.community-hero {
+    -fx-background-color: linear-gradient(to right, #6f42c1, #a29bfe);
+    -fx-background-radius: 30;
+}
+
+.community-hero-title {
+    -fx-text-fill: white;
+    -fx-font-weight: 900;
+}
+
+.muted-label {
+    -fx-text-fill: #808e9b;
+    -fx-font-size: 13px;
+}
+
+.separator {
+    -fx-background-color: #f1f2f6;
+}
+
+.top-navbar {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);
+}
+
+/* Module action buttons */
+.module-main-action {
+    -fx-background-color: linear-gradient(to bottom right, #6f42c1, #8e44ad);
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-padding: 10 20;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.3), 8, 0, 0, 3);
+}
+
+.module-main-action:hover {
+    -fx-background-color: linear-gradient(to bottom right, #8e44ad, #9b59b6);
+    -fx-effect: dropshadow(gaussian, rgba(111, 66, 193, 0.5), 12, 0, 0, 4);
+}

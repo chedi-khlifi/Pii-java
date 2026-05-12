@@ -4,6 +4,8 @@ import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -71,10 +73,12 @@ public class EmotionsController implements Initializable {
     private Rect                     lastFace;
 
     // ── Groq ──────────────────────────────────────────────────────────────────
-    private static final String GROQ_API_KEY = "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";
+    private static final String GROQ_API_KEY = "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";
     private static final String GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
-    private static final String GROQ_MODEL   = "llama-3.1-8b-instant";
-    private final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final String GROQ_MODEL   = "llama-3.3-70b-versatile";
+    private final HttpClient httpClient = HttpClient.newBuilder()
+            .version(HttpClient.Version.HTTP_1_1)
+            .build();
 
     // ── State ─────────────────────────────────────────────────────────────────
     private String lastInsightText = "";
@@ -82,12 +86,35 @@ public class EmotionsController implements Initializable {
     private double lastConfidence  = 0;
     private final List<Map<String, String>> emotionHistory = new ArrayList<>();
 
+    // ── Speech process (for stop support) ────────────────────────────────────
+    private Process speechProcess = null;
+    private volatile boolean isSpeaking = false;
+    @FXML private VBox      chatMessagesBox;
+    @FXML private TextField chatInputField;
+    @FXML private ScrollPane chatScrollPane;
+    private final List<Map<String, String>> chatHistory = new ArrayList<>();
+
+    // ── OpenCV load status ────────────────────────────────────────────────────
+    private static final boolean OPENCV_LOADED;
+
     static {
+        boolean loaded = false;
         try {
+            // Try the system library first (works when -Djava.library.path is set)
             System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        } catch (UnsatisfiedLinkError e) {
-            throw new ExceptionInInitializerError("OpenCV native library not found: " + e.getMessage());
+            loaded = true;
+        } catch (UnsatisfiedLinkError e1) {
+            // Fallback: try loading from the known install path on Windows
+            try {
+                System.load("C:\\opencv\\build\\java\\x64\\opencv_java4120.dll");
+                loaded = true;
+            } catch (UnsatisfiedLinkError e2) {
+                // OpenCV not available — feature will be disabled gracefully
+                System.err.println("[EmotionsController] OpenCV native library not found. " +
+                        "Camera features will be disabled. Add -Djava.library.path=C:\\opencv\\build\\java\\x64 to VM options.");
+            }
         }
+        OPENCV_LOADED = loaded;
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -101,6 +128,16 @@ public class EmotionsController implements Initializable {
         if (btnReanalyze   != null) btnReanalyze.setDisable(true);
         if (btnCopyInsight != null) btnCopyInsight.setDisable(true);
         if (btnSpeak       != null) btnSpeak.setDisable(true);
+
+        if (!OPENCV_LOADED) {
+            if (statusLabel != null)
+                statusLabel.setText("⚠️ Camera unavailable — OpenCV native library not found.\n" +
+                        "Add  -Djava.library.path=C:\\opencv\\build\\java\\x64  to VM options.\n" +
+                        "You can still use the manual mood buttons below.");
+            if (btnStartCamera != null) btnStartCamera.setDisable(true);
+            if (btnCapture     != null) btnCapture.setDisable(true);
+            return;
+        }
 
         try {
             Path cascadePath = extractCascade();
@@ -119,6 +156,10 @@ public class EmotionsController implements Initializable {
     // ═════════════════════════════════════════════════════════════════════════
     @FXML
     private void startCamera() {
+        if (!OPENCV_LOADED) {
+            statusLabel.setText("⚠️ Camera unavailable — OpenCV not loaded.");
+            return;
+        }
         if (!cameraActive) {
             capture = new VideoCapture(0);
             if (capture.isOpened()) {
@@ -317,6 +358,10 @@ public class EmotionsController implements Initializable {
     // ═════════════════════════════════════════════════════════════════════════
     @FXML
     private void captureAndAnalyze() {
+        if (!OPENCV_LOADED) {
+            statusLabel.setText("⚠️ Camera unavailable — OpenCV not loaded.");
+            return;
+        }
         if (lastFace == null || currentFrame == null) {
             statusLabel.setText("❌ No face detected. Position your face in the camera.");
             return;
@@ -377,114 +422,253 @@ public class EmotionsController implements Initializable {
     }
 
     // ═════════════════════════════════════════════════════════════════════════
-    //  Groq API
+    //  Groq API — Insight
     // ═════════════════════════════════════════════════════════════════════════
     private void fetchGroqInsight(String emotion) {
         Platform.runLater(() -> {
             insightBox.setVisible(true);
             insightBox.setManaged(true);
-            loadingIndicator.setVisible(true);
-            insightLabel.setText("Getting AI insight...");
+            if (loadingIndicator != null) loadingIndicator.setVisible(true);
+            insightLabel.setText("✨ Generating your personalised mental health insight...");
             if (btnReanalyze   != null) btnReanalyze.setDisable(true);
             if (btnCopyInsight != null) btnCopyInsight.setDisable(true);
             if (btnSpeak       != null) btnSpeak.setDisable(true);
         });
 
-        String prompt =
-                "The user's detected emotion is: " + emotion + ".\n\n" +
-                        "Respond using EXACTLY this format. No markdown, no asterisks, no extra text:\n\n" +
-                        "FEELING: <one warm sentence validating their emotion>\n" +
-                        "SONG: <song title - artist that fits this mood>\n" +
-                        "EXERCISE: <one short breathing or mindfulness tip>\n" +
-                        "QUOTE: <an inspiring quote with author name>\n" +
-                        "FOOD: <a food or drink recommendation that suits this mood>\n" +
-                        "SLEEP: <one short sleep tip relevant to this emotion>\n" +
-                        "JOURNAL: <one journaling prompt question to help them reflect>";
+        String systemPrompt =
+            "You are a compassionate, evidence-based mental health companion. " +
+            "Your role is to provide warm, non-judgmental, actionable support. " +
+            "Never diagnose. Always encourage professional help for serious concerns. " +
+            "Keep each section concise — 1-2 sentences max.";
+
+        String userPrompt =
+            "The user's current emotional state is: " + emotion.toUpperCase() + ".\n\n" +
+            "Provide a personalised mental health insight using EXACTLY this format " +
+            "(no markdown, no asterisks, no extra lines):\n\n" +
+            "VALIDATION: <One warm sentence acknowledging and normalising their feeling>\n" +
+            "INSIGHT: <One sentence explaining what this emotion often signals psychologically>\n" +
+            "BREATHE: <A specific breathing technique with counts, e.g. 4-7-8 method>\n" +
+            "REFRAME: <A cognitive reframing thought to shift perspective>\n" +
+            "ACTION: <One immediate grounding action they can do right now>\n" +
+            "SONG: <A song title and artist that matches or soothes this mood>\n" +
+            "QUOTE: <An uplifting quote with author name>\n" +
+            "JOURNAL: <A reflective journaling question to explore this emotion deeper>\n" +
+            "REMINDER: <A short self-compassion reminder sentence>";
 
         JSONObject body = new JSONObject();
         body.put("model", GROQ_MODEL);
-        body.put("max_tokens", 500);
-        body.put("temperature", 0.75);
+        body.put("max_tokens", 600);
+        body.put("temperature", 0.7);
         body.put("messages", new JSONArray()
-                .put(new JSONObject().put("role", "user").put("content", prompt)));
+                .put(new JSONObject().put("role", "system").put("content", systemPrompt))
+                .put(new JSONObject().put("role", "user").put("content", userPrompt)));
+
+        String bodyStr = body.toString();
 
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(GROQ_URL))
                 .header("Content-Type",  "application/json")
                 .header("Authorization", "Bearer " + GROQ_API_KEY)
-                .POST(HttpRequest.BodyPublishers.ofString(
-                        body.toString(), StandardCharsets.UTF_8))
+                .header("Accept",        "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(bodyStr, StandardCharsets.UTF_8))
                 .build();
 
         httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
                 .thenAccept(r -> Platform.runLater(() -> handleGroqResponse(r)))
                 .exceptionally(ex -> {
                     Platform.runLater(() -> {
-                        loadingIndicator.setVisible(false);
-                        insightLabel.setText("❌ Network error: " + ex.getMessage());
+                        if (loadingIndicator != null) loadingIndicator.setVisible(false);
+                        insightLabel.setText("❌ Network error: " + ex.getCause().getMessage());
                     });
                     return null;
                 });
     }
 
     private void handleGroqResponse(HttpResponse<String> response) {
-        loadingIndicator.setVisible(false);
+        if (loadingIndicator != null) loadingIndicator.setVisible(false);
 
-        switch (response.statusCode()) {
-            case 200 -> {
-                try {
-                    String content = new JSONObject(response.body())
-                            .getJSONArray("choices")
-                            .getJSONObject(0)
-                            .getJSONObject("message")
-                            .getString("content");
+        if (response.statusCode() == 200) {
+            try {
+                String content = new JSONObject(response.body())
+                        .getJSONArray("choices")
+                        .getJSONObject(0)
+                        .getJSONObject("message")
+                        .getString("content");
 
-                    lastInsightText = formatInsight(content);
-                    insightLabel.setText(lastInsightText);
+                lastInsightText = formatInsight(content);
+                insightLabel.setText(lastInsightText);
 
-                    if (btnReanalyze   != null) btnReanalyze.setDisable(false);
-                    if (btnCopyInsight != null) btnCopyInsight.setDisable(false);
-                    if (btnSpeak       != null) btnSpeak.setDisable(false);
+                if (btnReanalyze   != null) btnReanalyze.setDisable(false);
+                if (btnCopyInsight != null) btnCopyInsight.setDisable(false);
+                if (btnSpeak       != null) btnSpeak.setDisable(false);
 
-                } catch (Exception e) {
-                    insightLabel.setText("❌ Parse error: " + e.getMessage());
-                    e.printStackTrace();
-                }
+            } catch (Exception e) {
+                insightLabel.setText("❌ Parse error: " + e.getMessage());
+                e.printStackTrace();
             }
-            case 401 -> insightLabel.setText("❌ Invalid API key (401). Check GROQ_API_KEY.");
-            case 429 -> insightLabel.setText("⏳ Rate limit (429). Wait a moment and retry.");
-            case 503 -> insightLabel.setText("⚠️ Groq unavailable (503). Try again shortly.");
-            default  -> insightLabel.setText("❌ Groq error: HTTP " + response.statusCode());
+        } else {
+            String raw = response.body();
+            String detail = "";
+            try { detail = new JSONObject(raw).optString("error", raw); } catch (Exception ignored) { detail = raw; }
+            insightLabel.setText("❌ Groq error " + response.statusCode() + ": " + detail);
+            System.err.println("[Groq] HTTP " + response.statusCode() + " — " + raw);
         }
     }
 
     private String formatInsight(String raw) {
         Map<String, String> prefixes = new LinkedHashMap<>();
-        prefixes.put("FEELING",  "💭");
-        prefixes.put("SONG",     "🎵");
-        prefixes.put("EXERCISE", "🧘");
-        prefixes.put("QUOTE",    "📖");
-        prefixes.put("FOOD",     "🍵");
-        prefixes.put("SLEEP",    "🌙");
-        prefixes.put("JOURNAL",  "📓");
+        prefixes.put("VALIDATION", "💙");
+        prefixes.put("INSIGHT",    "🔍");
+        prefixes.put("BREATHE",    "🌬️");
+        prefixes.put("REFRAME",    "🔄");
+        prefixes.put("ACTION",     "⚡");
+        prefixes.put("SONG",       "🎵");
+        prefixes.put("QUOTE",      "📖");
+        prefixes.put("JOURNAL",    "📓");
+        prefixes.put("REMINDER",   "🌟");
 
         StringBuilder out = new StringBuilder();
         for (String line : raw.split("\n")) {
             line = line.trim();
+            if (line.isEmpty()) continue;
             boolean matched = false;
             for (Map.Entry<String, String> e : prefixes.entrySet()) {
                 String key = e.getKey() + ":";
-                if (line.startsWith(key)) {
-                    out.append(e.getValue()).append(" ")
-                            .append(line.substring(key.length()).trim())
-                            .append("\n\n");
+                if (line.toUpperCase().startsWith(key)) {
+                    out.append(e.getValue()).append("  ")
+                       .append(line.substring(key.length()).trim())
+                       .append("\n\n");
                     matched = true;
                     break;
                 }
             }
-            if (!matched && !line.isEmpty()) out.append(line).append("\n");
+            if (!matched) out.append(line).append("\n");
         }
         return out.toString().trim();
+    }
+
+    // ═════════════════════════════════════════════════════════════════════════
+    //  Mental Health Chat
+    // ═════════════════════════════════════════════════════════════════════════
+    @FXML
+    private void sendChatMessage() {
+        if (chatInputField == null || chatMessagesBox == null) return;
+        String userText = chatInputField.getText().trim();
+        if (userText.isEmpty()) return;
+        chatInputField.clear();
+
+        // Add user bubble
+        appendChatBubble(userText, true);
+
+        // Add to history
+        Map<String, String> userMsg = new LinkedHashMap<>();
+        userMsg.put("role", "user");
+        userMsg.put("content", userText);
+        chatHistory.add(userMsg);
+
+        // Show typing indicator
+        Label typing = new Label("💬 Thinking...");
+        typing.setStyle("-fx-text-fill: #888888; -fx-font-size: 12px; -fx-padding: 4 12;");
+        chatMessagesBox.getChildren().add(typing);
+        scrollChatToBottom();
+
+        // Build messages array with system prompt + history
+        JSONArray messages = new JSONArray();
+        messages.put(new JSONObject()
+                .put("role", "system")
+                .put("content",
+                    "You are a warm, empathetic mental health companion named MindForge AI. " +
+                    "You provide supportive, evidence-based emotional support. " +
+                    "You listen actively, validate feelings, and offer practical coping strategies. " +
+                    "You never diagnose mental illness. For serious concerns (self-harm, crisis), " +
+                    "you always recommend professional help and provide crisis resources. " +
+                    "Keep responses concise (2-4 sentences), warm, and conversational. " +
+                    "Current user emotion context: " + (lastEmotion.isEmpty() ? "unknown" : lastEmotion) + "."));
+
+        for (Map<String, String> msg : chatHistory) {
+            messages.put(new JSONObject()
+                    .put("role", msg.get("role"))
+                    .put("content", msg.get("content")));
+        }
+
+        JSONObject body = new JSONObject();
+        body.put("model", GROQ_MODEL);
+        body.put("max_tokens", 300);
+        body.put("temperature", 0.8);
+        body.put("messages", messages);
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(GROQ_URL))
+                .header("Content-Type",  "application/json")
+                .header("Authorization", "Bearer " + GROQ_API_KEY)
+                .header("Accept",        "application/json")
+                .POST(HttpRequest.BodyPublishers.ofString(body.toString(), StandardCharsets.UTF_8))
+                .build();
+
+        httpClient.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+                .thenAccept(r -> Platform.runLater(() -> {
+                    chatMessagesBox.getChildren().remove(typing);
+                    if (r.statusCode() == 200) {
+                        try {
+                            String reply = new JSONObject(r.body())
+                                    .getJSONArray("choices")
+                                    .getJSONObject(0)
+                                    .getJSONObject("message")
+                                    .getString("content");
+                            appendChatBubble(reply, false);
+                            Map<String, String> assistantMsg = new LinkedHashMap<>();
+                            assistantMsg.put("role", "assistant");
+                            assistantMsg.put("content", reply);
+                            chatHistory.add(assistantMsg);
+                            // Keep history to last 20 messages to avoid token overflow
+                            if (chatHistory.size() > 20) chatHistory.remove(0);
+                        } catch (Exception e) {
+                            appendChatBubble("Sorry, I had trouble understanding that. Please try again.", false);
+                        }
+                    } else {
+                        appendChatBubble("I'm having trouble connecting right now. Please try again in a moment.", false);
+                        System.err.println("[Chat] HTTP " + r.statusCode() + " — " + r.body());
+                    }
+                    scrollChatToBottom();
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        chatMessagesBox.getChildren().remove(typing);
+                        appendChatBubble("Connection error. Please check your internet and try again.", false);
+                    });
+                    return null;
+                });
+    }
+
+    private void appendChatBubble(String text, boolean isUser) {
+        javafx.scene.layout.HBox row = new javafx.scene.layout.HBox();
+        row.setAlignment(isUser ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        row.setPadding(new Insets(2, 0, 2, 0));
+
+        Label bubble = new Label(text);
+        bubble.setWrapText(true);
+        bubble.setMaxWidth(380);
+        bubble.setPadding(new Insets(10, 14, 10, 14));
+
+        if (isUser) {
+            bubble.setStyle(
+                "-fx-background-color: #534AB7; -fx-text-fill: white;" +
+                "-fx-background-radius: 16 16 2 16; -fx-font-size: 13px;");
+        } else {
+            bubble.setStyle(
+                "-fx-background-color: white; -fx-text-fill: #333333;" +
+                "-fx-background-radius: 16 16 16 2; -fx-font-size: 13px;" +
+                "-fx-border-color: #e8e8e8; -fx-border-width: 0.5; -fx-border-radius: 16 16 16 2;");
+        }
+
+        row.getChildren().add(bubble);
+        chatMessagesBox.getChildren().add(row);
+    }
+
+    private void scrollChatToBottom() {
+        if (chatScrollPane != null) {
+            Platform.runLater(() -> chatScrollPane.setVvalue(1.0));
+        }
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -510,6 +694,12 @@ public class EmotionsController implements Initializable {
 
     @FXML
     private void speakInsight() {
+        // If already speaking — stop it
+        if (isSpeaking) {
+            stopSpeech();
+            return;
+        }
+
         if (lastInsightText.isEmpty()) return;
 
         String os        = System.getProperty("os.name").toLowerCase();
@@ -518,14 +708,24 @@ public class EmotionsController implements Initializable {
                 .replaceAll("\n+", ". ")
                 .trim();
 
+        isSpeaking = true;
+        if (btnSpeak != null) {
+            Platform.runLater(() -> {
+                btnSpeak.setText("⏹ Stop");
+                btnSpeak.setStyle("-fx-background-color: #FFEBEE; -fx-text-fill: #B71C1C;" +
+                        "-fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;");
+            });
+        }
+        statusLabel.setText("🔊 Speaking insight...");
+
         new Thread(() -> {
             try {
                 ProcessBuilder pb;
                 if (os.contains("win")) {
                     String psCmd = String.format(
                             "Add-Type -AssemblyName System.Speech; " +
-                                    "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; " +
-                                    "$s.Speak('%s');",
+                            "$s = New-Object System.Speech.Synthesis.SpeechSynthesizer; " +
+                            "$s.Speak('%s');",
                             cleanText.replace("'", "").replace("\"", ""));
                     pb = new ProcessBuilder("powershell", "-NoProfile", "-Command", psCmd);
                 } else if (os.contains("mac")) {
@@ -534,15 +734,50 @@ public class EmotionsController implements Initializable {
                     pb = new ProcessBuilder("espeak", cleanText);
                 }
                 pb.redirectErrorStream(true);
-                pb.start().waitFor();
-                Platform.runLater(() -> statusLabel.setText("✅ Done speaking."));
+                speechProcess = pb.start();
+                speechProcess.waitFor();
+            } catch (InterruptedException ignored) {
+                // stopped intentionally
             } catch (Exception e) {
-                Platform.runLater(() ->
-                        statusLabel.setText("⚠️ TTS error: " + e.getMessage()));
+                Platform.runLater(() -> statusLabel.setText("⚠️ TTS error: " + e.getMessage()));
+            } finally {
+                isSpeaking = false;
+                speechProcess = null;
+                Platform.runLater(() -> {
+                    statusLabel.setText("✅ Done speaking.");
+                    if (btnSpeak != null) {
+                        btnSpeak.setText("🔊 Read Aloud");
+                        btnSpeak.setStyle("-fx-background-color: #FFF3E0; -fx-text-fill: #E65100;" +
+                                "-fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;");
+                    }
+                });
             }
-        }).start();
+        }, "tts-thread").start();
+    }
 
-        statusLabel.setText("🔊 Speaking insight...");
+    private void stopSpeech() {
+        isSpeaking = false;
+        if (speechProcess != null) {
+            speechProcess.destroyForcibly();
+            speechProcess = null;
+        }
+        // On Windows, also kill any lingering powershell TTS processes
+        if (System.getProperty("os.name").toLowerCase().contains("win")) {
+            try {
+                new ProcessBuilder("powershell", "-NoProfile", "-Command",
+                        "Get-Process -Name powershell -ErrorAction SilentlyContinue | " +
+                        "Where-Object { $_.MainWindowTitle -eq '' } | Stop-Process -Force")
+                        .start();
+            } catch (Exception ignored) {}
+        }
+        Platform.runLater(() -> {
+            statusLabel.setText("⏹ Stopped.");
+            if (btnSpeak != null) {
+                btnSpeak.setText("🔊 Read Aloud");
+                btnSpeak.setStyle("-fx-background-color: #FFF3E0; -fx-text-fill: #E65100;" +
+                        "-fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;");
+            }
+        });
     }
 
     // ═════════════════════════════════════════════════════════════════════════
@@ -624,6 +859,7 @@ public class EmotionsController implements Initializable {
     @FXML
     private void goBack() {
         stopCamera();
+        stopSpeech();
         try {
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/com/mindforge/fxml/profile.fxml"));

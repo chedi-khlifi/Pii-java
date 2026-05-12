@@ -46,6 +46,7 @@ public class SocialHubController implements Initializable {
     @FXML private Button     btnPending;
     @FXML private Button     btnMessages;
     @FXML private Button     btnBackToProfile;
+    @FXML private Button     btnBackToDashboard;
     @FXML private TextField  searchField;
     @FXML private VBox       contentBox;
     @FXML private ScrollPane contentScroll;
@@ -148,6 +149,10 @@ public class SocialHubController implements Initializable {
 
     @FXML private void onBackToProfile() {
         navigateTo("/com/mindforge/fxml/profile.fxml", "MindForge - Profile");
+    }
+
+    @FXML private void onBackToDashboard() {
+        navigateTo("/com/mindforge/fxml/dashboard.fxml", "MindForge - Dashboard");
     }
 
     // ═══════════════════════════════════════════════════════════════

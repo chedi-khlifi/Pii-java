@@ -1,78 +1,175 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
-<?import javafx.scene.layout.VBox?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="tn.esprit.GuardianController"
+            style="-fx-background-color: #ececf2;">
 
-<BorderPane fx:controller="tn.esprit.GuardianController" styleClass="guardian-root" stylesheets="@guardian-cards.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
+    <!-- ── Top Bar ─────────────────────────────────────────────── -->
+    <top>
+        <HBox style="-fx-background-color: #1e1e2e; -fx-border-color: transparent transparent #333 transparent; -fx-border-width: 0 0 1 0;"
+              alignment="CENTER_RIGHT" spacing="10">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="🌐 Social Hub" onAction="#onOpenSocialHub"
+                    style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: bold;
+                           -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 12px;"/>
+        </HBox>
+    </top>
+
+    <!-- ── Left Sidebar ────────────────────────────────────────── -->
     <left>
-        <VBox spacing="12" styleClass="guardian-sidebar">
-            <padding><Insets top="18" right="14" bottom="18" left="14" /></padding>
-            <HBox spacing="6"><Label text="◉" styleClass="guardian-brand-mark" /><Label text="MindForge" styleClass="guardian-brand" /></HBox>
-            <Button text="▣ Planner" onAction="#onOpenPlanner" styleClass="guardian-global-nav-button" />
-            <Button text="◈ Community" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Button text="▤ Guardian" onAction="#onGoHub" styleClass="guardian-global-nav-button,guardian-global-nav-selected" />
-            <Button text="▦ Careers" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Button text="◔ Analyst" onAction="#onIntegrationPlaceholder" styleClass="guardian-global-nav-button" />
-            <Label text="QUICK LINKS" styleClass="guardian-side-group-title" />
-            <Button text="Contact Support" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Button text="Friends" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-quick-link" />
-            <Region VBox.vgrow="ALWAYS" />
-        </VBox>
-    </left>
-    <center>
-        <VBox spacing="14" styleClass="guardian-page-wrap">
-            <padding><Insets top="16" right="16" bottom="16" left="16" /></padding>
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
+              minWidth="210" maxWidth="210" spacing="5">
+            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
 
-            <VBox spacing="5" styleClass="guardian-hero,guardian-hero-hub">
-                <padding><Insets top="20" right="24" bottom="20" left="24" /></padding>
-                <Label text="Guardian Hub" styleClass="guardian-hero-title" />
-                <Label text="Choose your module and continue your study flow." styleClass="guardian-hero-subtitle" />
-            </VBox>
-
-            <Label fx:id="snapshotLabel" text="Loading snapshot..." styleClass="guardian-snapshot" />
-
-            <HBox spacing="12">
-                <VBox spacing="8" styleClass="guardian-panel,guardian-hub-card">
-                    <Label text="Focus Timer" styleClass="guardian-section-title" />
-                    <Label text="Track timed sessions and productivity history." styleClass="guardian-hint" />
-                    <Button text="Open Focus Timer" onAction="#onStartFocus" styleClass="guardian-action-primary" />
-                </VBox>
-                <VBox spacing="8" styleClass="guardian-panel,guardian-hub-card">
-                    <Label text="Virtual Rooms" styleClass="guardian-section-title" />
-                    <Label text="Create collaborative rooms by subject." styleClass="guardian-hint" />
-                    <Button text="Open Virtual Rooms" onAction="#onOpenRooms" styleClass="guardian-action-primary" />
-                </VBox>
-                <VBox spacing="8" styleClass="guardian-panel,guardian-hub-card">
-                    <Label text="Resource Library" styleClass="guardian-section-title" />
-                    <Label text="Organize and share resources." styleClass="guardian-hint" />
-                    <Button text="Open Resource Library" onAction="#onOpenLibrary" styleClass="guardian-action-primary" />
-                </VBox>
+            <!-- Brand -->
+            <HBox alignment="CENTER_LEFT" spacing="8">
+                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
+                <Label text="🔥" style="-fx-font-size: 20px;"/>
+                <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
             </HBox>
 
+            <!-- Nav -->
+            <VBox spacing="5">
+                <Button text="📁  Planner"   onAction="#onOpenPlanner"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="👥  Community" onAction="#onOpenCommunity"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📚  Guardian"  onAction="#onGoHub"
+                        style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="💼  Careers"   onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📊  Analyst"   onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            </VBox>
 
+            <Region minHeight="20"/>
+
+            <!-- Quick Links -->
+            <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
+                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
+            </Label>
+            <Button text="Contact Support" onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button text="Friends"         onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button text="Leaderboard"     onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button text="🌐 Social Hub"   onAction="#onOpenSocialHub"
+                    style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 9 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+        </VBox>
+    </left>
+
+    <!-- ── Center ──────────────────────────────────────────────── -->
+    <center>
+        <VBox spacing="14" style="-fx-background-color: #f5f5fa;">
+            <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
+
+            <!-- Gradient hero banner -->
+            <VBox style="-fx-background-color: linear-gradient(to right, #eb5fac, #8185ff 54%, #86d8ea); -fx-background-radius: 12;" spacing="4">
+                <padding><Insets top="18" right="20" bottom="18" left="20"/></padding>
+                <Label text="Guardian Hub"
+                       style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label text="Choose your module and continue your study flow."
+                       style="-fx-text-fill: white; -fx-opacity: 0.92; -fx-font-size: 13px;"/>
+            </VBox>
+
+            <Label fx:id="snapshotLabel" text="Guardian snapshot ready."
+                   style="-fx-text-fill: #6d748a; -fx-font-size: 12px;"/>
+
+            <!-- Module cards -->
+            <HBox spacing="14">
+                <!-- Focus Timer -->
+                <VBox spacing="10" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 18;">
+                    <Label text="⏱️ Focus Timer"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Track timed sessions and productivity history."
+                           style="-fx-font-size: 12px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                    <Button text="Open Focus Timer" onAction="#onStartFocus"
+                            style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: bold;
+                                   -fx-padding: 9 18; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 13px;"/>
+                </VBox>
+
+                <!-- Virtual Rooms -->
+                <VBox spacing="10" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 18;">
+                    <Label text="🏠 Virtual Rooms"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Create collaborative rooms by subject."
+                           style="-fx-font-size: 12px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                    <Button text="Open Virtual Rooms" onAction="#onOpenRooms"
+                            style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: bold;
+                                   -fx-padding: 9 18; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 13px;"/>
+                </VBox>
+
+                <!-- Resource Library -->
+                <VBox spacing="10" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 18;">
+                    <Label text="📚 Resource Library"
+                           style="-fx-font-size: 15px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Organize and share resources."
+                           style="-fx-font-size: 12px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                    <Button text="Open Resource Library" onAction="#onOpenLibrary"
+                            style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: bold;
+                                   -fx-padding: 9 18; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-size: 13px;"/>
+                </VBox>
+            </HBox>
         </VBox>
     </center>
+
+    <!-- ── Right Sidebar ───────────────────────────────────────── -->
     <right>
-        <VBox spacing="12" styleClass="guardian-rightbar">
-            <padding><Insets top="16" right="14" bottom="16" left="14" /></padding>
-            <VBox spacing="8" styleClass="guardian-side-card">
-                <Label text="Network" styleClass="guardian-side-title" />
-                <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
-                <Button text="Workspace Home" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
-                <Button text="Friends Directory" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
+              minWidth="240" maxWidth="240" spacing="12">
+            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+
+            <!-- Network Widget -->
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Network" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5" style="-fx-border-color: transparent transparent #edf0fb transparent; -fx-border-width: 0 0 1 0;">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Workspace Home" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="Friends Directory" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                </VBox>
             </VBox>
-            <VBox spacing="8" styleClass="guardian-side-card">
-                <Label text="Shortcuts" styleClass="guardian-side-title" />
-                <Button text="Focus Timer" onAction="#onGoFocus" styleClass="guardian-side-link" />
-                <Button text="Virtual Rooms" onAction="#onGoRooms" styleClass="guardian-side-link" />
-                <Button text="Leaderboard" onAction="#onIntegrationPlaceholder" styleClass="guardian-side-link" />
+
+            <!-- Shortcuts Widget -->
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
+                <Label text="Shortcuts" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
+                </Label>
+                <VBox spacing="5">
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button text="⏱️ Focus Timer" onAction="#onGoFocus"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="🏠 Virtual Rooms" onAction="#onGoRooms"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="🏆 Leaderboard" onAction="#onIntegrationPlaceholder"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                    <Button text="🌐 Social Hub" onAction="#onOpenSocialHub"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #534AB7; -fx-font-size: 12px; -fx-font-weight: bold; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
+                </VBox>
             </VBox>
         </VBox>
     </right>
+
 </BorderPane>

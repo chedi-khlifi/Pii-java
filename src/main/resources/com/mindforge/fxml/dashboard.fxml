@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.shape.*?>
 
@@ -10,157 +11,334 @@
             fx:controller="com.mindforge.architect.controller.DashboardController"
             style="-fx-background-color: #ececf2;">
 
-    <!-- Top Header with Profile Button -->
+    <!-- ══ TOP BAR ══════════════════════════════════════════════════ -->
     <top>
         <HBox style="-fx-background-color: #1e1e2e; -fx-border-color: transparent transparent #333 transparent; -fx-border-width: 0 0 1 0;"
-              alignment="CENTER_RIGHT" spacing="10">
-            <padding>
-                <Insets top="10" right="16" bottom="10" left="16"/>
-            </padding>
+              alignment="CENTER_LEFT" spacing="12">
+            <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
+
+            <!-- User greeting -->
+            <StackPane>
+                <Circle fx:id="avatarCircle" radius="18" fill="#7c3aed"/>
+                <Label fx:id="avatarInitialsTop" text="?" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <ImageView fx:id="avatarImageTop" fitWidth="36" fitHeight="36" preserveRatio="false" visible="false"/>
+            </StackPane>
+            <VBox spacing="1">
+                <Label fx:id="labelWelcome" text="Welcome back,"
+                       style="-fx-text-fill: #a0a5b8; -fx-font-size: 11px;"/>
+                <Label fx:id="labelUserName" text="Loading..."
+                       style="-fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold;"/>
+            </VBox>
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <!-- Profile Button -->
-            <Button onAction="#goToProfile" style="-fx-background-color: transparent; -fx-cursor: hand;">
-                <graphic>
-                    <HBox spacing="8" alignment="CENTER">
-                        <StackPane>
-                            <Circle radius="18" fill="#7c3aed"/>
-                            <Label text="👤" style="-fx-font-size: 16px;"/>
-                        </StackPane>
-                        <Label text="Profile" style="-fx-text-fill: white; -fx-font-size: 14px;"/>
-                    </HBox>
-                </graphic>
-            </Button>
+            <!-- XP pill -->
+            <HBox spacing="6" alignment="CENTER"
+                  style="-fx-background-color: rgba(124,58,237,0.25); -fx-background-radius: 20; -fx-padding: 5 14;">
+                <Label text="⚡" style="-fx-font-size: 13px;"/>
+                <Label fx:id="labelXpTop" text="0 XP"
+                       style="-fx-text-fill: #c4b5fd; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+            </HBox>
 
-            <!-- Logout Button -->
-            <Button onAction="#logout" style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 16; -fx-cursor: hand;">
+            <!-- Level pill -->
+            <HBox spacing="6" alignment="CENTER"
+                  style="-fx-background-color: rgba(99,102,241,0.25); -fx-background-radius: 20; -fx-padding: 5 14;">
+                <Label text="🏅" style="-fx-font-size: 13px;"/>
+                <Label fx:id="labelLevelTop" text="Lv 1"
+                       style="-fx-text-fill: #a5b4fc; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- Streak pill -->
+            <HBox spacing="6" alignment="CENTER"
+                  style="-fx-background-color: rgba(234,88,12,0.25); -fx-background-radius: 20; -fx-padding: 5 14;">
+                <Label text="🔥" style="-fx-font-size: 13px;"/>
+                <Label fx:id="labelStreakTop" text="0 days"
+                       style="-fx-text-fill: #fdba74; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- Profile / Logout -->
+            <Button onAction="#goToProfile"
+                    style="-fx-background-color: transparent; -fx-text-fill: #cdd3e0; -fx-font-size: 13px; -fx-cursor: hand; -fx-padding: 6 12;">
+                <text>👤 Profile</text>
+            </Button>
+            <Button onAction="#logout"
+                    style="-fx-background-color: #dc2626; -fx-text-fill: white; -fx-background-radius: 6; -fx-padding: 8 16; -fx-cursor: hand;">
                 <text>Logout</text>
             </Button>
         </HBox>
     </top>
 
-    <!-- Left Sidebar -->
+    <!-- ══ LEFT SIDEBAR ═════════════════════════════════════════════ -->
     <left>
         <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
               minWidth="210" maxWidth="210" spacing="5">
-            <padding>
-                <Insets top="14" right="12" bottom="14" left="12"/>
-            </padding>
+            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
 
             <!-- Brand -->
             <HBox alignment="CENTER_LEFT" spacing="8">
-                <padding>
-                    <Insets top="8" right="10" bottom="10" left="10"/>
-                </padding>
+                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
                 <Label text="🔥" style="-fx-font-size: 20px;"/>
                 <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
             </HBox>
 
             <!-- Navigation -->
             <VBox spacing="5">
-                <Button onAction="#goToPlanner" text="📁  Planner" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;" />
-                <Button text="👥  Community" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="📚  Guardian" onAction="#openGuardian" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="💼  Careers" onAction="#goToCareers" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="📊  Analyst" style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button onAction="#goToPlanner" text="📁  Planner"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button onAction="#goToCommunityHub" text="👥  Community"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button onAction="#openGuardian" text="📚  Guardian"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button onAction="#goToCareers" text="💼  Careers"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                <Button text="📊  Analyst"
+                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
             </VBox>
 
             <Region minHeight="20"/>
 
             <!-- Quick Links -->
             <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
-                <padding>
-                    <Insets bottom="6" left="8" right="8" top="0"/>
-                </padding>
+                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
             </Label>
-            <Button text="Contact Support" style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-            <Button text="Friends" style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-            <Button text="Leaderboard" style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button text="Contact Support"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button onAction="#goToSocialHub" text="Friends"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button onAction="#openLeaderboard" text="Leaderboard"
+                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+            <Button onAction="#goToSocialHub" text="🌐 Social Hub"
+                    style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 9 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
         </VBox>
     </left>
 
-    <!-- Center Main Content -->
+    <!-- ══ CENTER ════════════════════════════════════════════════════ -->
     <center>
         <VBox fx:id="centerContent" spacing="14" style="-fx-background-color: #f5f5fa;">
-            <padding>
-                <Insets bottom="16" left="16" right="16" top="16"/>
-            </padding>
+            <padding><Insets bottom="16" left="16" right="16" top="16"/></padding>
 
-            <!-- Header -->
+            <!-- Gradient hero banner -->
             <VBox style="-fx-background-color: linear-gradient(to right, #eb5fac, #8185ff 54%, #86d8ea); -fx-background-radius: 12;" spacing="4">
-                <padding>
-                    <Insets bottom="14" left="16" right="16" top="14"/>
-                </padding>
-                <Label text="Workspace Network" style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
-                <Label text="Friends status, ranking, and private chat entry points." style="-fx-text-fill: white; -fx-opacity: 0.92; -fx-font-size: 13px;"/>
+                <padding><Insets bottom="18" left="20" right="20" top="18"/></padding>
+                <Label text="Workspace Network"
+                       style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                <Label text="Friends status, ranking, and private chat entry points."
+                       style="-fx-text-fill: white; -fx-opacity: 0.92; -fx-font-size: 13px;"/>
             </VBox>
 
-            <!-- Content -->
-            <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background-radius: 12;">
-                <VBox spacing="12" style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 12; -fx-background-radius: 12;" minHeight="400">
-                    <padding>
-                        <Insets bottom="12" left="12" right="12" top="12"/>
-                    </padding>
+            <!-- Stats row -->
+            <HBox spacing="10">
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-padding: 14 10;">
+                    <Label fx:id="statXP" text="—"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Total XP" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                </VBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-padding: 14 10;">
+                    <Label fx:id="statLevel" text="—"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Level" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                </VBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-padding: 14 10;">
+                    <Label fx:id="statTasks" text="—"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Tasks Done" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                </VBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-padding: 14 10;">
+                    <Label fx:id="statFocus" text="—"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Focus Time" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                </VBox>
+                <VBox alignment="CENTER" HBox.hgrow="ALWAYS"
+                      style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-padding: 14 10;">
+                    <Label fx:id="statStreak" text="—"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Label text="Day Streak" style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                </VBox>
+            </HBox>
 
-                    <!-- Friends Header -->
+            <!-- XP progress bar -->
+            <VBox spacing="6"
+                  style="-fx-background-color: white; -fx-background-radius: 10; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-padding: 14 16;">
+                <HBox alignment="CENTER_LEFT" spacing="8">
+                    <Label text="XP PROGRESS"
+                           style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8; -fx-font-weight: bold;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="labelXpProgress" text="0 / 500 XP to next level"
+                           style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                </HBox>
+                <ProgressBar fx:id="xpProgressBar" progress="0" maxWidth="Infinity"
+                             style="-fx-accent: #534AB7; -fx-pref-height: 10px;"/>
+            </VBox>
+
+            <!-- Friends section -->
+            <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS"
+                        style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                <VBox spacing="12"
+                      style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 12; -fx-background-radius: 12;"
+                      minHeight="200">
+                    <padding><Insets bottom="14" left="14" right="14" top="14"/></padding>
+
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label text="Friends" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                        <Label fx:id="labelFriendCount" text=""
+                               style="-fx-background-color: #eef0f5; -fx-text-fill: #6d748a; -fx-background-radius: 10; -fx-padding: 2 8; -fx-font-size: 11px;"/>
                         <Region HBox.hgrow="ALWAYS"/>
-                        <Button text="Back to workspace" onAction="#goToWorkspace" style="-fx-background-color: transparent; -fx-text-fill: #4e64f4; -fx-border-color: #4e64f4; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 6 12; -fx-font-size: 12px; -fx-cursor: hand;"/>
+                        <Button onAction="#goToSocialHub" text="View All →"
+                                style="-fx-background-color: transparent; -fx-text-fill: #534AB7; -fx-border-color: #534AB7;
+                                       -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 5 12; -fx-font-size: 12px; -fx-cursor: hand;"/>
                     </HBox>
 
-                    <!-- Friends List Container -->
                     <VBox fx:id="friendsContainer" spacing="10">
-                        <!-- Friends will be added here dynamically -->
                         <Label text="Loading friends..." style="-fx-text-fill: #6d748a; -fx-font-size: 13px;"/>
                     </VBox>
-
                 </VBox>
             </ScrollPane>
+
+            <!-- ══ COMMUNITY HUB SECTION (always visible below friends) ══ -->
+            <VBox fx:id="communitySection" spacing="12">
+
+                <!-- Section header -->
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Community Hub"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button onAction="#goToCommunityHub" text="Open Full Hub →"
+                            style="-fx-background-color: transparent; -fx-text-fill: #6f42c1; -fx-border-color: #6f42c1;
+                                   -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 5 12; -fx-font-size: 12px; -fx-cursor: hand;"/>
+                </HBox>
+
+                <!-- Row 1: Virtual Rooms · Shared Challenges · Support Tickets -->
+                <HBox spacing="12">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label text="💬 Virtual Rooms"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                        <Label text="Join live discussion rooms."
+                               style="-fx-font-size: 11px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                        <Button text="Browse Rooms" onAction="#openVirtualRooms"
+                                style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold;
+                                       -fx-padding: 7 14; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                    </VBox>
+                    <VBox spacing="8" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label text="🎯 Shared Challenges"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                        <Label text="Send and receive challenges."
+                               style="-fx-font-size: 11px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                        <Button text="Send a Challenge" onAction="#openSendChallenge"
+                                style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold;
+                                       -fx-padding: 7 14; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                    </VBox>
+                    <VBox spacing="8" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label text="📬 Support Tickets"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                        <Label text="Create and track support requests."
+                               style="-fx-font-size: 11px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                        <Button text="My Tickets" onAction="#openMyTickets"
+                                style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold;
+                                       -fx-padding: 7 14; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Row 2: Challenge Inbox · Sent Challenges -->
+                <HBox spacing="12">
+                    <VBox spacing="8" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label text="📥 Challenge Inbox"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                        <Label text="View challenges received from peers."
+                               style="-fx-font-size: 11px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                        <Button text="Open Inbox" onAction="#openChallengeInbox"
+                                style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold;
+                                       -fx-padding: 7 14; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                    </VBox>
+                    <VBox spacing="8" HBox.hgrow="ALWAYS"
+                          style="-fx-background-color: white; -fx-border-color: #dfe2ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14;">
+                        <Label text="📤 Sent Challenges"
+                               style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                        <Label text="Track the status of challenges you sent."
+                               style="-fx-font-size: 11px; -fx-text-fill: #6d748a;" wrapText="true"/>
+                        <Button text="View Sent" onAction="#openSentChallenges"
+                                style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold;
+                                       -fx-padding: 7 14; -fx-background-radius: 7; -fx-cursor: hand; -fx-font-size: 12px;"/>
+                    </VBox>
+                    <VBox HBox.hgrow="ALWAYS"/>
+                </HBox>
+
+            </VBox>
 
         </VBox>
     </center>
 
-    <!-- Right Sidebar -->
+    <!-- ══ RIGHT SIDEBAR ════════════════════════════════════════════ -->
     <right>
         <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
-              minWidth="300" maxWidth="300" spacing="12">
-            <padding>
-                <Insets bottom="12" left="12" right="12" top="12"/>
-            </padding>
+              minWidth="260" maxWidth="260" spacing="12">
+            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+
+            <!-- My Profile card -->
+            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 14;"
+                  spacing="10" alignment="CENTER">
+                <StackPane>
+                    <Circle fx:id="avatarCircleRight" radius="30" fill="#EEEDFE"
+                            style="-fx-stroke: #534AB7; -fx-stroke-width: 2;"/>
+                    <Label fx:id="avatarInitialsRight" text="?"
+                           style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #3C3489;"/>
+                    <ImageView fx:id="avatarImageRight" fitWidth="60" fitHeight="60"
+                               preserveRatio="false" visible="false"/>
+                </StackPane>
+                <Label fx:id="labelProfileName" text="Loading..."
+                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                <Label fx:id="labelProfileEmail" text=""
+                       style="-fx-font-size: 11px; -fx-text-fill: #6d748a;"/>
+                <Label fx:id="labelProfileRole" text=""
+                       style="-fx-background-color: #EEEDFE; -fx-text-fill: #534AB7; -fx-background-radius: 10;
+                              -fx-padding: 2 10; -fx-font-size: 11px; -fx-font-weight: bold;"/>
+                <Button onAction="#goToProfile" text="Edit Profile"
+                        style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-size: 12px;
+                               -fx-padding: 7 20; -fx-background-radius: 8; -fx-cursor: hand; -fx-font-weight: bold;"/>
+            </VBox>
 
             <!-- Network Widget -->
             <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
                 <Label text="Network" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="10"/>
-                    </padding>
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
                 </Label>
                 <VBox spacing="5" style="-fx-border-color: transparent transparent #edf0fb transparent; -fx-border-width: 0 0 1 0;">
-                    <padding>
-                        <Insets bottom="8" left="8" right="8" top="8"/>
-                    </padding>
-                    <Button text="Workspace Network Hub" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 270;"/>
-                    <Button text="Workspace Home" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 270;"/>
-                    <Button text="Friends Directory" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 270;"/>
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button onAction="#goToSocialHub" text="Workspace Network Hub"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 228;"/>
+                    <Button onAction="#goToSocialHub" text="Friends Directory"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 228;"/>
                 </VBox>
             </VBox>
 
             <!-- Shortcuts Widget -->
             <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
                 <Label text="Shortcuts" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
-                    <padding>
-                        <Insets bottom="10" left="10" right="10" top="10"/>
-                    </padding>
+                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
                 </Label>
                 <VBox spacing="5">
-                    <padding>
-                        <Insets bottom="8" left="8" right="8" top="8"/>
-                    </padding>
-                    <Button text="⏱️ Focus Timer" onAction="#openFocusTimer" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 270;"/>
-                    <Button text="🏠 Virtual Rooms" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 270;"/>
-                    <Button text="🏆 Leaderboard" onAction="#openLeaderboard" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 270;"/>
+                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
+                    <Button onAction="#openFocusTimer" text="⏱️ Focus Timer"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 228;"/>
+                    <Button onAction="#openGuardian" text="🏠 Virtual Rooms"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 228;"/>
+                    <Button onAction="#openLeaderboard" text="🏆 Leaderboard"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 228;"/>
+                    <Button onAction="#goToCareers" text="💼 Careers"
+                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8;
+                                   -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 228;"/>
                 </VBox>
             </VBox>
 

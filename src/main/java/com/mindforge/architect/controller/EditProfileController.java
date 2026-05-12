@@ -258,6 +258,28 @@ public class EditProfileController implements Initializable {
 
     // ── Navigation ────────────────────────────────────────────────────────────
     @FXML
+    private void goToDashboard() {
+        try {
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/dashboard.fxml")
+            );
+            Parent root  = loader.load();
+            Scene  scene = new Scene(root, 1280, 800);
+            scene.getStylesheets().add(
+                    Objects.requireNonNull(
+                            getClass().getResource("/com/mindforge/css/style.css")
+                    ).toExternalForm()
+            );
+            Stage stage = (Stage) fieldFirstName.getScene().getWindow();
+            stage.setTitle("MindForge - Dashboard");
+            stage.setScene(scene);
+            stage.show();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
     private void goBack() {
         try {
             FXMLLoader loader = new FXMLLoader(

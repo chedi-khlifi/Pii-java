@@ -832,6 +832,52 @@ public class StudentController {
         }
     }
 
+    @FXML
+    private void goToSocialHub() {
+        try {
+            javafx.scene.Scene scene = opportunitiesFlow.getScene();
+            javafx.scene.Parent currentRoot = scene.getRoot();
+
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/social_hub.fxml"));
+            javafx.scene.Parent socialRoot = loader.load();
+
+            javafx.scene.control.Button backBtn = new javafx.scene.control.Button("← Back to Careers");
+            backBtn.setStyle(
+                    "-fx-background-color: #4e64f4; -fx-text-fill: white;" +
+                    "-fx-background-radius: 8; -fx-padding: 8 18; -fx-cursor: hand;" +
+                    "-fx-font-weight: bold; -fx-font-size: 13px;"
+            );
+            backBtn.setOnAction(e -> scene.setRoot(currentRoot));
+
+            javafx.scene.layout.HBox topBar = new javafx.scene.layout.HBox(backBtn);
+            topBar.setPadding(new javafx.geometry.Insets(10, 15, 10, 15));
+            topBar.setAlignment(javafx.geometry.Pos.CENTER_LEFT);
+            topBar.setStyle("-fx-background-color: #f0f2f5;");
+
+            javafx.scene.layout.VBox.setVgrow(socialRoot, javafx.scene.layout.Priority.ALWAYS);
+            javafx.scene.layout.VBox fullPage = new javafx.scene.layout.VBox(topBar, socialRoot);
+            fullPage.setStyle("-fx-background-color: #ececf2;");
+
+            scene.setRoot(fullPage);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @FXML
+    private void goToCommunity() {
+        try {
+            javafx.scene.Scene scene = opportunitiesFlow.getScene();
+            FXMLLoader loader = new FXMLLoader(
+                    getClass().getResource("/com/mindforge/fxml/community-hub-dashboard.fxml"));
+            javafx.scene.Parent root = loader.load();
+            scene.setRoot(root);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     // ── Helpers ───────────────────────────────────────────────────────────────
 
     private VBox baseCard(double width) {

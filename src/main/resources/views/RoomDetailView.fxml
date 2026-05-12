@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.controllers.RoomDetailController"
+            styleClass="community-root">
+
+    <!-- Top Navbar -->
+    <top>
+        <HBox styleClass="top-navbar" alignment="CENTER_LEFT" style="-fx-padding: 15 30; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 5);">
+            <children>
+                <Label fx:id="roomNameLabel" text="Nom de la Salle" style="-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #6f42c1;"/>
+                <Pane HBox.hgrow="ALWAYS"/>
+                <HBox spacing="10">
+                    <children>
+                        <Button fx:id="leaveRoomButton" text="Quitter" onAction="#handleLeaveRoom" style="-fx-background-color: #f8d7da; -fx-text-fill: #dc3545; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 20;"/>
+                        <Button fx:id="backButton" text="← Salles" onAction="#handleBack" style="-fx-background-color: #f1f3f5; -fx-text-fill: #495057; -fx-font-weight: bold; -fx-background-radius: 8; -fx-padding: 8 20;"/>
+                    </children>
+                </HBox>
+            </children>
+        </HBox>
+    </top>
+
+    <!-- Sidebar: Participants & Info -->
+    <left>
+        <VBox prefWidth="320" spacing="20" style="-fx-background-color: white; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 10, 5, 0, 0);">
+            <children>
+                <VBox spacing="15" style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;">
+                    <children>
+                        <Label text="À PROPOS" style="-fx-font-weight: 900; -fx-font-size: 11px; -fx-text-fill: #adb5bd; -fx-letter-spacing: 1px;"/>
+                        <Label fx:id="roomDescriptionLabel" text="Description..." wrapText="true" style="-fx-font-size: 14px; -fx-text-fill: #495057;"/>
+                        <Separator style="-fx-opacity: 0.2;"/>
+                        <VBox spacing="10">
+                            <children>
+                                <VBox spacing="2">
+                                    <Label text="SUJET" style="-fx-font-size: 10px; -fx-font-weight: 800; -fx-text-fill: #adb5bd;"/>
+                                    <Label fx:id="roomSubjectLabel" text="-" style="-fx-text-fill: #212529; -fx-font-weight: 600;"/>
+                                </VBox>
+                                <VBox spacing="2">
+                                    <Label text="CRÉATEUR" style="-fx-font-size: 10px; -fx-font-weight: 800; -fx-text-fill: #adb5bd;"/>
+                                    <Label fx:id="roomCreatorLabel" text="-" style="-fx-text-fill: #212529; -fx-font-weight: 600;"/>
+                                </VBox>
+                                <VBox spacing="2">
+                                    <Label text="CAPACITÉ" style="-fx-font-size: 10px; -fx-font-weight: 800; -fx-text-fill: #adb5bd;"/>
+                                    <Label fx:id="roomCapacityLabel" text="-" style="-fx-text-fill: #212529; -fx-font-weight: 600;"/>
+                                </VBox>
+                            </children>
+                        </VBox>
+                    </children>
+                </VBox>
+
+                <VBox spacing="15" VBox.vgrow="ALWAYS">
+                    <children>
+                        <Label text="PARTICIPANTS" style="-fx-font-weight: 900; -fx-font-size: 11px; -fx-text-fill: #adb5bd; -fx-letter-spacing: 1px;"/>
+                        <ListView fx:id="participantsListView" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-border-width: 0; -fx-padding: 0;"/>
+                    </children>
+                </VBox>
+            </children>
+        </VBox>
+    </left>
+
+    <!-- Chat Area -->
+    <center>
+        <VBox spacing="0" style="-fx-background-color: #fdfdff;">
+            <children>
+                <ScrollPane fx:id="messagesScrollPane" fitToWidth="true" VBox.vgrow="ALWAYS" style="-fx-background-color: transparent; -fx-background: transparent; -fx-border-width: 0;">
+                    <content>
+                        <VBox fx:id="messagesVBox" spacing="15" style="-fx-padding: 30;"/>
+                    </content>
+                </ScrollPane>
+
+                <HBox spacing="15" alignment="CENTER_LEFT" style="-fx-padding: 25 40; -fx-background-color: white; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, -5);">
+                    <children>
+                        <HBox alignment="CENTER_LEFT" HBox.hgrow="ALWAYS" style="-fx-background-color: #f1f3f5; -fx-background-radius: 25; -fx-padding: 5 20;">
+                            <children>
+                                <TextField fx:id="messageField" HBox.hgrow="ALWAYS" promptText="Écrire un message..." style="-fx-background-color: transparent; -fx-font-size: 14px;"/>
+                                <Button fx:id="voiceButton" text="🎤" onAction="#handleVoiceAction" style="-fx-background-color: transparent; -fx-text-fill: #6f42c1; -fx-font-size: 18px; -fx-cursor: hand;"/>
+                            </children>
+                        </HBox>
+                        <Button fx:id="sendButton" text="Envoyer" onAction="#handleSendMessage" prefHeight="45" prefWidth="100" style="-fx-background-color: #6f42c1; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 25; -fx-cursor: hand;"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </center>
+
+</BorderPane>

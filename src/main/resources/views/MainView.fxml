@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.controllers.MainController"
+      spacing="0"
+      alignment="CENTER"
+      style="-fx-background-color: linear-gradient(to bottom right, #fdfdff, #f3f0ff);">
+
+    <children>
+        <VBox alignment="CENTER" spacing="30" maxWidth="500" styleClass="form-panel" style="-fx-padding: 50; -fx-background-radius: 40;">
+            <children>
+                <!-- Logo/Title Section -->
+                <VBox alignment="CENTER" spacing="5">
+                    <children>
+                        <Label text="MindForge"
+                               style="-fx-font-size: 48px; -fx-font-weight: 900; -fx-text-fill: linear-gradient(to right, #6f42c1, #8e44ad); -fx-letter-spacing: 2px;"/>
+                        <Label text="MODULE COMMUNAUTAIRE"
+                               style="-fx-text-fill: #808e9b; -fx-font-size: 14px; -fx-font-weight: 800; -fx-letter-spacing: 3px;"/>
+                    </children>
+                </VBox>
+
+                <HBox alignment="CENTER" spacing="10" styleClass="role-badge" style="-fx-padding: 10 25;">
+                    <children>
+                        <Label text="👤" style="-fx-font-size: 16px;"/>
+                        <Label fx:id="sessionLabel" text="Connecté : admin [Admin]" style="-fx-font-size: 14px;"/>
+                    </children>
+                </HBox>
+
+                <Separator styleClass="separator" style="-fx-max-width: 300;"/>
+
+                <!-- Main Action Hub -->
+                <VBox spacing="15" alignment="CENTER">
+                    <children>
+                        <Button fx:id="communityButton"
+                                text="🚀  ENTRER DANS LE HUB"
+                                prefWidth="350" prefHeight="65"
+                                onAction="#handleCommunityButton"
+                                styleClass="module-main-action" style="-fx-font-size: 18px; -fx-background-radius: 20;"/>
+                    </children>
+                </VBox>
+
+                <VBox spacing="12" alignment="CENTER">
+                    <children>
+                        <Label text="ACCÈS RAPIDE" styleClass="muted-label" style="-fx-font-weight: 900; -fx-font-size: 12px;"/>
+                        
+                        <HBox spacing="12" alignment="CENTER">
+                            <children>
+                                <Button fx:id="chatMessageButton" text="💬 Chat" prefWidth="110" prefHeight="45" onAction="#handleChatMessageButton" styleClass="secondary-button"/>
+                                <Button fx:id="claimButton" text="🎫 Support" prefWidth="110" prefHeight="45" onAction="#handleClaimButton" styleClass="secondary-button"/>
+                                <Button fx:id="sharedTaskButton" text="🏆 Défis" prefWidth="110" prefHeight="45" onAction="#handleSharedTaskButton" styleClass="secondary-button"/>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <Separator styleClass="separator" style="-fx-max-width: 300;"/>
+
+                <HBox spacing="12" alignment="CENTER">
+                    <children>
+                        <Button fx:id="exitButton" text="QUITTER L'APPLICATION" prefWidth="350" prefHeight="45" onAction="#handleExitButton" styleClass="danger-button" style="-fx-font-size: 13px; -fx-background-radius: 15;"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>

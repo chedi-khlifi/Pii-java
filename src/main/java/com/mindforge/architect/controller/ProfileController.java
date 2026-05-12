@@ -69,6 +69,11 @@ public class ProfileController implements Initializable {
 
     // ── Navigation handlers ───────────────────────────────────────────────────
     @FXML
+    private void goToDashboard() {
+        navigateTo("/com/mindforge/fxml/dashboard.fxml", "MindForge - Dashboard");
+    }
+
+    @FXML
     private void goToSocialHub() {
         navigateTo("/com/mindforge/fxml/social_hub.fxml", "MindForge - Social Hub");
     }

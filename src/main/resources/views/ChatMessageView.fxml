@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="com.example.controllers.ChatMessageController"
+      spacing="12"
+    style="-fx-background-color: linear-gradient(to bottom right, #0f1428, #121931 60%, #0d1325); -fx-padding: 18;">
+    
+    <children>
+        <Label text="Salles Virtuelles &amp; Messages de Chat" 
+             style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #ffffff;"/>
+        
+        <!-- Room selection and participant info -->
+        <HBox spacing="15" alignment="CENTER_LEFT"
+              styleClass="content-panel"
+              style="-fx-padding: 10 15;">
+            <children>
+                <VBox spacing="4">
+                    <children>
+                        <Label text="Salle Virtuelle :" style="-fx-font-weight: bold; -fx-text-fill: #dbe6f5;"/>
+                        <ComboBox fx:id="roomComboBox" 
+                                  prefWidth="200" 
+                                  promptText="Sélectionner salle"/>
+                    </children>
+                </VBox>
+                <VBox spacing="4">
+                    <children>
+                        <Label text="Expéditeur :" style="-fx-font-weight: bold; -fx-text-fill: #dbe6f5;"/>
+                        <ComboBox fx:id="senderComboBox" 
+                                  prefWidth="180" 
+                                  promptText="Sélectionner expéditeur"/>
+                    </children>
+                </VBox>
+                <Button fx:id="joinRoomBtn" text="Rejoindre" prefHeight="30" onAction="#handleJoinRoom"
+                    styleClass="secondary-button"
+                    style="-fx-background-color: #1f9d62;"/>
+                <Button fx:id="leaveRoomBtn" text="Quitter" prefHeight="30" onAction="#handleLeaveRoom"
+                    styleClass="danger-button"/>
+            </children>
+        </HBox>
+        
+        <!-- Messages table -->
+        <TableView fx:id="messageTable" 
+                   prefHeight="280" 
+                   style="-fx-border-color: #2a3350; -fx-border-width: 1;">
+            <columns>
+                <TableColumn fx:id="idColumn" text="ID" prefWidth="50"/>
+                <TableColumn fx:id="contentColumn" text="Contenu" prefWidth="300"/>
+                <TableColumn fx:id="senderColumn" text="Expéditeur" prefWidth="100"/>
+                <TableColumn fx:id="roomColumn" text="Salle" prefWidth="120"/>
+                <TableColumn fx:id="editedColumn" text="Modifié" prefWidth="80"/>
+                <TableColumn fx:id="createdAtColumn" text="Envoyé le" prefWidth="150"/>
+            </columns>
+            <placeholder><Label text="Aucun message trouvé. Sélectionnez une salle pour voir les messages."/></placeholder>
+        </TableView>
+        
+        <!-- Message form -->
+        <VBox fx:id="formContainer" 
+              spacing="10" 
+              styleClass="form-panel"
+              style="-fx-padding: 15;">
+            
+            <children>
+                <Label text="Envoyer un Message" 
+                      style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #e6edf7;"/>
+                
+                <VBox spacing="5">
+                    <children>
+                        <Label text="Contenu du message (max 1000 chars) :" style="-fx-font-weight: bold; -fx-text-fill: #c8d6e8;"/>
+                        <TextArea fx:id="contentTextArea" 
+                                  prefHeight="80" 
+                                  prefWidth="600" 
+                                  promptText="Écrivez votre message ici..."
+                                  wrapText="true"
+                                  style="-fx-border-color: #2f3b4e; -fx-border-width: 1;"/>
+                    </children>
+                </VBox>
+                
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <children>
+                        <Button fx:id="addButton" text="Envoyer" prefWidth="120" prefHeight="32" onAction="#handleAddButton"/>
+                        <Button fx:id="updateButton" text="Modifier" prefWidth="110" prefHeight="32" onAction="#handleUpdateButton"/>
+                        <Button fx:id="deleteButton" text="Supprimer" prefWidth="120" prefHeight="32" onAction="#handleDeleteButton"/>
+                        <Button fx:id="clearButton" text="Effacer" prefWidth="80" prefHeight="32" onAction="#handleClearButton"/>
+                        <Button fx:id="backButton" text="← Retour" prefWidth="90" prefHeight="32" onAction="#handleBackButton"/>
+                    </children>
+                </HBox>
+            </children>
+        </VBox>
+    </children>
+</VBox>
