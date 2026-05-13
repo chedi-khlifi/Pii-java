@@ -14,222 +14,223 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane fx:controller="tn.esprit.GuardianController"
-            stylesheets="@guardian-cards.css"
-            style="-fx-background-color: #f5f5fa;"
+            style="-fx-background-color: #f0f2f5;"
             xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1">
 
     <!-- ══ LEFT SIDEBAR ═════════════════════════════════════════════ -->
     <left>
-        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent #e1e3ef transparent transparent; -fx-border-width: 0 1 0 0;"
-              minWidth="210" maxWidth="210" spacing="5">
-            <padding><Insets top="14" right="12" bottom="14" left="12"/></padding>
+        <VBox style="-fx-background-color: #ffffff; -fx-border-color: transparent #e5e7eb transparent transparent; -fx-border-width: 0 1 0 0;"
+              minWidth="200" maxWidth="200" spacing="4">
+            <padding><Insets top="16" right="12" bottom="16" left="12"/></padding>
 
-            <HBox alignment="CENTER_LEFT" spacing="8">
-                <padding><Insets top="8" right="10" bottom="10" left="10"/></padding>
-                <Label text="🔥" style="-fx-font-size: 20px;"/>
-                <Label text="MindForge" style="-fx-font-size: 22px; -fx-font-weight: 700; -fx-text-fill: #21273b;"/>
+            <HBox alignment="CENTER_LEFT" spacing="8" style="-fx-padding: 0 0 16 4;">
+                <Label text="🔥" style="-fx-font-size: 16px;"/>
+                <Label text="MindForge" style="-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #111827;"/>
             </HBox>
 
-            <VBox spacing="5">
-                <Button text="📁  Planner"   onAction="#onOpenPlanner"
-                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="👥  Community" onAction="#onOpenCommunity"
-                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="📚  Guardian"  onAction="#onGoHub"
-                        style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: 700; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="💼  Careers"   onAction="#onIntegrationPlaceholder"
-                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-                <Button text="📊  Analyst"   onAction="#onIntegrationPlaceholder"
-                        style="-fx-background-color: transparent; -fx-text-fill: #6d748a; -fx-font-weight: 600; -fx-padding: 10 12; -fx-background-radius: 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
-            </VBox>
+            <Button text="📁  Planner"   onAction="#onOpenPlanner"
+                    style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-padding: 8 10; -fx-background-radius: 6; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
+            <Button text="👥  Community" onAction="#onOpenCommunity"
+                    style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-padding: 8 10; -fx-background-radius: 6; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
+            <Button text="📚  Guardian"  onAction="#onGoHub"
+                    style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-padding: 8 10; -fx-background-radius: 6; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
+            <Button text="💼  Careers"   onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-padding: 8 10; -fx-background-radius: 6; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
+            <Button text="📊  Analyst"   onAction="#onIntegrationPlaceholder"
+                    style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 13px; -fx-padding: 8 10; -fx-background-radius: 6; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
 
-            <Region minHeight="20"/>
-
-            <Label text="QUICK LINKS" style="-fx-text-fill: #a0a5b8; -fx-font-weight: 700; -fx-font-size: 11px;">
-                <padding><Insets bottom="6" left="8" right="8" top="0"/></padding>
-            </Label>
+            <Region minHeight="16"/>
+            <Label text="QUICK LINKS" style="-fx-text-fill: #9ca3af; -fx-font-size: 10px; -fx-font-weight: 700; -fx-padding: 0 0 4 4;"/>
             <Button text="Contact Support" onAction="#onIntegrationPlaceholder"
-                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #6b7280; -fx-font-size: 12px; -fx-padding: 6 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
             <Button text="Friends"         onAction="#onIntegrationPlaceholder"
-                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #6b7280; -fx-font-size: 12px; -fx-padding: 6 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
             <Button text="Leaderboard"     onAction="#onIntegrationPlaceholder"
-                    style="-fx-background-color: transparent; -fx-text-fill: #6a7186; -fx-font-size: 13px; -fx-padding: 7 10; -fx-background-radius: 8; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 180;"/>
+                    style="-fx-background-color: transparent; -fx-text-fill: #6b7280; -fx-font-size: 12px; -fx-padding: 6 10; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 176;"/>
         </VBox>
     </left>
 
     <!-- ══ CENTER ════════════════════════════════════════════════════ -->
     <center>
-        <ScrollPane fitToWidth="true" styleClass="guardian-main-scroll">
+        <ScrollPane fitToWidth="true" style="-fx-background-color: #f0f2f5; -fx-background: #f0f2f5; -fx-border-color: transparent;">
             <content>
-                <VBox spacing="14" style="-fx-background-color: #f5f5fa;">
-                    <padding><Insets top="16" right="16" bottom="16" left="16"/></padding>
+                <VBox spacing="16" style="-fx-background-color: #f0f2f5; -fx-padding: 16 20 24 20;">
 
                     <!-- Gradient hero banner -->
-                    <VBox spacing="5" styleClass="guardian-hero guardian-hero-focus">
+                    <VBox style="-fx-background-color: linear-gradient(to right, #ec4899, #8b5cf6 50%, #06b6d4); -fx-background-radius: 12;" spacing="4">
                         <padding><Insets top="20" right="24" bottom="20" left="24"/></padding>
-                        <Label text="Focus Timer" styleClass="guardian-hero-title"/>
-                        <Label text="Run Pomodoro sessions linked to your tasks." styleClass="guardian-hero-subtitle"/>
+                        <Label text="Focus Timer"
+                               style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold;"/>
+                        <Label text="Run Pomodoro sessions linked to your tasks."
+                               style="-fx-text-fill: white; -fx-opacity: 0.9; -fx-font-size: 13px;"/>
                     </VBox>
 
-                    <!-- Tab bar -->
-                    <HBox spacing="8">
-                        <Button text="Focus Timer"      onAction="#onGoFocus"      styleClass="guardian-tab-button guardian-tab-selected"/>
-                        <Button text="Focus Stats"      onAction="#onGoFocusStats" styleClass="guardian-tab-button"/>
-                        <Button text="Virtual Rooms"    onAction="#onGoRooms"      styleClass="guardian-tab-button"/>
-                        <Button text="Resource Library" onAction="#onGoLibrary"    styleClass="guardian-tab-button"/>
-                    </HBox>
+                    <!-- ── Main Pomodoro card ── -->
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-padding: 20;" spacing="14">
 
-                    <Label fx:id="moduleSnapshotLabel" text="Guardian module ready." styleClass="guardian-snapshot"/>
-
-                    <!-- ── Pomodoro Timer Card ── -->
-                    <VBox spacing="12" styleClass="guardian-panel">
-
-                        <!-- Header row: badge + stats pills -->
+                        <!-- Header: Pomodoro badge + stats pills + View my stats -->
                         <HBox alignment="CENTER_LEFT" spacing="10">
                             <Label text="🍅 Pomodoro"
-                                   style="-fx-background-color: #EEEDFE; -fx-text-fill: #534AB7; -fx-background-radius: 20; -fx-padding: 3 10; -fx-font-size: 12px; -fx-font-weight: bold;"/>
+                                   style="-fx-background-color: #ede9fe; -fx-text-fill: #7c3aed; -fx-background-radius: 20; -fx-padding: 3 10; -fx-font-size: 11px; -fx-font-weight: bold;"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Label fx:id="labelTodaySessions" text="Today: 0 sessions"
-                                   style="-fx-background-color: #e8f4fd; -fx-text-fill: #1565C0; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px;"/>
+                                   style="-fx-background-color: #dbeafe; -fx-text-fill: #1e40af; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px;"/>
                             <Label fx:id="labelWeekMin" text="This week: 0 min"
-                                   style="-fx-background-color: #e8f4fd; -fx-text-fill: #1565C0; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px;"/>
+                                   style="-fx-background-color: #ede9fe; -fx-text-fill: #5b21b6; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px;"/>
                             <Label fx:id="labelTotalMin" text="Total: 0 min"
-                                   style="-fx-background-color: #e8f4fd; -fx-text-fill: #1565C0; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px;"/>
+                                   style="-fx-background-color: #dbeafe; -fx-text-fill: #1e40af; -fx-background-radius: 12; -fx-padding: 3 10; -fx-font-size: 11px;"/>
                             <Button text="📊 View my stats" onAction="#onGoFocusStats"
-                                    style="-fx-background-color: transparent; -fx-text-fill: #534AB7; -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 3 8;"/>
+                                    style="-fx-background-color: transparent; -fx-text-fill: #2563eb; -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 3 8;"/>
                         </HBox>
 
                         <Label text="Task Focus Sessions"
-                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                               style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
                         <Label text="Pick a task, start the timer, and save your completed focus session."
-                               style="-fx-font-size: 13px; -fx-text-fill: #6d748a;"/>
+                               style="-fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
 
                         <!-- Task + Duration row -->
-                        <HBox spacing="12" alignment="CENTER_LEFT">
-                            <VBox spacing="4" HBox.hgrow="ALWAYS">
-                                <Label text="Task" styleClass="guardian-input-label"/>
-                                <ComboBox fx:id="focusTaskField" promptText="-- Select a task --" maxWidth="Infinity"/>
+                        <HBox spacing="16" alignment="CENTER_LEFT">
+                            <VBox spacing="6" HBox.hgrow="ALWAYS">
+                                <Label text="Task" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                                <ComboBox fx:id="focusTaskField" promptText="-- Select a task --" maxWidth="Infinity"
+                                          style="-fx-font-size: 13px; -fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6;"/>
                             </VBox>
-                            <VBox spacing="4">
-                                <Label text="Duration (auto by priority)" styleClass="guardian-input-label"/>
+                            <VBox spacing="6">
+                                <Label text="Duration (auto by priority)" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
                                 <HBox spacing="6" alignment="CENTER_LEFT">
-                                    <TextField fx:id="focusDurationField" text="25" prefWidth="80"/>
+                                    <TextField fx:id="focusDurationField" text="25" prefWidth="80"
+                                               style="-fx-font-size: 13px; -fx-background-color: white; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-background-radius: 6; -fx-padding: 7 10;"/>
                                     <Button text="↺" onAction="#onFocusAutoFillDuration"
-                                            style="-fx-background-color: #f0f0f0; -fx-background-radius: 6; -fx-padding: 6 10; -fx-cursor: hand;"/>
+                                            style="-fx-background-color: #f3f4f6; -fx-background-radius: 6; -fx-padding: 7 10; -fx-cursor: hand; -fx-font-size: 13px;"/>
                                 </HBox>
                             </VBox>
-                            <VBox spacing="4" alignment="BOTTOM_RIGHT">
+                            <VBox spacing="6" alignment="BOTTOM_RIGHT">
                                 <Label text=""/>
                                 <Button text="Create task" onAction="#onIntegrationPlaceholder"
-                                        style="-fx-background-color: transparent; -fx-text-fill: #534AB7; -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 6 10;"/>
+                                        style="-fx-background-color: transparent; -fx-text-fill: #2563eb; -fx-font-size: 12px; -fx-cursor: hand; -fx-padding: 7 10;"/>
                             </VBox>
                         </HBox>
 
                         <!-- Big timer display -->
-                        <StackPane alignment="CENTER" style="-fx-padding: 20 0 10 0;">
-                            <VBox alignment="CENTER" spacing="6">
+                        <StackPane alignment="CENTER" style="-fx-padding: 16 0 8 0;">
+                            <VBox alignment="CENTER" spacing="8">
                                 <Label fx:id="timerDisplay" text="25:00"
-                                       style="-fx-font-size: 52px; -fx-font-weight: bold; -fx-text-fill: #534AB7;"/>
+                                       style="-fx-font-size: 56px; -fx-font-weight: bold; -fx-text-fill: #4f46e5;"/>
                                 <Label fx:id="timerStatus" text="Ready to focus"
-                                       style="-fx-font-size: 13px; -fx-text-fill: #6d748a;"/>
+                                       style="-fx-font-size: 13px; -fx-text-fill: #6b7280;"/>
                             </VBox>
                         </StackPane>
 
-                        <!-- Timer controls -->
+                        <!-- Timer control buttons -->
                         <HBox spacing="10" alignment="CENTER">
-                            <Button text="▶ Start"        onAction="#onFocusStart"       styleClass="guardian-action-success"/>
-                            <Button text="⏸ Pause"        onAction="#onFocusPause"       styleClass="guardian-action-warning"/>
-                            <Button text="↺ Reset"        onAction="#onFocusReset"       styleClass="guardian-action-ghost"/>
-                            <Button text="💾 Save session" onAction="#onFocusCreate"      styleClass="guardian-action-primary"/>
+                            <Button text="▶ Start"         onAction="#onFocusStart"
+                                    style="-fx-background-color: #16a34a; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                            <Button text="⏸ Pause"         onAction="#onFocusPause"
+                                    style="-fx-background-color: #d97706; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"/>
+                            <Button text="↺ Reset"         onAction="#onFocusReset"
+                                    style="-fx-background-color: white; -fx-text-fill: #374151; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 9 20; -fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-cursor: hand;"/>
+                            <Button text="💾 Save session" onAction="#onFocusCreate"
+                                    style="-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 13px; -fx-padding: 10 20; -fx-background-radius: 6; -fx-cursor: hand;"/>
                         </HBox>
 
                         <CheckBox fx:id="markDoneOnSave" text="Mark this task as done when saving this session"
-                                  style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
+                                  style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
                     </VBox>
 
-                    <!-- ── AI Focus Tips / Daily Plan / Weekly Review ── -->
-                    <VBox spacing="12" styleClass="guardian-panel">
-                        <HBox spacing="12">
-                            <!-- AI Focus Tips -->
-                            <VBox spacing="8" HBox.hgrow="ALWAYS"
-                                  style="-fx-background-color: #f8f9ff; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12;">
-                                <HBox alignment="CENTER_LEFT">
-                                    <Label text="AI Focus Tips" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
-                                    <Region HBox.hgrow="ALWAYS"/>
-                                    <Button text="↺ Refresh" onAction="#onAiFocusTips" styleClass="guardian-action-ghost"/>
-                                </HBox>
-                                <Label fx:id="aiFocusTipsLabel" text="Select a task to load AI tips."
-                                       wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
-                                <HBox spacing="8">
-                                    <Button text="👍" onAction="#onIntegrationPlaceholder" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px;"/>
-                                    <Button text="👎" onAction="#onIntegrationPlaceholder" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px;"/>
-                                </HBox>
-                            </VBox>
-
-                            <!-- AI Daily Plan -->
-                            <VBox spacing="8" HBox.hgrow="ALWAYS"
-                                  style="-fx-background-color: #f8f9ff; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12;">
-                                <HBox alignment="CENTER_LEFT">
-                                    <Label text="AI Daily Plan" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
-                                    <Region HBox.hgrow="ALWAYS"/>
-                                    <Button text="↺ Refresh" onAction="#onDailyPlan" styleClass="guardian-action-ghost"/>
-                                </HBox>
-                                <Label fx:id="aiDailyPlanLabel" text=""
-                                       wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
-                                <HBox spacing="8">
-                                    <Button text="👍" onAction="#onIntegrationPlaceholder" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px;"/>
-                                    <Button text="👎" onAction="#onIntegrationPlaceholder" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px;"/>
-                                </HBox>
-                            </VBox>
-                        </HBox>
-
-                        <!-- AI Weekly Review (full width) -->
-                        <VBox spacing="8"
-                              style="-fx-background-color: #f8f9ff; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 12;">
+                    <!-- ── AI cards row (Focus Tips + Daily Plan) ── -->
+                    <HBox spacing="16">
+                        <!-- AI Focus Tips -->
+                        <VBox spacing="10" HBox.hgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-padding: 16;">
                             <HBox alignment="CENTER_LEFT">
-                                <Label text="AI Weekly Review" style="-fx-font-size: 13px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                                <Label text="AI Focus Tips"
+                                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
                                 <Region HBox.hgrow="ALWAYS"/>
-                                <Button text="↺ Refresh" onAction="#onWeeklyReview" styleClass="guardian-action-ghost"/>
+                                <Button text="↺ Refresh" onAction="#onAiFocusTips"
+                                        style="-fx-background-color: white; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-padding: 4 10; -fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-cursor: hand;"/>
                             </HBox>
-                            <Label fx:id="aiWeeklyReviewLabel" text=""
-                                   wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #6d748a;"/>
-                            <HBox spacing="8">
-                                <Button text="👍" onAction="#onIntegrationPlaceholder" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px;"/>
-                                <Button text="👎" onAction="#onIntegrationPlaceholder" style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px;"/>
+                            <Label fx:id="aiFocusTipsLabel" text="Select a task to load AI tips."
+                                   wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                            <HBox spacing="6">
+                                <Label text="Was this helpful?" style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
+                                <Button text="👍" onAction="#onIntegrationPlaceholder"
+                                        style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px; -fx-padding: 0 4;"/>
+                                <Button text="👎" onAction="#onIntegrationPlaceholder"
+                                        style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px; -fx-padding: 0 4;"/>
                             </HBox>
                         </VBox>
+
+                        <!-- AI Daily Plan -->
+                        <VBox spacing="10" HBox.hgrow="ALWAYS"
+                              style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-padding: 16;">
+                            <HBox alignment="CENTER_LEFT">
+                                <Label text="AI Daily Plan"
+                                       style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Button text="↺ Refresh" onAction="#onDailyPlan"
+                                        style="-fx-background-color: white; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-padding: 4 10; -fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-cursor: hand;"/>
+                            </HBox>
+                            <Label fx:id="aiDailyPlanLabel" text=""
+                                   wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                        </VBox>
+                    </HBox>
+
+                    <!-- ── AI Weekly Review ── -->
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-padding: 16;" spacing="10">
+                        <HBox alignment="CENTER_LEFT">
+                            <Label text="AI Weekly Review"
+                                   style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Button text="↺ Refresh" onAction="#onWeeklyReview"
+                                    style="-fx-background-color: white; -fx-text-fill: #374151; -fx-font-size: 11px; -fx-padding: 4 10; -fx-background-radius: 6; -fx-border-color: #d1d5db; -fx-border-radius: 6; -fx-cursor: hand;"/>
+                        </HBox>
+                        <Label fx:id="aiWeeklyReviewLabel" text=""
+                               wrapText="true" style="-fx-font-size: 12px; -fx-text-fill: #6b7280;"/>
+                        <HBox spacing="6">
+                            <Label text="Was this helpful?" style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
+                            <Button text="👍" onAction="#onIntegrationPlaceholder"
+                                    style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px; -fx-padding: 0 4;"/>
+                            <Button text="👎" onAction="#onIntegrationPlaceholder"
+                                    style="-fx-background-color: transparent; -fx-cursor: hand; -fx-font-size: 14px; -fx-padding: 0 4;"/>
+                        </HBox>
                     </VBox>
 
                     <!-- ── Top Focused Tasks ── -->
-                    <VBox spacing="10" styleClass="guardian-panel">
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-padding: 20;" spacing="12">
                         <HBox alignment="CENTER_LEFT">
                             <Label text="Top Focused Tasks"
-                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Label text="By total minutes"
-                                   style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8;"/>
+                                   style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
                         </HBox>
-                        <FlowPane fx:id="focusUserStatsCards" hgap="10" vgap="10" prefWrapLength="950" styleClass="guardian-cards-flow"/>
+                        <FlowPane fx:id="focusUserStatsCards" hgap="12" vgap="10" prefWrapLength="900"/>
                     </VBox>
 
-                    <!-- ── Recent Focus Sessions ── -->
-                    <VBox spacing="10" styleClass="guardian-panel">
+                    <!-- ── Recent Focus Sessions table ── -->
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 12; -fx-border-color: #e5e7eb; -fx-border-radius: 12; -fx-padding: 20;" spacing="12">
                         <HBox alignment="CENTER_LEFT">
                             <Label text="Recent Focus Sessions"
-                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #21273b;"/>
+                                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
                             <Region HBox.hgrow="ALWAYS"/>
                             <Label fx:id="sessionCountLabel" text="Latest 12 entries"
-                                   style="-fx-font-size: 11px; -fx-text-fill: #a0a5b8;"/>
+                                   style="-fx-font-size: 11px; -fx-text-fill: #9ca3af;"/>
                         </HBox>
-                        <ScrollPane fitToWidth="true" prefViewportHeight="260" styleClass="guardian-card-scroll">
-                            <content>
-                                <FlowPane fx:id="focusCards" hgap="12" vgap="12" prefWrapLength="980" styleClass="guardian-cards-flow"/>
-                            </content>
-                        </ScrollPane>
+                        <!-- Table header -->
+                        <HBox style="-fx-border-color: transparent transparent #e5e7eb transparent; -fx-border-width: 0 0 1 0; -fx-padding: 0 0 8 0;">
+                            <Label text="Task"      style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" HBox.hgrow="ALWAYS" minWidth="200"/>
+                            <Label text="Duration"  style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" minWidth="120"/>
+                            <Label text="Timestamp" style="-fx-font-size: 12px; -fx-font-weight: bold; -fx-text-fill: #374151;" minWidth="160"/>
+                        </HBox>
+                        <!-- Session rows rendered by controller -->
+                        <FlowPane fx:id="focusCards" hgap="0" vgap="0" prefWrapLength="9999"/>
                     </VBox>
 
-                    <VBox fx:id="focusMessageContainer" spacing="5"/>
-                    <Label fx:id="focusMessageLabel" text="" wrapText="true" styleClass="guardian-message guardian-message-muted"/>
+                    <!-- Hidden controller fields -->
+                    <TextField fx:id="focusIdField"    managed="false" visible="false"/>
+                    <VBox fx:id="focusMessageContainer" spacing="0" managed="false" visible="false"/>
+                    <Label fx:id="focusMessageLabel" text="" managed="false" visible="false"/>
+
                 </VBox>
             </content>
         </ScrollPane>
@@ -237,36 +238,47 @@
 
     <!-- ══ RIGHT SIDEBAR ════════════════════════════════════════════ -->
     <right>
-        <VBox style="-fx-background-color: #f5f5fa; -fx-border-color: transparent transparent transparent #e1e3ef; -fx-border-width: 0 0 0 1;"
-              minWidth="240" maxWidth="240" spacing="12">
-            <padding><Insets bottom="12" left="12" right="12" top="12"/></padding>
+        <VBox style="-fx-background-color: #ffffff; -fx-border-color: transparent transparent transparent #e5e7eb; -fx-border-width: 0 0 0 1;"
+              minWidth="220" maxWidth="220" spacing="20">
+            <padding><Insets top="20" right="16" bottom="20" left="16"/></padding>
 
-            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
-                <Label text="Network" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
-                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
-                </Label>
-                <VBox spacing="5">
-                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
-                    <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder"
-                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
-                    <Button text="Workspace Home" onAction="#onIntegrationPlaceholder"
-                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
-                    <Button text="Friends Directory" onAction="#onIntegrationPlaceholder"
-                            style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
-                </VBox>
+            <!-- Network -->
+            <VBox spacing="8">
+                <Label text="Network" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Button text="Workspace Network Hub" onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                <Button text="Workspace Home"        onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                <Button text="Friends Directory"     onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
             </VBox>
 
-            <VBox style="-fx-background-color: white; -fx-border-color: #e0e3ef; -fx-border-radius: 10; -fx-background-radius: 10;" spacing="0">
-                <Label text="Shortcuts" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #565f79;">
-                    <padding><Insets bottom="10" left="10" right="10" top="10"/></padding>
-                </Label>
-                <VBox spacing="5">
-                    <padding><Insets bottom="8" left="8" right="8" top="0"/></padding>
-                    <Button text="Focus Timer"   onAction="#onGoFocus"              style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
-                    <Button text="Virtual Rooms" onAction="#onGoRooms"              style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
-                    <Button text="Leaderboard"   onAction="#onIntegrationPlaceholder" style="-fx-background-color: #fbfcff; -fx-border-color: #ebedf7; -fx-border-radius: 8; -fx-background-radius: 8; -fx-padding: 8; -fx-text-fill: #59607a; -fx-font-size: 12px; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 210;"/>
-                </VBox>
+            <Region style="-fx-background-color: #e5e7eb; -fx-pref-height: 1; -fx-max-height: 1;"/>
+
+            <!-- Shortcuts -->
+            <VBox spacing="8">
+                <Label text="Shortcuts" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Button text="Focus Timer"   onAction="#onGoFocus"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                <Button text="Virtual Rooms" onAction="#onGoRooms"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                <Button text="Leaderboard"   onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
             </VBox>
+
+            <Region style="-fx-background-color: #e5e7eb; -fx-pref-height: 1; -fx-max-height: 1;"/>
+
+            <!-- Modules -->
+            <VBox spacing="8">
+                <Label text="Modules" style="-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;"/>
+                <Button text="Virtual Rooms"    onAction="#onGoRooms"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                <Button text="Careers Center ▾" onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+                <Button text="Profile"          onAction="#onIntegrationPlaceholder"
+                        style="-fx-background-color: transparent; -fx-text-fill: #374151; -fx-font-size: 12px; -fx-padding: 6 0; -fx-cursor: hand; -fx-alignment: CENTER_LEFT; -fx-min-width: 188;"/>
+            </VBox>
+
         </VBox>
     </right>
 

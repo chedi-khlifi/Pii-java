@@ -1988,9 +1988,10 @@ public class GuardianController {
 
         VBox card = new VBox(6, headerRow, subjectTag, descLabel, metaLabel, viewBtn);
         card.setStyle("-fx-background-color: white; -fx-border-color: #e5e7eb;" +
-                "-fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14; -fx-cursor: hand;");
-        card.setMinWidth(280);
-        card.setPrefWidth(320);
+                "-fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 16; -fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);");
+        card.setPrefWidth(300);
+        card.setMaxWidth(340);
         return card;
     }
 
@@ -2002,22 +2003,26 @@ public class GuardianController {
         Label taskLabel = new Label(taskTitle);
         taskLabel.setStyle("-fx-text-fill: #111827; -fx-font-size: 13px;");
         taskLabel.setMinWidth(200);
+        HBox.setHgrow(taskLabel, Priority.ALWAYS);
 
         Label durationLabel = new Label(duration);
         durationLabel.setStyle("-fx-text-fill: #374151; -fx-font-size: 13px;");
-        durationLabel.setMinWidth(100);
+        durationLabel.setMinWidth(120);
 
         Label tsLabel = new Label(timestamp);
         tsLabel.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 12px;");
+        tsLabel.setMinWidth(160);
 
-        HBox row = new HBox(16, taskLabel, durationLabel, tsLabel);
+        HBox row = new HBox(0, taskLabel, durationLabel, tsLabel);
         row.setAlignment(Pos.CENTER_LEFT);
         row.setStyle("-fx-border-color: transparent transparent #f3f4f6 transparent;" +
-                "-fx-border-width: 0 0 1 0; -fx-padding: 8 4; -fx-cursor: hand;");
+                "-fx-border-width: 0 0 1 0; -fx-padding: 10 4;");
         row.setMaxWidth(Double.MAX_VALUE);
+        row.setPrefWidth(Double.MAX_VALUE);
 
         VBox wrapper = new VBox(row);
         wrapper.setMaxWidth(Double.MAX_VALUE);
+        wrapper.setPrefWidth(Double.MAX_VALUE);
         return wrapper;
     }
 
@@ -2026,50 +2031,44 @@ public class GuardianController {
      * type badge, title, subject, description, uploader + download count + date, Download button.
      */
     private VBox buildResourceCard(Resource resource, boolean isOwner) {
-        // Type badge
-        Label typeBadge = new Label(resource.type() == null ? "file" : resource.type().toUpperCase());
+        // Type badge — matches screenshot: small blue "PDF" badge + grey "Manual" badge
+        Label typeBadge = new Label(resource.type() == null ? "FILE" : resource.type().toUpperCase());
         typeBadge.setStyle("-fx-background-color: #dbeafe; -fx-text-fill: #1e40af;" +
-                "-fx-background-radius: 4; -fx-padding: 2 6; -fx-font-size: 10px; -fx-font-weight: bold;");
+                "-fx-background-radius: 4; -fx-padding: 2 7; -fx-font-size: 10px; -fx-font-weight: bold;");
 
-        // Manual badge (non-AI)
         Label manualBadge = new Label("Manual");
-        manualBadge.setStyle("-fx-background-color: #f3f4f6; -fx-text-fill: #374151;" +
-                "-fx-background-radius: 4; -fx-padding: 2 6; -fx-font-size: 10px;");
+        manualBadge.setStyle("-fx-background-color: #f3f4f6; -fx-text-fill: #6b7280;" +
+                "-fx-background-radius: 4; -fx-padding: 2 7; -fx-font-size: 10px;");
 
         HBox badges = new HBox(4, typeBadge, manualBadge);
 
-        // Title
+        // Title — bold, dark
         String titleText = resource.title() == null || resource.title().isBlank()
                 ? "Untitled Resource" : resource.title();
         Label titleLabel = new Label(titleText);
         titleLabel.setStyle("-fx-font-size: 14px; -fx-font-weight: bold; -fx-text-fill: #111827;");
         titleLabel.setWrapText(true);
 
-        // Subject placeholder
+        // Subject — grey small text (matches "Mathematics" in screenshot)
         Label subjectLabel = new Label("No subject assigned");
         subjectLabel.setStyle("-fx-text-fill: #9ca3af; -fx-font-size: 11px;");
 
-        // Description (truncated)
+        // Description truncated
         String desc = resource.description() == null ? "" : resource.description();
-        if (desc.length() > 80) desc = desc.substring(0, 80) + "…";
-        Label descLabel = new Label(desc);
+        if (desc.length() > 60) desc = desc.substring(0, 60) + "…";
+        Label descLabel = new Label(desc.isBlank() ? titleText + "..." : desc);
         descLabel.setStyle("-fx-text-fill: #374151; -fx-font-size: 12px;");
         descLabel.setWrapText(true);
 
-        // Meta: uploader · downloads · date
-        String dateStr = resource.createdAt() == null ? "-"
-                : resource.createdAt().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        // Meta row — matches screenshot: uploader email · download count
         String uploaderStr = isOwner ? "me" : "uploader #" + resource.uploaderId();
-        Label metaLabel = new Label(
-                "👤 " + uploaderStr +
-                "  ⬇ " + resource.downloadCount() +
-                "  📅 " + dateStr);
-        metaLabel.setStyle("-fx-text-fill: #6b7280; -fx-font-size: 11px;");
+        Label metaLabel = new Label("👤 " + uploaderStr + "  ⬇ " + resource.downloadCount());
+        metaLabel.setStyle("-fx-text-fill: #9ca3af; -fx-font-size: 11px;");
 
-        // Download button
+        // Download button — blue, matches screenshot
         Button downloadBtn = new Button("⬇ Download");
-        downloadBtn.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white;" +
-                "-fx-background-radius: 6; -fx-padding: 6 14; -fx-font-size: 12px; -fx-cursor: hand;");
+        downloadBtn.setStyle("-fx-background-color: #2563eb; -fx-text-fill: white; -fx-font-weight: bold;" +
+                "-fx-background-radius: 6; -fx-padding: 7 16; -fx-font-size: 12px; -fx-cursor: hand;");
         downloadBtn.setOnAction(e -> {
             try {
                 resourceService.incrementDownloadCount(resource.id());
@@ -2082,9 +2081,10 @@ public class GuardianController {
 
         VBox card = new VBox(6, badges, titleLabel, subjectLabel, descLabel, metaLabel, downloadBtn);
         card.setStyle("-fx-background-color: white; -fx-border-color: #e5e7eb;" +
-                "-fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 14; -fx-cursor: hand;");
-        card.setMinWidth(260);
-        card.setPrefWidth(300);
+                "-fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 16; -fx-cursor: hand;" +
+                "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);");
+        card.setPrefWidth(280);
+        card.setMaxWidth(320);
         return card;
     }
 

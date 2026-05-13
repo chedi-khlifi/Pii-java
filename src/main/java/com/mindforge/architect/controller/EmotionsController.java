@@ -73,7 +73,21 @@ public class EmotionsController implements Initializable {
     private Rect                     lastFace;
 
     // ── Groq ──────────────────────────────────────────────────────────────────
-    private static final String GROQ_API_KEY = "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";
+    private static final String GROQ_API_KEY = resolveGroqKey();
+    private static String resolveGroqKey() {
+        String env = System.getenv("GROQ_API_KEY");
+        if (env != null && !env.isBlank()) return env.trim();
+        try (java.io.InputStream is = EmotionsController.class
+                .getResourceAsStream("/config.properties")) {
+            if (is != null) {
+                java.util.Properties p = new java.util.Properties();
+                p.load(is);
+                String val = p.getProperty("groq.api.key", "");
+                if (!val.isBlank()) return val.trim();
+            }
+        } catch (Exception ignored) {}
+        return "";
+    }
     private static final String GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
     private static final String GROQ_MODEL   = "llama-3.3-70b-versatile";
     private final HttpClient httpClient = HttpClient.newBuilder()
