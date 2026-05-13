@@ -30,14 +30,20 @@
             <Region HBox.hgrow="ALWAYS"/>
 
             <!-- Nav Links -->
-            <Button fx:id="btnHome"        text="Home"          styleClass="nav-btn" onAction="#onHome"/>
-            <Button fx:id="btnAbout"       text="About"         styleClass="nav-btn" onAction="#onAbout"/>
-            <Button fx:id="btnWorkspace"   text="Workspace"     styleClass="nav-btn" onAction="#onWorkspace"/>
-            <Button fx:id="btnLeaderboard" text="Leader Board"  styleClass="nav-btn" onAction="#onLeaderboard"/>
-            <Button fx:id="btnQuotes"      text="Quotes"        styleClass="nav-btn" onAction="#onQuotes"/>
+            <Button fx:id="btnHome"        text="Home"         onAction="#onHome"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;"/>
+            <Button fx:id="btnAbout"       text="About"        onAction="#onAbout"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;"/>
+            <Button fx:id="btnWorkspace"   text="Workspace"    onAction="#onWorkspace"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;"/>
+            <Button fx:id="btnLeaderboard" text="Leader Board" onAction="#onLeaderboard"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;"/>
+            <Button fx:id="btnQuotes"      text="Quotes"       onAction="#onQuotes"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;"/>
 
             <!-- Community Menu -->
-            <MenuButton text="Community" styleClass="nav-btn nav-menu-btn">
+            <MenuButton text="Community"
+                        style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;">
                 <items>
                     <MenuItem fx:id="menuCommunityHub"       text="Community Hub"       onAction="#onCommunityHub"/>
                     <MenuItem fx:id="menuChallengeInbox"     text="Received Challenges" onAction="#onChallengeInbox"/>
@@ -52,7 +58,8 @@
             </MenuButton>
 
             <!-- Careers Center Menu -->
-            <MenuButton text="Careers Center" styleClass="nav-btn nav-menu-btn">
+            <MenuButton text="Careers Center"
+                        style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;">
                 <items>
                     <MenuItem fx:id="menuBrowseOpportunities"  text="Browse Opportunities"  onAction="#onBrowseOpportunities"/>
                     <MenuItem fx:id="menuCompanies"            text="Companies"              onAction="#onCompanies"/>
@@ -66,7 +73,8 @@
             </MenuButton>
 
             <!-- Profile Menu -->
-            <MenuButton fx:id="menuProfile" text="Profile" styleClass="nav-btn nav-menu-btn">
+            <MenuButton fx:id="menuProfile" text="Profile"
+                        style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-padding: 6 14; -fx-cursor: hand;">
                 <items>
                     <MenuItem fx:id="menuViewProfile"     text="View Profile"       onAction="#onViewProfile"/>
                     <MenuItem fx:id="menuEditProfile"     text="Edit Profile"       onAction="#onEditProfile"/>
@@ -78,8 +86,9 @@
                 </items>
             </MenuButton>
 
-            <!-- Login button (shown when user is not logged in) -->
-            <Button fx:id="btnLogin" text="Login" styleClass="nav-btn nav-btn-outline" onAction="#onLogin"/>
+            <!-- Login button -->
+            <Button fx:id="btnLogin" text="Login" onAction="#onLogin"
+                    style="-fx-background-color: transparent; -fx-border-color: #534AB7; -fx-border-width: 1.5; -fx-border-radius: 6; -fx-background-radius: 6; -fx-text-fill: #a5b4fc; -fx-font-size: 13px; -fx-font-weight: bold; -fx-padding: 6 16; -fx-cursor: hand;"/>
 
         </HBox>
     </top>
@@ -94,22 +103,16 @@
                 <!-- ─────────────────────────────────────────────
                      HERO SECTION
                 ───────────────────────────────────────────── -->
-                <StackPane fx:id="heroSection" styleClass="hero-section" prefHeight="520">
-                    <!-- Background image layer -->
-                    <ImageView fx:id="heroBg" fitWidth="1280" fitHeight="520"
-                               preserveRatio="false" styleClass="hero-bg"/>
-
-                    <!-- Overlay + content -->
-                    <VBox alignment="CENTER_LEFT" spacing="20" styleClass="hero-overlay">
-                        <padding><Insets top="0" right="0" bottom="0" left="80"/></padding>
-                        <Label text="MindForge"         styleClass="hero-title"/>
-                        <Label text="From chaos to focus." styleClass="hero-subtitle"/>
-                        <HBox spacing="12">
-                            <Button fx:id="btnGetStarted"  text="Get Started"  styleClass="hero-btn"       onAction="#onGetStarted"/>
-                            <Button fx:id="btnAdminPanel"  text="Admin Panel"  styleClass="hero-btn-secondary" onAction="#onAdminPanel"/>
-                        </HBox>
-                    </VBox>
-                </StackPane>
+                <VBox fx:id="heroSection" styleClass="hero-section" prefHeight="480"
+                      alignment="CENTER_LEFT" spacing="20">
+                    <padding><Insets top="0" right="0" bottom="0" left="80"/></padding>
+                    <Label text="MindForge"           styleClass="hero-title"/>
+                    <Label text="From chaos to focus." styleClass="hero-subtitle"/>
+                    <HBox spacing="12">
+                        <Button fx:id="btnGetStarted" text="Get Started" styleClass="hero-btn"           onAction="#onGetStarted"/>
+                        <Button fx:id="btnAdminPanel" text="Admin Panel" styleClass="hero-btn-secondary" onAction="#onAdminPanel"/>
+                    </HBox>
+                </VBox>
 
                 <!-- ─────────────────────────────────────────────
                      ABOUT SECTION
@@ -239,17 +242,14 @@
                 <!-- ─────────────────────────────────────────────
                      CALL TO ACTION #1
                 ───────────────────────────────────────────── -->
-                <StackPane fx:id="ctaSection" styleClass="cta-section" prefHeight="300">
-                    <ImageView fx:id="ctaBg" fitWidth="1280" fitHeight="300"
-                               preserveRatio="false" styleClass="cta-bg"/>
-                    <VBox alignment="CENTER_LEFT" spacing="16" styleClass="cta-overlay">
-                        <padding><Insets top="0" right="0" bottom="0" left="80"/></padding>
-                        <Label text="Build momentum with MindForge."        styleClass="cta-title"/>
-                        <Label text="Join focused rooms, share resources, and grow with your community."
-                               styleClass="cta-subtitle" wrapText="true"/>
-                        <Button fx:id="btnCtaGetStarted" text="Get Started" styleClass="hero-btn" onAction="#onCommunityHub"/>
-                    </VBox>
-                </StackPane>
+                <VBox fx:id="ctaSection" styleClass="cta-section" prefHeight="260"
+                      alignment="CENTER_LEFT" spacing="16">
+                    <padding><Insets top="0" right="0" bottom="0" left="80"/></padding>
+                    <Label text="Build momentum with MindForge."        styleClass="cta-title"/>
+                    <Label text="Join focused rooms, share resources, and grow with your community."
+                           styleClass="cta-subtitle" wrapText="true" maxWidth="560"/>
+                    <Button fx:id="btnCtaGetStarted" text="Get Started" styleClass="hero-btn" onAction="#onCommunityHub"/>
+                </VBox>
 
                 <!-- ─────────────────────────────────────────────
                      WHY US SECTION
@@ -290,16 +290,13 @@
                 <!-- ─────────────────────────────────────────────
                      CONTACT CTA SECTION
                 ───────────────────────────────────────────── -->
-                <StackPane fx:id="contactCtaSection" styleClass="cta-section" prefHeight="280">
-                    <ImageView fx:id="cta2Bg" fitWidth="1280" fitHeight="280"
-                               preserveRatio="false" styleClass="cta-bg"/>
-                    <VBox alignment="CENTER" spacing="16" styleClass="cta-overlay">
-                        <Label text="Contact Us"  styleClass="cta-title"/>
-                        <Label text="Need help with your workspace or community tasks? We are here to support you."
-                               styleClass="cta-subtitle" wrapText="true" maxWidth="600" textAlignment="CENTER"/>
-                        <Button fx:id="btnContactSupport" text="Contact Support" styleClass="hero-btn" onAction="#onContactSupport"/>
-                    </VBox>
-                </StackPane>
+                <VBox fx:id="contactCtaSection" styleClass="cta-section" prefHeight="240"
+                      alignment="CENTER" spacing="16">
+                    <Label text="Contact Us"  styleClass="cta-title"/>
+                    <Label text="Need help with your workspace or community tasks? We are here to support you."
+                           styleClass="cta-subtitle" wrapText="true" maxWidth="600" textAlignment="CENTER"/>
+                    <Button fx:id="btnContactSupport" text="Contact Support" styleClass="hero-btn" onAction="#onContactSupport"/>
+                </VBox>
 
                 <!-- ─────────────────────────────────────────────
                      FOOTER

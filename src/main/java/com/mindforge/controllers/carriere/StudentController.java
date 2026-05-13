@@ -98,7 +98,7 @@ public class StudentController {
 
     @FXML
     private void openAlertsTab(javafx.scene.input.MouseEvent e) {
-        selectTab(3);
+        selectTab(4);
     }
 
     private void configFlow(FlowPane fp) {

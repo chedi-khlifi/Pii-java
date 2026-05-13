@@ -36,7 +36,6 @@ public class HomeController implements Initializable {
     @FXML private Button    btnAdminPanel;
 
     // ── Hero ────────────────────────────────────────────────
-    @FXML private ImageView heroBg;
     @FXML private Button    btnGetStarted;
 
     // ── About ───────────────────────────────────────────────
@@ -70,7 +69,6 @@ public class HomeController implements Initializable {
     // ────────────────────────────────────────────────────────
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        loadImage(heroBg,     "/images/home-background.jpg");
         loadImage(aboutImg,   "/images/about.png");
         loadImage(footerLogo, "/images/logo.png");
         loadImage(logoImg,    "/images/logo.png");
