@@ -16,7 +16,23 @@ import java.util.Map;
 
 public class QuizService {
 
-    private static final String API_KEY = "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";
+    private static String getEnvOrFile(String key) {
+        String val = System.getenv(key);
+        if (val != null && !val.trim().isEmpty()) return val;
+        try {
+            java.nio.file.Path envPath = java.nio.file.Paths.get(".env");
+            if (java.nio.file.Files.exists(envPath)) {
+                for (String line : java.nio.file.Files.readAllLines(envPath)) {
+                    if (line.trim().startsWith(key + "=")) {
+                        return line.substring(line.indexOf('=') + 1).trim();
+                    }
+                }
+            }
+        } catch (Exception ignored) {}
+        return null;
+    }
+
+    private static final String API_KEY = getEnvOrFile("RJAB_OPENAI_API_KEY");
     private static final String API_URL = "https://api.openai.com/v1/chat/completions";
 
     // In-memory session tracking (per app run, per opportunity)

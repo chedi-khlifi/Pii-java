@@ -1,0 +1,7 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//c/javafx-sdk-17.0.18/**)"
+    ]
+  }
+}
