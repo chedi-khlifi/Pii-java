@@ -59,6 +59,7 @@
             <artifactId>json</artifactId>
             <version>20240303</version>
         </dependency>
+        <!-- Keep only ONE opencv dependency -->
         <dependency>
             <groupId>org.openpnp</groupId>
             <artifactId>opencv</artifactId>

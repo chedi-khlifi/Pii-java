@@ -10,6 +10,10 @@ import java.util.Objects;
 
 public class MainApp extends Application {
 
+    static {
+        OpenCVLoader.load();
+    }
+
     @Override
     public void start(Stage primaryStage) throws Exception {
         FXMLLoader loader = new FXMLLoader(
@@ -19,7 +23,6 @@ public class MainApp extends Application {
 
         Scene scene = new Scene(root, 1280, 800);
 
-        // Load CSS stylesheet
         scene.getStylesheets().add(
                 Objects.requireNonNull(
                         getClass().getResource("/com/mindforge/css/style.css")

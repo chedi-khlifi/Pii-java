@@ -71,7 +71,7 @@ public class EmotionsController implements Initializable {
     private Rect                     lastFace;
 
     // ── Groq ──────────────────────────────────────────────────────────────────
-    private static final String GROQ_API_KEY = "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";
+    private static final String GROQ_API_KEY = "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";
     private static final String GROQ_URL     = "https://api.groq.com/openai/v1/chat/completions";
     private static final String GROQ_MODEL   = "llama-3.1-8b-instant";
     private final HttpClient httpClient = HttpClient.newHttpClient();
@@ -82,13 +82,6 @@ public class EmotionsController implements Initializable {
     private double lastConfidence  = 0;
     private final List<Map<String, String>> emotionHistory = new ArrayList<>();
 
-    static {
-        try {
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-        } catch (UnsatisfiedLinkError e) {
-            throw new ExceptionInInitializerError("OpenCV native library not found: " + e.getMessage());
-        }
-    }
 
     // ═════════════════════════════════════════════════════════════════════════
     //  Lifecycle
