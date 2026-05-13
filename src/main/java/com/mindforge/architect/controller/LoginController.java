@@ -44,7 +44,9 @@ public class LoginController {
             ResultSet rs = pstmt.executeQuery();
 
             if (rs.next()) {
-                String hashedPassword = rs.getString("password");
+                String hashedPassword = rs.getString("password")
+                        .replace("$2y$", "$2a$")
+                        .replace("$2b$", "$2a$");
 
                 if (BCrypt.checkpw(password, hashedPassword)) {
                     int    userId = rs.getInt("id");
