@@ -7,6 +7,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import javafx.scene.image.Image;
 import java.util.Objects;
 
 public class MainApp extends Application {
@@ -33,6 +34,10 @@ public class MainApp extends Application {
                         getClass().getResource("/com/mindforge/css/style.css")
                 ).toExternalForm()
         );
+
+        try (var stream = getClass().getResourceAsStream("/com/mindforge/logo.png")) {
+            if (stream != null) primaryStage.getIcons().add(new Image(stream));
+        }
 
         primaryStage.setTitle("MindForge");
         primaryStage.setScene(scene);

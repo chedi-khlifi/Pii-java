@@ -96,6 +96,11 @@ public class StudentController {
         }
     }
 
+    @FXML
+    private void openAlertsTab(javafx.scene.input.MouseEvent e) {
+        selectTab(3);
+    }
+
     private void configFlow(FlowPane fp) {
         fp.setHgap(20);
         fp.setVgap(20);

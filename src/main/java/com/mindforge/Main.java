@@ -5,6 +5,7 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
@@ -53,6 +54,10 @@ public class Main extends Application {
         root.getChildren().addAll(title, subtitle, mindforgeBtn, plannerBtn, guardianBtn);
 
         Scene scene = new Scene(root, 500, 400);
+        try (var stream = getClass().getResourceAsStream("/com/mindforge/logo.png")) {
+            if (stream != null) primaryStage.getIcons().add(new Image(stream));
+        }
+
         primaryStage.setTitle("MindForge Project Launcher");
         primaryStage.setScene(scene);
         primaryStage.show();

@@ -17,7 +17,8 @@
             <padding><Insets top="10" right="16" bottom="10" left="16"/></padding>
             <Region HBox.hgrow="ALWAYS"/>
             <Label fx:id="notifBadge" text="🔔"
-                   style="-fx-font-size: 16px; -fx-cursor: hand; -fx-text-fill: white; -fx-padding: 4 8;"/>
+                   style="-fx-font-size: 16px; -fx-cursor: hand; -fx-text-fill: white; -fx-padding: 4 8;"
+                   onMouseClicked="#openAlertsTab"/>
             <Button text="🌐 Social Hub" onAction="#goToSocialHub"
                     style="-fx-background-color: #534AB7; -fx-text-fill: white; -fx-font-weight: bold;
                            -fx-padding: 8 16; -fx-background-radius: 6; -fx-cursor: hand; -fx-font-size: 12px;"/>

@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Read(//c/javafx-sdk-17.0.18/**)"
+      "Read(//c/javafx-sdk-17.0.18/**)",
+      "Bash(JAVA_HOME=\"/c/Users/MARjab/.jdks/temurin-17.0.18\" \"/c/Program Files/JetBrains/IntelliJ IDEA 2026.1/plugins/maven/lib/maven3/bin/mvn\" compile)"
     ]
   }
 }
