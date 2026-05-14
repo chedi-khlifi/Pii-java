@@ -113,17 +113,24 @@ public class EmotionsController implements Initializable {
 
     static {
         boolean loaded = false;
-        try {
-            // Try the system library first (works when -Djava.library.path is set)
-            System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
-            loaded = true;
-        } catch (UnsatisfiedLinkError e1) {
-            // Fallback: try loading from the known install path on Windows
+        // Try opencv_java4110 first (matches local OpenCV 4.11.0 install)
+        String[] candidates = {
+            "opencv_java4110",          // local OpenCV 4.11.0
+            Core.NATIVE_LIBRARY_NAME,   // whatever the jar declares
+        };
+        for (String lib : candidates) {
             try {
-                System.load("C:\\opencv\\build\\java\\x64\\opencv_java4120.dll");
+                System.loadLibrary(lib);
                 loaded = true;
-            } catch (UnsatisfiedLinkError e2) {
-                // OpenCV not available — feature will be disabled gracefully
+                break;
+            } catch (UnsatisfiedLinkError ignored) {}
+        }
+        if (!loaded) {
+            // Absolute path fallback
+            try {
+                System.load("C:\\opencv\\build\\java\\x64\\opencv_java4110.dll");
+                loaded = true;
+            } catch (UnsatisfiedLinkError e) {
                 System.err.println("[EmotionsController] OpenCV native library not found. " +
                         "Camera features will be disabled. Add -Djava.library.path=C:\\opencv\\build\\java\\x64 to VM options.");
             }

@@ -64,6 +64,14 @@
             <artifactId>opencv</artifactId>
             <version>4.9.0-0</version>
         </dependency>
+        <!-- Local OpenCV 4.11.0 native wrapper (matches C:\opencv\build\java\x64\opencv_java4110.dll) -->
+        <dependency>
+            <groupId>org.opencv</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.11.0</version>
+            <scope>system</scope>
+            <systemPath>C:\opencv\build\java\opencv-4110.jar</systemPath>
+        </dependency>
         <!-- Apache HttpClient -->
         <dependency>
             <groupId>org.apache.httpcomponents.client5</groupId>
@@ -164,6 +172,9 @@
                 <version>0.0.8</version>
                 <configuration>
                     <mainClass>com.mindforge.Main</mainClass>
+                    <options>
+                        <option>-Djava.library.path=C:\opencv\build\java\x64</option>
+                    </options>
                 </configuration>
             </plugin>
             <plugin>
